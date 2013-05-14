@@ -1,0 +1,21 @@
+#Comments can be written like this
+
+#Define all used materials first
+
+material Body_Hi-material
+
+tex_diff venturestar.png
+tex_glow venturestar_glow.png
+tex_spec venturestar_spec.png
+
+
+
+#Meshes to be imported into this model, should be in the current folder
+
+#Mixing different formats should be OK
+
+mesh venturestar.dae
+
+# Animations
+anim gear_down 0 73	
+

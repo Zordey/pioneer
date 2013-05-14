@@ -14,7 +14,7 @@ mesh deneb.dae
 lod 500
 mesh deneb_medhigh.dae
 
-lod 100
+lod 60
 mesh deneb_med.dae
 
 lod 20

@@ -15,7 +15,6 @@ define_ship {
 	gun_mounts =
 	{
 		{ v(0,-0.5,-10.7), v(0,0,-1), 5, 'HORIZONTAL' },
-		{ v(0,-0.5,0), v(0,0,1), 5, 'HORIZONTAL' },
 	},
 	min_atmoshield = 1,
 	max_cargo = 235,
@@ -28,7 +27,8 @@ define_ship {
 	capacity = 235,
 	hull_mass = 100,
 	fuel_tank_mass = 100,
-	thruster_fuel_use = 0.0001,
+	--thruster_fuel_use = 0.0001,
+	effective_exhaust_velocity = 59167e3,
 	price = 430000,
 	hyperdrive_class = 3,
 }
