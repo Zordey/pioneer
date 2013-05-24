@@ -1,0 +1,11 @@
+# Comments can be written like this
+# Define all used materials first
+material Body-material
+tex_diff shadowbc.png
+tex_glow shadowbc_glow.png
+tex_spec shadowbc_spec.png
+
+# LOD
+lod 1000
+mesh shadowbc.dae
+
