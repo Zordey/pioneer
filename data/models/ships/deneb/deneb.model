@@ -5,20 +5,22 @@ tex_diff deneb.png
 tex_glow deneb_glow.png
 tex_spec deneb_spec.png
 
+use_patterns
+
 collision deneb_collision.obj
 
 # LOD
 lod 1000
 mesh deneb.dae
 
-lod 500
-mesh deneb_medhigh.dae
+#lod 500
+#mesh deneb_medhigh.dae
 
-lod 75
-mesh deneb_med.dae
+#lod 75
+#mesh deneb_med.dae
 
-lod 20
-mesh deneb_low.dae
+#lod 20
+#mesh deneb_low.dae
 
 # Animations
 anim gear_down 0 73
