@@ -1,11 +1,12 @@
-# Comments can be written like this
-# Define all used materials first
 material Body-material
 
 tex_diff deneb.dds
 tex_glow deneb_glow.dds
 tex_spec deneb_spec.dds
+<<<<<<< HEAD
 
+=======
+>>>>>>> upstream/master
 use_patterns
 
 collision deneb_collision.obj
@@ -25,4 +26,3 @@ mesh deneb_low.dae
 
 # Animations
 anim gear_down 0 73
-
