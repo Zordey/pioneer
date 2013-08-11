@@ -3,15 +3,19 @@ material Body-material
 tex_diff deneb.dds
 tex_glow deneb_glow.dds
 tex_spec deneb_spec.dds
+<<<<<<< HEAD
+
+=======
+>>>>>>> upstream/master
 use_patterns
 
 collision deneb_collision.obj
 
 # LOD
-lod 1000
+lod 1001
 mesh deneb.dae
 
-lod 500
+lod 1000
 mesh deneb_medhigh.dae
 
 lod 50

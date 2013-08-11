@@ -66,8 +66,13 @@ local shipInfo = function (args)
 						{ t("REAR_WEAPON")..":",  EquipDef[rearWeapon].name },
 						{ t("FUEL")..":",         string.format("%d%%", Game.player.fuel) },
 						"",
+<<<<<<< HEAD
 						{ t("Minimum crew")..":", ShipType.GetShipType(Game.player.shipId).minCrew },
 						{ t("Crew cabins")..":",  ShipType.GetShipType(Game.player.shipId).maxCrew },
+=======
+						{ t("Minimum crew")..":", ""..ShipType.GetShipType(Game.player.shipId).minCrew },
+						{ t("Crew cabins")..":",  ""..ShipType.GetShipType(Game.player.shipId).maxCrew },
+>>>>>>> d298182b0a1084e9c1581a8cdab834028057e31b
 					}),
 					"",
 					ui:Label(t("Equipment")):SetFont("HEADING_LARGE"),

@@ -3,7 +3,10 @@
 
 #include "Table.h"
 #include "Lua.h"
+<<<<<<< HEAD
 #include "LuaConstants.h"
+=======
+>>>>>>> d298182b0a1084e9c1581a8cdab834028057e31b
 
 namespace UI {
 
@@ -106,6 +109,7 @@ public:
 		return 1;
 	}
 
+<<<<<<< HEAD
 	static int l_set_heading_font(lua_State *l) {
 		UI::Table *t = LuaObject<UI::Table>::CheckFromLua(1);
 		UI::Widget::Font font = static_cast<UI::Widget::Font>(LuaConstants::GetConstantFromArg(l, "UIFont", 2));
@@ -114,6 +118,8 @@ public:
 		return 1;
 	}
 
+=======
+>>>>>>> d298182b0a1084e9c1581a8cdab834028057e31b
 };
 
 }
@@ -133,7 +139,10 @@ template <> void LuaObject<UI::Table>::RegisterClass()
 		{ "SetRowSpacing",    UI::LuaTable::l_set_row_spacing    },
 		{ "SetColumnSpacing", UI::LuaTable::l_set_column_spacing },
 		{ "SetSpacing",       UI::LuaTable::l_set_spacing        },
+<<<<<<< HEAD
 		{ "SetHeadingFont",   UI::LuaTable::l_set_heading_font   },
+=======
+>>>>>>> d298182b0a1084e9c1581a8cdab834028057e31b
 		{ 0, 0 }
 	};
 

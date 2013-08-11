@@ -25,8 +25,11 @@ public:
 	Table *SetColumnSpacing(int spacing);
 	Table *SetSpacing(int spacing);
 
+<<<<<<< HEAD
 	Table *SetHeadingFont(Font font);
 
+=======
+>>>>>>> d298182b0a1084e9c1581a8cdab834028057e31b
 private:
 
 	class LayoutAccumulator {
