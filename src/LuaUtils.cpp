@@ -45,7 +45,7 @@ extern "C" {
 static int l_hash_random(lua_State *L)
 {
 	int numargs = lua_gettop(L);
-	uint32_t hashA = 0, hashB = 0;
+	Uint32 hashA = 0, hashB = 0;
 
 	luaL_checkany(L, 1);
 	switch (lua_type(L, 1)) {
@@ -174,6 +174,11 @@ void pi_lua_open_standard_base(lua_State *L)
 	lua_getfield(L, -1, "rad");
 	assert(lua_isfunction(L, -1));
 	lua_setfield(L, -2, "deg2rad");
+
+	// alias math.rad2deg = math.deg
+	lua_getfield(L, -1, "deg");
+	assert(lua_isfunction(L, -1));
+	lua_setfield(L, -2, "rad2deg");
 
 	lua_pop(L, 1); // pop the math table
 }

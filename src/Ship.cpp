@@ -3,7 +3,6 @@
 
 #include "Ship.h"
 #include "CityOnPlanet.h"
-#include "Planet.h"
 #include "Lang.h"
 #include "EnumStrings.h"
 #include "LuaEvent.h"
@@ -24,7 +23,8 @@
 #include "graphics/TextureBuilder.h"
 #include "StringF.h"
 
-#define TONS_HULL_PER_SHIELD 10.0f
+static const float TONS_HULL_PER_SHIELD = 10.f;
+static const double KINETIC_ENERGY_MULT	= 0.01;
 
 void SerializableEquipSet::Save(Serializer::Writer &wr)
 {
@@ -238,7 +238,6 @@ void Ship::SetController(ShipController *c)
 	m_controller->m_ship = this;
 }
 
-
 float Ship::GetPercentHull() const
 {
 	return 100.0f * (m_stats.hull_mass_left / float(m_type->hullMass));
@@ -324,7 +323,6 @@ bool Ship::OnDamage(Object *attacker, float kgDamage)
 	return true;
 }
 
-#define KINETIC_ENERGY_MULT	0.01
 bool Ship::OnCollision(Object *b, Uint32 flags, double relVel)
 {
 	// hitting space station docking surfaces shouldn't do damage
@@ -699,6 +697,24 @@ void Ship::TestLanded()
 			}
 		}
 	}
+}
+
+void Ship::SetLandedOn(Planet *p, float latitude, float longitude)
+{
+	m_wheelTransition = 0;
+	m_wheelState = 1.0f;
+	Frame* f = p->GetFrame()->GetRotFrame();
+	SetFrame(f);
+	vector3d up = vector3d(cos(latitude)*sin(longitude), sin(latitude), cos(latitude)*cos(longitude));
+	const double planetRadius = p->GetTerrainHeight(up);
+	SetPosition(up * (planetRadius - GetAabb().min.y));
+	vector3d right = up.Cross(vector3d(0,0,1)).Normalized();
+	SetOrient(matrix3x3d::FromVectors(right, up));
+	SetVelocity(vector3d(0, 0, 0));
+	SetAngVelocity(vector3d(0, 0, 0));
+	ClearThrusterState();
+	SetFlightState(LANDED);
+	LuaEvent::Queue("onShipLanded", this, p);
 }
 
 void Ship::TimeStepUpdate(const float timeStep)
@@ -1127,7 +1143,7 @@ void Ship::Render(Graphics::Renderer *renderer, const Camera *camera, const vect
 	if (m_stats.shield_mass_left < m_stats.shield_mass) {
 		const float shield = 0.01f*GetPercentShields();
 		renderer->SetBlendMode(Graphics::BLEND_ADDITIVE);
-		glPushMatrix();
+
 		matrix4x4f trans = matrix4x4f::Identity();
 		trans.Translate(viewCoords.x, viewCoords.y, viewCoords.z);
 		trans.Scale(GetPhysRadius());
@@ -1137,7 +1153,7 @@ void Ship::Render(Graphics::Renderer *renderer, const Camera *camera, const vect
 		Sfx::shieldEffect->GetMaterial()->diffuse =
 			Color((1.0f-shield),shield,0.0,0.33f*(1.0f-shield));
 		Sfx::shieldEffect->Draw(renderer);
-		glPopMatrix();
+
 		renderer->SetBlendMode(Graphics::BLEND_SOLID);
 	}
 

@@ -137,9 +137,7 @@
     <ClCompile Include="..\..\src\CityOnPlanet.cpp" />
     <ClCompile Include="..\..\src\Color.cpp" />
     <ClCompile Include="..\..\src\CommodityTradeWidget.cpp" />
-    <ClCompile Include="..\..\src\CoreCount.cpp" />
     <ClCompile Include="..\..\src\CRC32.cpp" />
-    <ClCompile Include="..\..\src\DeadVideoLink.cpp" />
     <ClCompile Include="..\..\src\DeathView.cpp" />
     <ClCompile Include="..\..\src\DynamicBody.cpp" />
     <ClCompile Include="..\..\src\EnumStrings.cpp" />
@@ -290,9 +288,7 @@
     <ClInclude Include="..\..\src\AmbientSounds.h" />
     <ClInclude Include="..\..\src\AnimationCurves.h" />
     <ClInclude Include="..\..\src\Background.h" />
-    <ClInclude Include="..\..\src\BezierCurve.h" />
     <ClInclude Include="..\..\src\Body.h" />
-    <ClInclude Include="..\..\src\BufferObject.h" />
     <ClInclude Include="..\..\src\buildopts.h" />
     <ClInclude Include="..\..\src\ByteRange.h" />
     <ClInclude Include="..\..\src\Camera.h" />
@@ -302,9 +298,7 @@
     <ClInclude Include="..\..\src\CityOnPlanet.h" />
     <ClInclude Include="..\..\src\Color.h" />
     <ClInclude Include="..\..\src\CommodityTradeWidget.h" />
-    <ClInclude Include="..\..\src\CoreCount.h" />
     <ClInclude Include="..\..\src\CRC32.h" />
-    <ClInclude Include="..\..\src\DeadVideoLink.h" />
     <ClInclude Include="..\..\src\DeathView.h" />
     <ClInclude Include="..\..\src\DeleteEmitter.h" />
     <ClInclude Include="..\..\src\DynamicBody.h" />
