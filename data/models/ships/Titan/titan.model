@@ -4,9 +4,9 @@
 
 material Body_Hi-material
 
-#tex_diff venturestar.png
-#tex_glow venturestar_glow.png
-#tex_spec venturestar_spec.png
+#tex_diff titan.png
+#tex_glow titan_glow.png
+#tex_spec titan_spec.png
 
 
 
