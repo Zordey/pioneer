@@ -96,7 +96,10 @@
     <ClCompile Include="..\..\..\src\terrain\TerrainColorDeadWithWater.cpp" />
     <ClCompile Include="..\..\..\src\terrain\TerrainColorDesert.cpp" />
     <ClCompile Include="..\..\..\src\terrain\TerrainColorEarthLike.cpp" />
+<<<<<<< HEAD
     <ClCompile Include="..\..\..\src\terrain\TerrainColorEarthLikeHeightmapped.cpp" />
+=======
+>>>>>>> master
     <ClCompile Include="..\..\..\src\terrain\TerrainColorGGJupiter.cpp" />
     <ClCompile Include="..\..\..\src\terrain\TerrainColorGGNeptune.cpp" />
     <ClCompile Include="..\..\..\src\terrain\TerrainColorGGNeptune2.cpp" />

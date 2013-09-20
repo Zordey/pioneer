@@ -18,10 +18,16 @@ define_ship {
 	},
 	max_cargo = 500,
 	max_laser = 1,
+<<<<<<< HEAD
 	max_missile = 12,
 	max_cargoscoop = 1,
 	max_fuelscoop = 1,
 	atmoshield = 1,
+=======
+	max_missile = 16,
+	max_cargoscoop = 1,
+	max_fuelscoop = 1,
+>>>>>>> master
 	min_atmoshield = 1,
 	min_crew = 3,
 	max_crew = 5,

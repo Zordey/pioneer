@@ -11,8 +11,13 @@ tex_glow deneb_glow.dds
 tex_spec deneb_spec.dds
 <<<<<<< HEAD
 
+<<<<<<< HEAD
 #use_patterns
 =======
+=======
+=======
+>>>>>>> upstream/master
+>>>>>>> master
 use_patterns
 >>>>>>> upstream/master
 

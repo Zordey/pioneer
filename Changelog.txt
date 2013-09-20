@@ -1,4 +1,4 @@
-August 2013
+﻿August 2013
 
    * New features
      * New ship "Amphiesma" (#2396)

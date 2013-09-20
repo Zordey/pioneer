@@ -255,6 +255,7 @@ Table *Table::SetColumnSpacing(int spacing)
 }
 
 
+<<<<<<< HEAD
 Table *Table::SetHeadingFont(Font font)
 {
 	m_header->SetFont(font);
@@ -263,6 +264,8 @@ Table *Table::SetHeadingFont(Font font)
 }
 
 
+=======
+>>>>>>> d298182b0a1084e9c1581a8cdab834028057e31b
 void Table::OnScroll(float value)
 {
 	m_body->SetDrawOffset(Point(0, -float(m_body->PreferredSize().y-(GetSize().y-m_header->PreferredSize().y))*value));

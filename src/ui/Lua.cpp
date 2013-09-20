@@ -46,8 +46,15 @@ UI::Widget *GetWidget(UI::Context *c, lua_State *l, int idx)
 	UI::Widget *w = LuaObject<UI::Widget>::GetFromLua(idx);
 	if (w) return w;
 
+<<<<<<< HEAD
 	if (lua_istable(l, idx)) {
 		LUA_DEBUG_START(l);
+=======
+	if (lua_type(l, idx) == LUA_TSTRING)
+		return c->Label(lua_tostring(l, idx));
+
+	if (!lua_istable(l, idx)) return 0;
+>>>>>>> d298182b0a1084e9c1581a8cdab834028057e31b
 
 		int table = lua_absindex(l, idx);
 		lua_pushlstring(l, "widget", 6);
