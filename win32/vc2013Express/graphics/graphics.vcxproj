@@ -93,6 +93,10 @@
   <ItemGroup>
     <ClCompile Include="..\..\..\src\graphics\Drawables.cpp" />
     <ClCompile Include="..\..\..\src\graphics\Frustum.cpp" />
+<<<<<<< HEAD
+    <ClCompile Include="..\..\..\src\graphics\gl2\FresnelColourMaterial.cpp" />
+=======
+>>>>>>> master
     <ClCompile Include="..\..\..\src\graphics\gl2\GeoSphereMaterial.cpp" />
     <ClCompile Include="..\..\..\src\graphics\gl2\GL2Material.cpp" />
     <ClCompile Include="..\..\..\src\graphics\gl2\GL2RenderTarget.cpp" />
@@ -121,6 +125,10 @@
   <ItemGroup>
     <ClInclude Include="..\..\..\src\graphics\Drawables.h" />
     <ClInclude Include="..\..\..\src\graphics\Frustum.h" />
+<<<<<<< HEAD
+    <ClInclude Include="..\..\..\src\graphics\gl2\FresnelColourMaterial.h" />
+=======
+>>>>>>> master
     <ClInclude Include="..\..\..\src\graphics\gl2\GeoSphereMaterial.h" />
     <ClInclude Include="..\..\..\src\graphics\gl2\GL2Material.h" />
     <ClInclude Include="..\..\..\src\graphics\gl2\GL2RenderTarget.h" />

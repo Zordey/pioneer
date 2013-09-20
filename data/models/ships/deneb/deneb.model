@@ -1,13 +1,25 @@
 material Body-material
+<<<<<<< HEAD
+#tex_diff deneb.png
+#tex_glow deneb_glow.png
+#tex_spec deneb_spec.png
+=======
+>>>>>>> upstream/master
 
 tex_diff deneb.dds
 tex_glow deneb_glow.dds
 tex_spec deneb_spec.dds
 <<<<<<< HEAD
 
+<<<<<<< HEAD
+#use_patterns
+=======
+=======
 =======
 >>>>>>> upstream/master
+>>>>>>> master
 use_patterns
+>>>>>>> upstream/master
 
 collision deneb_collision.obj
 

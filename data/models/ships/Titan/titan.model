@@ -1,0 +1,21 @@
+#Comments can be written like this
+
+#Define all used materials first
+
+material Body_Hi-material
+
+#tex_diff titan.png
+#tex_glow titan_glow.png
+#tex_spec titan_spec.png
+
+
+
+#Meshes to be imported into this model, should be in the current folder
+
+#Mixing different formats should be OK
+
+mesh titan.dae
+
+# Animations
+#anim gear_down 0 73	
+
