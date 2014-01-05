@@ -21,4 +21,4 @@ lod 5
 mesh deneb_low.dae
 
 # Animations
-anim gear_down 0 73
+anim gear_down 0 72
