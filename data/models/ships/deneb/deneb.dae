@@ -5,8 +5,8 @@
       <author>Blender User</author>
       <authoring_tool>Blender 2.68.0 runknown</authoring_tool>
     </contributor>
-    <created>2014-01-05T20:15:40</created>
-    <modified>2014-01-05T20:15:40</modified>
+    <created>2014-01-12T20:13:29</created>
+    <modified>2014-01-12T20:13:29</modified>
     <unit name="meter" meter="1"/>
     <up_axis>Z_UP</up_axis>
   </asset>
@@ -3916,25 +3916,25 @@
         <instance_geometry url="#Sphere_025-mesh"/>
       </node>
       <node id="thruster_linear_main" name="thruster_linear_main" type="NODE">
-        <translate sid="location">0 -15.22234 1.300752</translate>
+        <translate sid="location">0 -16.00515 1.375664</translate>
         <rotate sid="rotationZ">0 0 1 8.65142e-6</rotate>
         <rotate sid="rotationY">0 1 0 -180</rotate>
         <rotate sid="rotationX">1 0 0 89.99996</rotate>
-        <scale sid="scale">4 20 20</scale>
+        <scale sid="scale">10 20 20</scale>
       </node>
       <node id="thruster_linear_retro_left" name="thruster_linear_retro_left" type="NODE">
         <translate sid="location">-2.7 22 -0.3</translate>
         <rotate sid="rotationZ">0 0 1 0</rotate>
         <rotate sid="rotationY">0 1 0 0</rotate>
         <rotate sid="rotationX">1 0 0 -90.00004</rotate>
-        <scale sid="scale">8 2 5</scale>
+        <scale sid="scale">8 5 5</scale>
       </node>
       <node id="thruster_linear_retro_right" name="thruster_linear_retro_right" type="NODE">
         <translate sid="location">2.7 22 -0.3</translate>
         <rotate sid="rotationZ">0 0 1 0</rotate>
         <rotate sid="rotationY">0 1 0 0</rotate>
         <rotate sid="rotationX">1 0 0 -90.00004</rotate>
-        <scale sid="scale">8 2 5</scale>
+        <scale sid="scale">8 5 5</scale>
       </node>
       <node id="navlight_white" name="navlight_white" type="NODE">
         <translate sid="location">0 -16.93364 5.336131</translate>
