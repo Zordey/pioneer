@@ -1,4 +1,4 @@
-// Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+// Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "ModelSpinner.h"
@@ -11,13 +11,14 @@ using namespace UI;
 
 namespace GameUI {
 
-ModelSpinner::ModelSpinner(Context *context, SceneGraph::Model *model, const SceneGraph::ModelSkin &skin) : Widget(context),
+ModelSpinner::ModelSpinner(Context *context, SceneGraph::Model *model, const SceneGraph::ModelSkin &skin, unsigned int pattern) : Widget(context),
 	m_skin(skin),
 	m_rotX(DEG2RAD(-15.0)), m_rotY(DEG2RAD(180.0)),
 	m_rightMouseButton(false)
 {
 	m_model.reset(model->MakeInstance());
 	m_skin.Apply(m_model.get());
+	m_model->SetPattern(pattern);
 
 	Color lc(255);
 	m_light.SetDiffuse(lc);
