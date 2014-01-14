@@ -1,4 +1,4 @@
-// Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+// Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "RendererGL2.h"
@@ -73,9 +73,7 @@ RendererGL2::RendererGL2(WindowSDL *window, const Graphics::Settings &vs)
 , m_activeRenderTarget(0)
 , m_matrixMode(MatrixMode::MODELVIEW)
 {
-	for(Uint32 i = 0; i < 4; i++) {
-		m_currentViewport[i] = 0;
-	}
+	m_viewportStack.push(Viewport());
 
 	const bool useDXTnTextures = vs.useTextureCompression && glewIsSupported("GL_EXT_texture_compression_s3tc");
 	m_useCompressedTextures = useDXTnTextures;
@@ -217,10 +215,12 @@ bool RendererGL2::SetClearColor(const Color &c)
 
 bool RendererGL2::SetViewport(int x, int y, int width, int height)
 {
-	m_currentViewport[0] = x;
-	m_currentViewport[1] = y;
-	m_currentViewport[2] = width;
-	m_currentViewport[3] = height;
+	assert(!m_viewportStack.empty());
+	Viewport& currentViewport = m_viewportStack.top();
+	currentViewport.x = x;
+	currentViewport.y = y;
+	currentViewport.w = width;
+	currentViewport.h = height;
 	glViewport(x, y, width, height);
 	return true;
 }
@@ -231,7 +231,6 @@ bool RendererGL2::SetTransform(const matrix4x4d &m)
 	matrix4x4f mf;
 	matrix4x4dtof(m, mf);
 	return SetTransform(mf);
-	return true;
 }
 
 bool RendererGL2::SetTransform(const matrix4x4f &m)
@@ -338,6 +337,16 @@ bool RendererGL2::SetDepthWrite(bool enabled)
 bool RendererGL2::SetWireFrameMode(bool enabled)
 {
 	glPolygonMode(GL_FRONT_AND_BACK, enabled ? GL_LINE : GL_FILL);
+	return true;
+}
+
+bool RendererGL2::SetLightsEnabled(const bool enabled) {
+	// XXX move lighting out to shaders
+	if( enabled ) {
+		glEnable(GL_LIGHTING);
+	} else {
+		glDisable(GL_LIGHTING);
+	}
 	return true;
 }
 
@@ -844,12 +853,15 @@ void RendererGL2::PushState()
 	PushMatrix();
 	SetMatrixMode(MatrixMode::MODELVIEW);
 	PushMatrix();
+	m_viewportStack.push( m_viewportStack.top() );
 	glPushAttrib(GL_ALL_ATTRIB_BITS & (~GL_POINT_BIT));
 }
 
 void RendererGL2::PopState()
 {
 	glPopAttrib();
+	m_viewportStack.pop();
+	assert(!m_viewportStack.empty());
 	SetMatrixMode(MatrixMode::PROJECTION);
 	PopMatrix();
 	SetMatrixMode(MatrixMode::MODELVIEW);
