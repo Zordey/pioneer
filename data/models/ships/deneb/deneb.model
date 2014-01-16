@@ -10,6 +10,7 @@ collision deneb_collision.obj
 # LOD
 lod 1001
 mesh deneb.dae
+mesh deneb_shield.dae
 
 #lod 1000
 #mesh deneb_medhigh.dae

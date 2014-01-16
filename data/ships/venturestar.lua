@@ -13,7 +13,7 @@ define_ship {
 	left_thrust = 16e6,
 	right_thrust = 16e6,
 	angular_thrust = 10e7,
-	
+
 	max_cargo = 3000,
 	max_laser = 1,
 	max_missile = 12,
