@@ -5,8 +5,8 @@
       <author>Blender User</author>
       <authoring_tool>Blender 2.68.0 runknown</authoring_tool>
     </contributor>
-    <created>2014-01-12T20:13:29</created>
-    <modified>2014-01-12T20:13:29</modified>
+    <created>2014-02-17T21:49:56</created>
+    <modified>2014-02-17T21:49:56</modified>
     <unit name="meter" meter="1"/>
     <up_axis>Z_UP</up_axis>
   </asset>
@@ -4162,13 +4162,6 @@
         <rotate sid="rotationZ">0 0 1 0</rotate>
         <rotate sid="rotationY">0 1 0 0</rotate>
         <rotate sid="rotationX">1 0 0 0</rotate>
-        <scale sid="scale">1 1 1</scale>
-      </node>
-      <node id="tag_camera" name="tag_camera" type="NODE">
-        <translate sid="location">-1.19209e-6 17.59592 3.367903</translate>
-        <rotate sid="rotationZ">0 0 1 9.54514e-9</rotate>
-        <rotate sid="rotationY">0 1 0 -179.9999</rotate>
-        <rotate sid="rotationX">1 0 0 -90.00004</rotate>
         <scale sid="scale">1 1 1</scale>
       </node>
       <node id="tag_gunmount_0" name="tag_gunmount_0" type="NODE">
