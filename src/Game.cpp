@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
+// Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "Game.h"
@@ -17,25 +21,38 @@
 #include "GalacticView.h"
 #include "SystemView.h"
 #include "SystemInfoView.h"
+<<<<<<< HEAD
 #include "SpaceStationView.h"
+=======
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 #include "UIView.h"
 #include "LuaEvent.h"
 #include "ObjectViewerView.h"
 #include "FileSystem.h"
 #include "graphics/Renderer.h"
 
+<<<<<<< HEAD
 static const int  s_saveVersion   = 67;
 static const char s_saveStart[]   = "PIONEER";
 static const char s_saveEnd[]     = "END";
 
 Game::Game(const SystemPath &path) :
 	m_time(0),
+=======
+static const int  s_saveVersion   = 71;
+static const char s_saveStart[]   = "PIONEER";
+static const char s_saveEnd[]     = "END";
+
+Game::Game(const SystemPath &path, double time) :
+	m_time(time),
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	m_state(STATE_NORMAL),
 	m_wantHyperspace(false),
 	m_timeAccel(TIMEACCEL_1X),
 	m_requestedTimeAccel(TIMEACCEL_1X),
 	m_forceTimeAccel(false)
 {
+<<<<<<< HEAD
 	m_space.Reset(new Space(this, path));
 	SpaceStation *station = static_cast<SpaceStation*>(m_space->FindBodyForPath(&path));
 	assert(station);
@@ -43,6 +60,15 @@ Game::Game(const SystemPath &path) :
 	m_player.Reset(new Player("kanara"));
 
 	m_space->AddBody(m_player.Get());
+=======
+	m_space.reset(new Space(this, path));
+	SpaceStation *station = static_cast<SpaceStation*>(m_space->FindBodyForPath(&path));
+	assert(station);
+
+	m_player.reset(new Player("kanara"));
+
+	m_space->AddBody(m_player.get());
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 	m_player->SetFrame(station->GetFrame());
 	m_player->SetDockedWith(station, 0);
@@ -52,14 +78,20 @@ Game::Game(const SystemPath &path) :
 	CreateViews();
 }
 
+<<<<<<< HEAD
 Game::Game(const SystemPath &path, const vector3d &pos) :
 	m_time(0),
+=======
+Game::Game(const SystemPath &path, const vector3d &pos, double time) :
+	m_time(time),
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	m_state(STATE_NORMAL),
 	m_wantHyperspace(false),
 	m_timeAccel(TIMEACCEL_1X),
 	m_requestedTimeAccel(TIMEACCEL_1X),
 	m_forceTimeAccel(false)
 {
+<<<<<<< HEAD
 	m_space.Reset(new Space(this, path));
 	Body *b = m_space->FindBodyForPath(&path);
 	assert(b);
@@ -67,6 +99,15 @@ Game::Game(const SystemPath &path, const vector3d &pos) :
 	m_player.Reset(new Player("kanara"));
 
 	m_space->AddBody(m_player.Get());
+=======
+	m_space.reset(new Space(this, path));
+	Body *b = m_space->FindBodyForPath(&path);
+	assert(b);
+
+	m_player.reset(new Player("kanara"));
+
+	m_space->AddBody(m_player.get());
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 	m_player->SetFrame(b->GetFrame());
 
@@ -98,9 +139,15 @@ Game::~Game()
 	// is owned by the space, and the game part that holds all the player
 	// attributes and whatever else
 
+<<<<<<< HEAD
 	m_space->RemoveBody(m_player.Get());
 	m_space.Reset();
 	m_player.Reset();
+=======
+	m_space->RemoveBody(m_player.get());
+	m_space.reset();
+	m_player.reset();
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 }
 
 Game::Game(Serializer::Reader &rd) :
@@ -124,13 +171,21 @@ Game::Game(Serializer::Reader &rd) :
 
 	// space, all the bodies and things
 	section = rd.RdSection("Space");
+<<<<<<< HEAD
 	m_space.Reset(new Space(this, section));
+=======
+	m_space.reset(new Space(this, section));
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 
 	// game state and space transition state
 	section = rd.RdSection("Game");
 
+<<<<<<< HEAD
 	m_player.Reset(static_cast<Player*>(m_space->GetBodyByIndex(section.Int32())));
+=======
+	m_player.reset(static_cast<Player*>(m_space->GetBodyByIndex(section.Int32())));
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 	// hyperspace clouds being brought over from the previous system
 	Uint32 nclouds = section.Int32();
@@ -184,12 +239,20 @@ void Game::Serialize(Serializer::Writer &wr)
 	// game state and space transition state
 	section = Serializer::Writer();
 
+<<<<<<< HEAD
 	section.Int32(m_space->GetIndexForBody(m_player.Get()));
+=======
+	section.Int32(m_space->GetIndexForBody(m_player.get()));
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 	// hyperspace clouds being brought over from the previous system
 	section.Int32(m_hyperspaceClouds.size());
 	for (std::list<HyperspaceCloud*>::const_iterator i = m_hyperspaceClouds.begin(); i != m_hyperspaceClouds.end(); ++i)
+<<<<<<< HEAD
 		(*i)->Serialize(section, m_space.Get());
+=======
+		(*i)->Serialize(section, m_space.get());
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 	section.Double(m_time);
 	section.Int32(Uint32(m_state));
@@ -235,6 +298,10 @@ void Game::Serialize(Serializer::Writer &wr)
 
 void Game::TimeStep(float step)
 {
+<<<<<<< HEAD
+=======
+	PROFILE_SCOPED()
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	m_time += step;			// otherwise planets lag time accel changes by a frame
 
 	m_space->TimeStep(step);
@@ -263,6 +330,10 @@ void Game::TimeStep(float step)
 
 bool Game::UpdateTimeAccel()
 {
+<<<<<<< HEAD
+=======
+	PROFILE_SCOPED()
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	// don't modify the timeaccel if the game is paused
 	if (m_requestedTimeAccel == Game::TIMEACCEL_PAUSED) {
 		SetTimeAccel(Game::TIMEACCEL_PAUSED);
@@ -295,7 +366,11 @@ bool Game::UpdateTimeAccel()
 		else if (!m_forceTimeAccel) {
 			// check we aren't too near to objects for timeaccel //
 			for (Space::BodyIterator i = m_space->BodiesBegin(); i != m_space->BodiesEnd(); ++i) {
+<<<<<<< HEAD
 				if ((*i) == m_player) continue;
+=======
+				if ((*i) == m_player.get()) continue;
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 				if ((*i)->IsType(Object::HYPERSPACECLOUD)) continue;
 
 				vector3d toBody = m_player->GetPosition() - (*i)->GetPositionRelTo(m_player->GetFrame());
@@ -355,6 +430,10 @@ double Game::GetHyperspaceArrivalProbability() const
 
 void Game::SwitchToHyperspace()
 {
+<<<<<<< HEAD
+=======
+	PROFILE_SCOPED()
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	// remember where we came from so we can properly place the player on exit
 	m_hyperspaceSource = m_space->GetStarSystem()->GetPath();
 
@@ -396,6 +475,7 @@ void Game::SwitchToHyperspace()
 	printf(SIZET_FMT " clouds brought over\n", m_hyperspaceClouds.size());
 
 	// remove the player from space
+<<<<<<< HEAD
 	m_space->RemoveBody(m_player.Get());
 
 	// create hyperspace :)
@@ -404,6 +484,16 @@ void Game::SwitchToHyperspace()
 	// put the player in it
 	m_player->SetFrame(m_space->GetRootFrame());
 	m_space->AddBody(m_player.Get());
+=======
+	m_space->RemoveBody(m_player.get());
+
+	// create hyperspace :)
+	m_space.reset(new Space(this));
+
+	// put the player in it
+	m_player->SetFrame(m_space->GetRootFrame());
+	m_space->AddBody(m_player.get());
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 	// put player at the origin. kind of unnecessary since it won't be moving
 	// but at least it gives some consistency
@@ -424,6 +514,7 @@ void Game::SwitchToHyperspace()
 
 void Game::SwitchToNormalSpace()
 {
+<<<<<<< HEAD
 	// remove the player from hyperspace
 	m_space->RemoveBody(m_player.Get());
 
@@ -434,6 +525,19 @@ void Game::SwitchToNormalSpace()
 	// put the player in it
 	m_player->SetFrame(m_space->GetRootFrame());
 	m_space->AddBody(m_player.Get());
+=======
+	PROFILE_SCOPED()
+	// remove the player from hyperspace
+	m_space->RemoveBody(m_player.get());
+
+	// create a new space for the system
+	const SystemPath &dest = m_player->GetHyperspaceDest();
+	m_space.reset(new Space(this, dest));
+
+	// put the player in it
+	m_player->SetFrame(m_space->GetRootFrame());
+	m_space->AddBody(m_player.get());
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 	// place it
 	m_player->SetPosition(m_space->GetHyperspaceExitPoint(m_hyperspaceSource));
@@ -549,6 +653,19 @@ const float Game::s_timeAccelRates[] = {
 	100000.0f   // hyperspace
 };
 
+<<<<<<< HEAD
+=======
+const float Game::s_timeInvAccelRates[] = {
+	0.0f,       // paused
+	1.0f,       // 1x
+	0.1f,      // 10x
+	0.01f,     // 100x
+	0.001f,    // 1000x
+	0.0001f,   // 10000x
+	0.00001f   // hyperspace
+};
+
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 void Game::SetTimeAccel(TimeAccel t)
 {
 	// don't want player to spin like mad when hitting time accel
@@ -591,7 +708,11 @@ void Game::CreateViews()
 
 	// XXX views expect Pi::game and Pi::player to exist
 	Pi::game = this;
+<<<<<<< HEAD
 	Pi::player = m_player.Get();
+=======
+	Pi::player = m_player.get();
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 	Pi::cpan = new ShipCpanel(Pi::renderer);
 	Pi::sectorView = new SectorView();
@@ -599,9 +720,16 @@ void Game::CreateViews()
 	Pi::galacticView = new GalacticView();
 	Pi::systemView = new SystemView();
 	Pi::systemInfoView = new SystemInfoView();
+<<<<<<< HEAD
 	Pi::spaceStationView = new SpaceStationView();
 	Pi::infoView = new UIView("InfoView");
 	Pi::deathView = new DeathView();
+=======
+	Pi::spaceStationView = new UIView("StationView");
+	Pi::infoView = new UIView("InfoView");
+	Pi::deathView = new DeathView();
+	Pi::settingsView = new UIView("SettingsInGame");
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 	// view manager will handle setting this probably
 	Pi::galacticView->SetRenderer(Pi::renderer);
@@ -625,7 +753,11 @@ void Game::LoadViews(Serializer::Reader &rd)
 
 	// XXX views expect Pi::game and Pi::player to exist
 	Pi::game = this;
+<<<<<<< HEAD
 	Pi::player = m_player.Get();
+=======
+	Pi::player = m_player.get();
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 	Serializer::Reader section = rd.RdSection("ShipCpanel");
 	Pi::cpan = new ShipCpanel(section, Pi::renderer);
@@ -639,9 +771,16 @@ void Game::LoadViews(Serializer::Reader &rd)
 	Pi::galacticView = new GalacticView();
 	Pi::systemView = new SystemView();
 	Pi::systemInfoView = new SystemInfoView();
+<<<<<<< HEAD
 	Pi::spaceStationView = new SpaceStationView();
 	Pi::infoView = new UIView("InfoView");
 	Pi::deathView = new DeathView();
+=======
+	Pi::spaceStationView = new UIView("StationView");
+	Pi::infoView = new UIView("InfoView");
+	Pi::deathView = new DeathView();
+	Pi::settingsView = new UIView("SettingsInGame");
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 #if WITH_OBJECTVIEWER
 	Pi::objectViewerView = new ObjectViewerView();
@@ -665,6 +804,10 @@ void Game::DestroyViews()
 	delete Pi::objectViewerView;
 #endif
 
+<<<<<<< HEAD
+=======
+	delete Pi::settingsView;
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	delete Pi::deathView;
 	delete Pi::infoView;
 	delete Pi::spaceStationView;
@@ -676,6 +819,10 @@ void Game::DestroyViews()
 	delete Pi::cpan;
 
 	Pi::objectViewerView = 0;
+<<<<<<< HEAD
+=======
+	Pi::settingsView = 0;
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	Pi::deathView = 0;
 	Pi::infoView = 0;
 	Pi::spaceStationView = 0;
@@ -690,11 +837,19 @@ void Game::DestroyViews()
 Game *Game::LoadGame(const std::string &filename)
 {
 	printf("Game::LoadGame('%s')\n", filename.c_str());
+<<<<<<< HEAD
 	FILE *f = FileSystem::userFiles.OpenReadStream(FileSystem::JoinPathBelow(Pi::SAVE_DIR_NAME, filename));
 	if (!f) throw CouldNotOpenFileException();
 	Serializer::Reader rd(f);
 	fclose(f);
 	return new Game(rd);
+=======
+	auto file = FileSystem::userFiles.ReadFile(FileSystem::JoinPathBelow(Pi::SAVE_DIR_NAME, filename));
+	if (!file) throw CouldNotOpenFileException();
+	Serializer::Reader rd(file->AsByteRange());
+	return new Game(rd);
+	// file data is freed here
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 }
 
 void Game::SaveGame(const std::string &filename, Game *game)

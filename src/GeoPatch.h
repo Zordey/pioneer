@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
+// Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #ifndef _GEOPATCH_H
@@ -32,11 +36,19 @@ public:
 
 	RefCountedPtr<GeoPatchContext> ctx;
 	const vector3d v0, v1, v2, v3;
+<<<<<<< HEAD
 	ScopedArray<double> heights;
 	ScopedArray<vector3f> normals;
 	ScopedArray<Color3ub> colors;
 	GLuint m_vbo;
 	ScopedPtr<GeoPatch> kids[NUM_KIDS];
+=======
+	std::unique_ptr<double[]> heights;
+	std::unique_ptr<vector3f[]> normals;
+	std::unique_ptr<Color3ub[]> colors;
+	GLuint m_vbo;
+	std::unique_ptr<GeoPatch> kids[NUM_KIDS];
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	GeoPatch *parent;
 	GeoPatch *edgeFriend[NUM_EDGES]; // [0]=v01, [1]=v12, [2]=v20
 	GeoSphere *geosphere;
@@ -56,7 +68,11 @@ public:
 	~GeoPatch();
 
 	inline void UpdateVBOs() {
+<<<<<<< HEAD
 		m_needUpdateVBOs = (NULL!=heights);
+=======
+		m_needUpdateVBOs = (nullptr != heights);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	}
 
 	void _UpdateVBOs();
@@ -69,7 +85,11 @@ public:
 
 	int GetChildIdx(const GeoPatch *child) const {
 		for (int i=0; i<NUM_KIDS; i++) {
+<<<<<<< HEAD
 			if (kids[i] == child) return i;
+=======
+			if (kids[i].get() == child) return i;
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		}
 		abort();
 		return -1;
@@ -89,8 +109,13 @@ public:
 		const int idx = GetEdgeIdxOf(e);
 		const int we_are = e->GetEdgeIdxOf(this);
 		// match e's new kids to our own... :/
+<<<<<<< HEAD
 		kids[idx]->OnEdgeFriendChanged(idx, e->kids[(we_are+1)%NUM_KIDS].Get());
 		kids[(idx+1)%NUM_KIDS]->OnEdgeFriendChanged(idx, e->kids[we_are].Get());
+=======
+		kids[idx]->OnEdgeFriendChanged(idx, e->kids[(we_are+1)%NUM_KIDS].get());
+		kids[(idx+1)%NUM_KIDS]->OnEdgeFriendChanged(idx, e->kids[we_are].get());
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	}
 
 	void NotifyEdgeFriendDeleted(const GeoPatch *e) {
@@ -106,8 +131,13 @@ public:
 		const int we_are = e->GetEdgeIdxOf(this);
 		// neighbour patch has not split yet (is at depth of this patch), so kids of this patch do
 		// not have same detail level neighbours yet
+<<<<<<< HEAD
 		if (edge == kid) return e->kids[(we_are+1)%NUM_KIDS].Get();
 		else return e->kids[we_are].Get();
+=======
+		if (edge == kid) return e->kids[(we_are+1)%NUM_KIDS].get();
+		else return e->kids[we_are].get();
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	}
 
 	inline GLuint determineIndexbuffer() const {
@@ -122,7 +152,11 @@ public:
 
 	inline bool canBeMerged() const {
 		bool merge = true;
+<<<<<<< HEAD
 		if (kids[0].Valid()) {
+=======
+		if (kids[0]) {
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 			for (int i=0; i<NUM_KIDS; i++) {
 				merge &= kids[i]->canBeMerged();
 			}

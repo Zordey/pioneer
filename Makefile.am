@@ -7,7 +7,12 @@ include $(top_srcdir)/Makefile.common
 
 .PHONY: codedoc
 codedoc:
+<<<<<<< HEAD
 	@naturaldocs -i src/ -i data/libs/ -xi src/data/ -o HTML codedoc/ -p nd/ -do -ro -s Default Local
+=======
+	@mkdir -p codedoc
+	@naturaldocs -i ${top_srcdir}/src/ -i ${top_srcdir}/data/libs/ -xi ${top_srcdir}/src/data/ -o HTML codedoc/ -p ${top_srcdir}/nd/ -do -ro -s Default Local
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 .PHONY: enums
 enums:

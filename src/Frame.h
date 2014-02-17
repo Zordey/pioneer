@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
+// Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #ifndef _FRAME_H
@@ -34,7 +38,12 @@ public:
 
 	void SetPosition(const vector3d &pos) { m_pos = pos; }
 	vector3d GetPosition() const { return m_pos; }
+<<<<<<< HEAD
 	void SetOrient(const matrix3x3d &m) { m_orient = m; }
+=======
+	void SetInitialOrient(const matrix3x3d &m, double time);
+	void SetOrient(const matrix3x3d &m, double time);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	const matrix3x3d &GetOrient() const { return m_orient; }
 	const matrix3x3d &GetInterpOrient() const { return m_interpOrient; }
 	void SetVelocity(const vector3d &vel) { m_vel = vel; }
@@ -104,6 +113,10 @@ private:
 	vector3d m_pos;
 	vector3d m_oldPos;
 	vector3d m_interpPos;
+<<<<<<< HEAD
+=======
+	matrix3x3d m_initialOrient;
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	matrix3x3d m_orient;
 	matrix3x3d m_interpOrient;
 	vector3d m_vel; // note we don't use this to move frame. rather,

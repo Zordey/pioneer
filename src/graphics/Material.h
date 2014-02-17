@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
+// Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #ifndef _MATERIAL_H
@@ -18,7 +22,10 @@
 namespace Graphics {
 
 class Texture;
+<<<<<<< HEAD
 class RendererLegacy;
+=======
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 class RendererGL2;
 
 // Shorthand for unique effects
@@ -31,7 +38,21 @@ enum EffectType {
 	EFFECT_GEOSPHERE_TERRAIN,
 	EFFECT_GEOSPHERE_TERRAIN_WITH_LAVA,
 	EFFECT_GEOSPHERE_TERRAIN_WITH_WATER,
+<<<<<<< HEAD
 	EFFECT_GEOSPHERE_SKY
+=======
+	EFFECT_GEOSPHERE_SKY,
+	EFFECT_FRESNEL_SPHERE,
+	EFFECT_SHIELD
+};
+
+
+// XXX : there must be a better place to put this
+enum MaterialQuality {
+	HAS_ATMOSPHERE		= 1 << 0,
+	HAS_ECLIPSES		= 1 << 1,
+	HAS_HEAT_GRADIENT   = 1 << 2
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 };
 
 // Renderer creates a material that best matches these requirements.
@@ -41,15 +62,24 @@ public:
 	MaterialDescriptor();
 	EffectType effect;
 	bool alphaTest;
+<<<<<<< HEAD
 	bool atmosphere;
+=======
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	bool glowMap;
 	bool lighting;
 	bool specularMap;
 	bool twoSided;
 	bool usePatterns; //pattern/color system
 	bool vertexColors;
+<<<<<<< HEAD
 	int textures; //texture count
 	unsigned int dirLights; //set by rendererGL2 if lighting == true
+=======
+	Sint32 textures; //texture count
+	Uint32 dirLights; //set by rendererGL2 if lighting == true
+	Uint32 quality; // see: Graphics::MaterialQuality
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 	friend bool operator==(const MaterialDescriptor &a, const MaterialDescriptor &b);
 };
@@ -67,6 +97,10 @@ public:
 	Texture *texture2;
 	Texture *texture3;
 	Texture *texture4;
+<<<<<<< HEAD
+=======
+	Texture *heatGradient;
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 	Color diffuse;
 	Color specular;
@@ -88,7 +122,10 @@ protected:
 	MaterialDescriptor m_descriptor;
 
 private:
+<<<<<<< HEAD
 	friend class RendererLegacy;
+=======
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	friend class RendererGL2;
 };
 

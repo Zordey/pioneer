@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
+// Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "DistanceFieldFont.h"
@@ -134,7 +138,11 @@ void DistanceFieldFont::ParseChar(const StringRange &r)
 	double yoffset = 0.0;
 	double advance = 0.0;
 
+<<<<<<< HEAD
 	while (ss >> token != 0) {
+=======
+	while (ss >> token) {
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 			std::pair<std::string, std::string> pair;
 			split_token(token, pair);
 
@@ -172,7 +180,11 @@ void DistanceFieldFont::ParseCommon(const StringRange &line)
 	std::stringstream ss(line.ToString());
 	std::string token;
 
+<<<<<<< HEAD
 	while (ss >> token != 0) {
+=======
+	while (ss >> token) {
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		std::pair<std::string, std::string> pair;
 		split_token(token, pair);
 		if (pair.first == "scaleW")
@@ -189,7 +201,11 @@ void DistanceFieldFont::ParseInfo(const StringRange &line)
 	std::stringstream ss(line.ToString());
 	std::string token;
 
+<<<<<<< HEAD
 	while (ss >> token != 0) {
+=======
+	while (ss >> token) {
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		std::pair<std::string, std::string> pair;
 		split_token(token, pair);
 		if (pair.first == "size") {

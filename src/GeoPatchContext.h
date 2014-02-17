@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
+// Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #ifndef _GEOPATCHCONTEXT_H
@@ -54,9 +58,15 @@ public:
 
 	double frac;
 
+<<<<<<< HEAD
 	ScopedArray<unsigned short> midIndices;
 	ScopedArray<unsigned short> loEdgeIndices[4];
 	ScopedArray<unsigned short> hiEdgeIndices[4];
+=======
+	std::unique_ptr<unsigned short[]> midIndices;
+	std::unique_ptr<unsigned short[]> loEdgeIndices[4];
+	std::unique_ptr<unsigned short[]> hiEdgeIndices[4];
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	GLuint indices_vbo;
 	GLuint indices_list[NUM_INDEX_LISTS];
 	GLuint indices_tri_count;

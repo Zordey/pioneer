@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
+// Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "libs.h"
@@ -11,7 +15,10 @@
 #include "graphics/Frustum.h"
 #include "graphics/Graphics.h"
 #include "graphics/VertexArray.h"
+<<<<<<< HEAD
 #include "graphics/gl2/GeoSphereMaterial.h"
+=======
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 #include "vcacheopt/vcacheopt.h"
 #include <deque>
 #include <algorithm>
@@ -19,10 +26,17 @@
 
 
 void GeoPatchContext::Cleanup() {
+<<<<<<< HEAD
 	midIndices.Reset();
 	for (int i=0; i<4; i++) {
 		loEdgeIndices[i].Reset();
 		hiEdgeIndices[i].Reset();
+=======
+	midIndices.reset();
+	for (int i=0; i<4; i++) {
+		loEdgeIndices[i].reset();
+		hiEdgeIndices[i].reset();
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	}
 	if (indices_vbo) {
 		indices_vbo = 0;
@@ -82,6 +96,7 @@ void GeoPatchContext::Init() {
 	vbotemp = new VBOVertex[NUMVERTICES()];
 
 	unsigned short *idx;
+<<<<<<< HEAD
 	midIndices.Reset(new unsigned short[VBO_COUNT_MID_IDX()]);
 	for (int i=0; i<4; i++) {
 		loEdgeIndices[i].Reset(new unsigned short[VBO_COUNT_LO_EDGE()]);
@@ -89,6 +104,15 @@ void GeoPatchContext::Init() {
 	}
 	/* also want vtx indices for tris not touching edge of patch */
 	idx = midIndices.Get();
+=======
+	midIndices.reset(new unsigned short[VBO_COUNT_MID_IDX()]);
+	for (int i=0; i<4; i++) {
+		loEdgeIndices[i].reset(new unsigned short[VBO_COUNT_LO_EDGE()]);
+		hiEdgeIndices[i].reset(new unsigned short[VBO_COUNT_HI_EDGE()]);
+	}
+	/* also want vtx indices for tris not touching edge of patch */
+	idx = midIndices.get();
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	for (int x=1; x<edgeLen-2; x++) {
 		for (int y=1; y<edgeLen-2; y++) {
 			idx[0] = x + edgeLen*y;
@@ -150,14 +174,22 @@ void GeoPatchContext::Init() {
 	}
 	// full detail edge triangles
 	{
+<<<<<<< HEAD
 		idx = hiEdgeIndices[0].Get();
+=======
+		idx = hiEdgeIndices[0].get();
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		for (int x=0; x<edgeLen-1; x+=2) {
 			idx[0] = x; idx[1] = x+1; idx[2] = x+1 + edgeLen;
 			idx+=3;
 			idx[0] = x+1; idx[1] = x+2; idx[2] = x+1 + edgeLen;
 			idx+=3;
 		}
+<<<<<<< HEAD
 		idx = hiEdgeIndices[1].Get();
+=======
+		idx = hiEdgeIndices[1].get();
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		for (int y=0; y<edgeLen-1; y+=2) {
 			idx[0] = edgeLen-1 + y*edgeLen;
 			idx[1] = edgeLen-1 + (y+1)*edgeLen;
@@ -168,7 +200,11 @@ void GeoPatchContext::Init() {
 			idx[2] = edgeLen-2 + (y+1)*edgeLen;
 			idx+=3;
 		}
+<<<<<<< HEAD
 		idx = hiEdgeIndices[2].Get();
+=======
+		idx = hiEdgeIndices[2].get();
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		for (int x=0; x<edgeLen-1; x+=2) {
 			idx[0] = x + (edgeLen-1)*edgeLen;
 			idx[1] = x+1 + (edgeLen-2)*edgeLen;
@@ -179,7 +215,11 @@ void GeoPatchContext::Init() {
 			idx[2] = x+1 + (edgeLen-1)*edgeLen;
 			idx+=3;
 		}
+<<<<<<< HEAD
 		idx = hiEdgeIndices[3].Get();
+=======
+		idx = hiEdgeIndices[3].get();
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		for (int y=0; y<edgeLen-1; y+=2) {
 			idx[0] = y*edgeLen;
 			idx[1] = 1 + (y+1)*edgeLen;
@@ -195,28 +235,44 @@ void GeoPatchContext::Init() {
 	// neighbour of equal or greater detail -- they reduce
 	// their edge complexity by 1 division
 	{
+<<<<<<< HEAD
 		idx = loEdgeIndices[0].Get();
+=======
+		idx = loEdgeIndices[0].get();
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		for (int x=0; x<edgeLen-2; x+=2) {
 			idx[0] = x;
 			idx[1] = x+2;
 			idx[2] = x+1+edgeLen;
 			idx += 3;
 		}
+<<<<<<< HEAD
 		idx = loEdgeIndices[1].Get();
+=======
+		idx = loEdgeIndices[1].get();
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		for (int y=0; y<edgeLen-2; y+=2) {
 			idx[0] = (edgeLen-1) + y*edgeLen;
 			idx[1] = (edgeLen-1) + (y+2)*edgeLen;
 			idx[2] = (edgeLen-2) + (y+1)*edgeLen;
 			idx += 3;
 		}
+<<<<<<< HEAD
 		idx = loEdgeIndices[2].Get();
+=======
+		idx = loEdgeIndices[2].get();
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		for (int x=0; x<edgeLen-2; x+=2) {
 			idx[0] = x+edgeLen*(edgeLen-1);
 			idx[2] = x+2+edgeLen*(edgeLen-1);
 			idx[1] = x+1+edgeLen*(edgeLen-2);
 			idx += 3;
 		}
+<<<<<<< HEAD
 		idx = loEdgeIndices[3].Get();
+=======
+		idx = loEdgeIndices[3].get();
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		for (int y=0; y<edgeLen-2; y+=2) {
 			idx[0] = y*edgeLen;
 			idx[2] = (y+2)*edgeLen;
@@ -254,10 +310,17 @@ void GeoPatchContext::Init() {
 	indices_tri_count	= indices_tri_counts[NUM_INDEX_LISTS-1];
 
 	if (midIndices) {
+<<<<<<< HEAD
 		midIndices.Reset();
 		for (int i=0; i<4; i++) {
 			loEdgeIndices[i].Reset();
 			hiEdgeIndices[i].Reset();
+=======
+		midIndices.reset();
+		for (int i=0; i<4; i++) {
+			loEdgeIndices[i].reset();
+			hiEdgeIndices[i].reset();
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		}
 	}
 }

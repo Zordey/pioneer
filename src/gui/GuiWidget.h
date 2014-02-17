@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
+// Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #ifndef _GUIWIDGET_H
@@ -24,7 +28,11 @@ namespace Gui {
 		void GetSize(float size[2]) { size[0] = m_size.w; size[1] = m_size.h; }
 		void SetSize(float w, float h) { m_size.w = w; m_size.h = h; onSetSize.emit(); }
 		void ResizeRequest();
+<<<<<<< HEAD
 		void SetShortcut(SDLKey key, SDLMod mod);
+=======
+		void SetShortcut(SDL_Keycode key, SDL_Keymod mod);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		void SetScissor(bool enabled);
 		bool GetEnabled() { return m_enabled; }
 		void SetEnabled(bool v) { m_enabled = v; }
@@ -47,10 +55,18 @@ namespace Gui {
 		virtual void OnActivate() {}
 		virtual void OnMouseEnter();
 		virtual void OnMouseLeave();
+<<<<<<< HEAD
 		virtual bool OnKeyPress(const SDL_keysym *sym) { return false; }
 		bool IsMouseOver() { return m_mouseOver; }
 		// only to be called by Screen::OnKeyDown
 		void OnPreShortcut(const SDL_keysym *sym);
+=======
+		virtual bool OnKeyDown(const SDL_Keysym *sym) { return false; }
+		virtual void OnTextInput(Uint32 unicode) {}
+		bool IsMouseOver() { return m_mouseOver; }
+		// only to be called by Screen::OnKeyDown
+		void OnPreShortcut(const SDL_Keysym *sym);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		enum EventMask {
 			EVENT_NONE = 0,
 			EVENT_KEYDOWN = 1<<0,
@@ -69,8 +85,13 @@ namespace Gui {
 	protected:
 		unsigned int m_eventMask;
 		struct {
+<<<<<<< HEAD
 			SDLKey sym;
 			SDLMod mod;
+=======
+			SDL_Keycode sym;
+			SDL_Keymod mod;
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		} m_shortcut;
 
 		virtual std::string GetOverrideTooltip() { return ""; }

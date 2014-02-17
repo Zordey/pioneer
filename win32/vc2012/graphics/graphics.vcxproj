@@ -65,6 +65,10 @@
     </Link>
     <ClCompile>
       <AdditionalIncludeDirectories>../../../src;../../src;../../../pioneer-thirdparty/win32/include;../../../../pioneer-thirdparty/win32/include;../../win32/include;../../include;../../../contrib;../../contrib</AdditionalIncludeDirectories>
+<<<<<<< HEAD
+=======
+      <PreprocessorDefinitions>GLEW_STATIC;WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -77,6 +81,10 @@
     <ClCompile />
     <ClCompile>
       <AdditionalIncludeDirectories>../../../src;../../src;../../../pioneer-thirdparty/win32/include;../../../../pioneer-thirdparty/win32/include;../../win32/include;../../include;../../../contrib;../../contrib</AdditionalIncludeDirectories>
+<<<<<<< HEAD
+=======
+      <PreprocessorDefinitions>GLEW_STATIC;WIN32;_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='PreRelease|Win32'">
@@ -88,29 +96,50 @@
     </Link>
     <ClCompile>
       <AdditionalIncludeDirectories>../../../src;../../src;../../../pioneer-thirdparty/win32/include;../../../../pioneer-thirdparty/win32/include;../../win32/include;../../include;../../../contrib;../../contrib</AdditionalIncludeDirectories>
+<<<<<<< HEAD
+=======
+      <PreprocessorDefinitions>GLEW_STATIC;WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\src\graphics\Drawables.cpp" />
     <ClCompile Include="..\..\..\src\graphics\Frustum.cpp" />
+<<<<<<< HEAD
+=======
+    <ClCompile Include="..\..\..\src\graphics\gl2\FresnelColourMaterial.cpp" />
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
     <ClCompile Include="..\..\..\src\graphics\gl2\GeoSphereMaterial.cpp" />
     <ClCompile Include="..\..\..\src\graphics\gl2\GL2Material.cpp" />
     <ClCompile Include="..\..\..\src\graphics\gl2\GL2RenderTarget.cpp" />
     <ClCompile Include="..\..\..\src\graphics\gl2\MultiMaterial.cpp" />
     <ClCompile Include="..\..\..\src\graphics\gl2\Program.cpp" />
     <ClCompile Include="..\..\..\src\graphics\gl2\RingMaterial.cpp" />
+<<<<<<< HEAD
+=======
+    <ClCompile Include="..\..\..\src\graphics\gl2\ShieldMaterial.cpp" />
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
     <ClCompile Include="..\..\..\src\graphics\gl2\Uniform.cpp" />
     <ClCompile Include="..\..\..\src\graphics\Graphics.cpp" />
     <ClCompile Include="..\..\..\src\graphics\Light.cpp" />
     <ClCompile Include="..\..\..\src\graphics\Material.cpp" />
+<<<<<<< HEAD
     <ClCompile Include="..\..\..\src\graphics\MaterialLegacy.cpp" />
     <ClCompile Include="..\..\..\src\graphics\Renderer.cpp" />
     <ClCompile Include="..\..\..\src\graphics\RendererGL2.cpp" />
     <ClCompile Include="..\..\..\src\graphics\RendererLegacy.cpp" />
+=======
+    <ClCompile Include="..\..\..\src\graphics\Renderer.cpp" />
+    <ClCompile Include="..\..\..\src\graphics\RendererGL2.cpp" />
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
     <ClCompile Include="..\..\..\src\graphics\StaticMesh.cpp" />
     <ClCompile Include="..\..\..\src\graphics\TextureBuilder.cpp" />
     <ClCompile Include="..\..\..\src\graphics\TextureGL.cpp" />
     <ClCompile Include="..\..\..\src\graphics\VertexArray.cpp" />
+<<<<<<< HEAD
+=======
+    <ClCompile Include="..\..\..\src\graphics\WindowSDL.cpp" />
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
     <ClCompile Include="..\..\..\src\win32\OSWin32.cpp" />
     <ClCompile Include="..\..\..\src\win32\pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -121,22 +150,36 @@
   <ItemGroup>
     <ClInclude Include="..\..\..\src\graphics\Drawables.h" />
     <ClInclude Include="..\..\..\src\graphics\Frustum.h" />
+<<<<<<< HEAD
+=======
+    <ClInclude Include="..\..\..\src\graphics\gl2\FresnelColourMaterial.h" />
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
     <ClInclude Include="..\..\..\src\graphics\gl2\GeoSphereMaterial.h" />
     <ClInclude Include="..\..\..\src\graphics\gl2\GL2Material.h" />
     <ClInclude Include="..\..\..\src\graphics\gl2\GL2RenderTarget.h" />
     <ClInclude Include="..\..\..\src\graphics\gl2\MultiMaterial.h" />
     <ClInclude Include="..\..\..\src\graphics\gl2\Program.h" />
     <ClInclude Include="..\..\..\src\graphics\gl2\RingMaterial.h" />
+<<<<<<< HEAD
+=======
+    <ClInclude Include="..\..\..\src\graphics\gl2\ShieldMaterial.h" />
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
     <ClInclude Include="..\..\..\src\graphics\gl2\StarfieldMaterial.h" />
     <ClInclude Include="..\..\..\src\graphics\gl2\Uniform.h" />
     <ClInclude Include="..\..\..\src\graphics\Graphics.h" />
     <ClInclude Include="..\..\..\src\graphics\Light.h" />
     <ClInclude Include="..\..\..\src\graphics\Material.h" />
+<<<<<<< HEAD
     <ClInclude Include="..\..\..\src\graphics\MaterialLegacy.h" />
     <ClInclude Include="..\..\..\src\graphics\Renderer.h" />
     <ClInclude Include="..\..\..\src\graphics\RendererGL2.h" />
     <ClInclude Include="..\..\..\src\graphics\RendererGLBuffers.h" />
     <ClInclude Include="..\..\..\src\graphics\RendererLegacy.h" />
+=======
+    <ClInclude Include="..\..\..\src\graphics\Renderer.h" />
+    <ClInclude Include="..\..\..\src\graphics\RendererGL2.h" />
+    <ClInclude Include="..\..\..\src\graphics\RendererGLBuffers.h" />
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
     <ClInclude Include="..\..\..\src\graphics\RenderTarget.h" />
     <ClInclude Include="..\..\..\src\graphics\StaticMesh.h" />
     <ClInclude Include="..\..\..\src\graphics\Surface.h" />
@@ -144,6 +187,10 @@
     <ClInclude Include="..\..\..\src\graphics\TextureBuilder.h" />
     <ClInclude Include="..\..\..\src\graphics\TextureGL.h" />
     <ClInclude Include="..\..\..\src\graphics\VertexArray.h" />
+<<<<<<< HEAD
+=======
+    <ClInclude Include="..\..\..\src\graphics\WindowSDL.h" />
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
     <ClInclude Include="..\..\..\src\win32\pch.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

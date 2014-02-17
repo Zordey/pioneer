@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
+// Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #ifndef _TERRAINNOISE_H
@@ -9,6 +13,7 @@
 
 namespace TerrainNoise {
 
+<<<<<<< HEAD
 	// octavenoise functions return range [0,1] if roughness = 0.5
 	inline double octavenoise(const fracdef_t &def, double roughness, const vector3d &p) {
 		double n = 0;
@@ -18,10 +23,23 @@ namespace TerrainNoise {
 			n += octaveAmplitude * noise(jizm*p);
 			octaveAmplitude *= roughness;
 			jizm *= def.lacunarity;
+=======
+	// octavenoise functions return range [0,1] if persistence = 0.5
+	inline double octavenoise(const fracdef_t &def, const double persistence, const vector3d &p) {
+		//assert(persistence <= (1.0 / def.lacunarity));
+		double n = 0;
+		double amplitude = persistence;
+		double frequency = def.frequency;
+		for (int i=0; i<def.octaves; i++) {
+			n += amplitude * noise(frequency*p);
+			amplitude *= persistence;
+			frequency *= def.lacunarity;
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		}
 		return (n+1.0)*0.5;
 	}
 
+<<<<<<< HEAD
 	inline double river_octavenoise(const fracdef_t &def, double roughness, const vector3d &p) {
 		double n = 0;
 		double octaveAmplitude = roughness;
@@ -30,10 +48,22 @@ namespace TerrainNoise {
 			n += octaveAmplitude * fabs(noise(jizm*p));
 			octaveAmplitude *= roughness;
 			jizm *= def.lacunarity;
+=======
+	inline double river_octavenoise(const fracdef_t &def, const double persistence, const vector3d &p) {
+		//assert(persistence <= (1.0 / def.lacunarity));
+		double n = 0;
+		double amplitude = persistence;
+		double frequency = def.frequency;
+		for (int i=0; i<def.octaves; i++) {
+			n += amplitude * fabs(noise(frequency*p));
+			amplitude *= persistence;
+			frequency *= def.lacunarity;
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		}
 		return fabs(n);
 	}
 
+<<<<<<< HEAD
 	inline double ridged_octavenoise(const fracdef_t &def, double roughness, const vector3d &p) {
 		double n = 0;
 		double octaveAmplitude = roughness;
@@ -42,10 +72,22 @@ namespace TerrainNoise {
 			n += octaveAmplitude * noise(jizm*p);
 			octaveAmplitude *= roughness;
 			jizm *= def.lacunarity;
+=======
+	inline double ridged_octavenoise(const fracdef_t &def, const double persistence, const vector3d &p) {
+		//assert(persistence <= (1.0 / def.lacunarity));
+		double n = 0;
+		double amplitude = persistence;
+		double frequency = def.frequency;
+		for (int i=0; i<def.octaves; i++) {
+			n += amplitude * noise(frequency*p);
+			amplitude *= persistence;
+			frequency *= def.lacunarity;
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		}
 		n = 1.0 - fabs(n);
 		n *= n;
 		return n;
+<<<<<<< HEAD
 		//return 1.0 - fabs(n);
 	}
 
@@ -57,10 +99,24 @@ namespace TerrainNoise {
 			n += octaveAmplitude * noise(jizm*p);
 			octaveAmplitude *= roughness;
 			jizm *= def.lacunarity;
+=======
+	}
+
+	inline double billow_octavenoise(const fracdef_t &def, const double persistence, const vector3d &p) {
+		//assert(persistence <= (1.0 / def.lacunarity));
+		double n = 0;
+		double amplitude = persistence;
+		double frequency = def.frequency;
+		for (int i=0; i<def.octaves; i++) {
+			n += amplitude * noise(frequency*p);
+			amplitude *= persistence;
+			frequency *= def.lacunarity;
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		}
 		return (2.0 * fabs(n) - 1.0)+1.0;
 	}
 
+<<<<<<< HEAD
 	inline double voronoiscam_octavenoise(const fracdef_t &def, double roughness, const vector3d &p) {
 		double n = 0;
 		double octaveAmplitude = roughness;
@@ -69,10 +125,22 @@ namespace TerrainNoise {
 			n += octaveAmplitude * noise(jizm*p);
 			octaveAmplitude *= roughness;
 			jizm *= def.lacunarity;
+=======
+	inline double voronoiscam_octavenoise(const fracdef_t &def, const double persistence, const vector3d &p) {
+		//assert(persistence <= (1.0 / def.lacunarity));
+		double n = 0;
+		double amplitude = persistence;
+		double frequency = def.frequency;
+		for (int i=0; i<def.octaves; i++) {
+			n += amplitude * noise(frequency*p);
+			amplitude *= persistence;
+			frequency *= def.lacunarity;
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		}
 		return sqrt(10.0 * fabs(n));
 	}
 
+<<<<<<< HEAD
 	inline double dunes_octavenoise(const fracdef_t &def, double roughness, const vector3d &p) {
 		double n = 0;
 		double octaveAmplitude = roughness;
@@ -81,11 +149,23 @@ namespace TerrainNoise {
 			n += octaveAmplitude * noise(jizm*p);
 			octaveAmplitude *= roughness;
 			jizm *= def.lacunarity;
+=======
+	inline double dunes_octavenoise(const fracdef_t &def, const double persistence, const vector3d &p) {
+		//assert(persistence <= (1.0 / def.lacunarity));
+		double n = 0;
+		double amplitude = persistence;
+		double frequency = def.frequency;
+		for (int i=0; i<3; i++) {
+			n += amplitude * noise(frequency*p);
+			amplitude *= persistence;
+			frequency *= def.lacunarity;
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		}
 		return 1.0 - fabs(n);
 	}
 
 	// XXX merge these with their fracdef versions
+<<<<<<< HEAD
 	inline double octavenoise(int octaves, double roughness, double lacunarity, const vector3d &p) {
 		double n = 0;
 		double octaveAmplitude = roughness;
@@ -94,10 +174,22 @@ namespace TerrainNoise {
 			n += octaveAmplitude * noise(jizm*p);
 			octaveAmplitude *= roughness;
 			jizm *= lacunarity;
+=======
+	inline double octavenoise(int octaves, const double persistence, const double lacunarity, const vector3d &p) {
+		//assert(persistence <= (1.0 / lacunarity));
+		double n = 0;
+		double amplitude = persistence;
+		double frequency = 1.0;
+		while (octaves--) {
+			n += amplitude * noise(frequency*p);
+			amplitude *= persistence;
+			frequency *= lacunarity;
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		}
 		return (n+1.0)*0.5;
 	}
 
+<<<<<<< HEAD
 	inline double river_octavenoise(int octaves, double roughness, double lacunarity, const vector3d &p) {
 		double n = 0;
 		double octaveAmplitude = roughness;
@@ -106,10 +198,22 @@ namespace TerrainNoise {
 			n += octaveAmplitude * fabs(noise(jizm*p));
 			octaveAmplitude *= roughness;
 			jizm *= lacunarity;
+=======
+	inline double river_octavenoise(int octaves, const double persistence, const double lacunarity, const vector3d &p) {
+		//assert(persistence <= (1.0 / lacunarity));
+		double n = 0;
+		double amplitude = persistence;
+		double frequency = 1.0;
+		while (octaves--) {
+			n += amplitude * fabs(noise(frequency*p));
+			amplitude *= persistence;
+			frequency *= lacunarity;
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		}
 		return n;
 	}
 
+<<<<<<< HEAD
 	inline double ridged_octavenoise(int octaves, double roughness, double lacunarity, const vector3d &p) {
 		double n = 0;
 		double octaveAmplitude = roughness;
@@ -118,12 +222,24 @@ namespace TerrainNoise {
 			n += octaveAmplitude * noise(jizm*p);
 			octaveAmplitude *= roughness;
 			jizm *= lacunarity;
+=======
+	inline double ridged_octavenoise(int octaves, const double persistence, const double lacunarity, const vector3d &p) {
+		//assert(persistence <= (1.0 / lacunarity));
+		double n = 0;
+		double amplitude = persistence;
+		double frequency = 1.0;
+		while (octaves--) {
+			n += amplitude * noise(frequency*p);
+			amplitude *= persistence;
+			frequency *= lacunarity;
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		}
 		n = 1.0 - fabs(n);
 		n *= n;
 		return n;
 	}
 
+<<<<<<< HEAD
 	inline double billow_octavenoise(int octaves, double roughness, double lacunarity, const vector3d &p) {
 		double n = 0;
 		double octaveAmplitude = roughness;
@@ -132,10 +248,22 @@ namespace TerrainNoise {
 			n += octaveAmplitude * noise(jizm*p);
 			octaveAmplitude *= roughness;
 			jizm *= lacunarity;
+=======
+	inline double billow_octavenoise(int octaves, const double persistence, const double lacunarity, const vector3d &p) {
+		//assert(persistence <= (1.0 / lacunarity));
+		double n = 0;
+		double amplitude = persistence;
+		double frequency = 1.0;
+		while (octaves--) {
+			n += amplitude * noise(frequency*p);
+			amplitude *= persistence;
+			frequency *= lacunarity;
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		}
 		return (2.0 * fabs(n) - 1.0)+1.0;
 	}
 
+<<<<<<< HEAD
 	inline double voronoiscam_octavenoise(int octaves, double roughness, double lacunarity, const vector3d &p) {
 		double n = 0;
 		double octaveAmplitude = roughness;
@@ -144,14 +272,31 @@ namespace TerrainNoise {
 			n += octaveAmplitude * noise(jizm*p);
 			octaveAmplitude *= roughness;
 			jizm *= lacunarity;
+=======
+	inline double voronoiscam_octavenoise(int octaves, const double persistence, const double lacunarity, const vector3d &p) {
+		//assert(persistence <= (1.0 / lacunarity));
+		double n = 0;
+		double amplitude = persistence;
+		double frequency = 1.0;
+		while (octaves--) {
+			n += amplitude * noise(frequency*p);
+			amplitude *= persistence;
+			frequency *= lacunarity;
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		}
 		return sqrt(10.0 * fabs(n));
 	}
 
 	// not really a noise function but no better place for it
+<<<<<<< HEAD
 	inline vector3d interpolate_color(double n, const vector3d &start, const vector3d &end) {
 		n = Clamp(n, 0.0, 1.0);
 		return start*(1.0-n) + end*n;
+=======
+	inline vector3d interpolate_color(const double n, const vector3d &start, const vector3d &end) {
+		const double nClamped = Clamp(n, 0.0, 1.0);
+		return start*(1.0-nClamped) + end*nClamped;
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	}
 
 };

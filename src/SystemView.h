@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
+// Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #ifndef _SYSTEMVIEW_H
@@ -33,7 +37,7 @@ private:
 	void OnClickAccel(float step);
 	void OnClickRealt();
 	void ResetViewpoint();
-	void MouseButtonDown(int button, int x, int y);
+	void MouseWheel(bool up);
 
 	RefCountedPtr<StarSystem> m_system;
 	const SystemBody *m_selectedObject;
@@ -48,9 +52,15 @@ private:
 	Gui::Label *m_infoLabel;
 	Gui::Label *m_infoText;
 	Gui::LabelSet *m_objectLabels;
+<<<<<<< HEAD
 	sigc::connection m_onMouseButtonDown;
 
 	ScopedPtr<Graphics::Drawables::Disk> m_bodyIcon;
+=======
+	sigc::connection m_onMouseWheelCon;
+
+	std::unique_ptr<Graphics::Drawables::Disk> m_bodyIcon;
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 };
 
 #endif /* _SYSTEMVIEW_H */

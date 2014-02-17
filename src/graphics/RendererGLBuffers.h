@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
+// Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #ifndef _RENDERER_GL_BUFFERS_H
@@ -8,9 +12,13 @@
 
 namespace Graphics {
 
+<<<<<<< HEAD
 /* OpenGL renderer data structures and bufferobject stuff.
  * This can be used by both the Legacy and GL2 renderers
  */
+=======
+// OpenGL renderer data structures and bufferobject stuff.
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 struct GLVertex {
 	vector3f position;
@@ -129,7 +137,11 @@ public:
 	}
 
 	void ColorPointer(GLsizei stride, size_t pointer) {
+<<<<<<< HEAD
 		glColorPointer(4, GL_FLOAT, stride, reinterpret_cast<const GLvoid *>(pointer));
+=======
+		glColorPointer(4, GL_UNSIGNED_BYTE, stride, reinterpret_cast<const GLvoid *>(pointer));
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	}
 
 	//XXX this only supports ModelVertex vertices!!

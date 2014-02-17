@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
+// Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #ifndef _PI_H
@@ -20,7 +24,10 @@
 
 class DeathView;
 class GalacticView;
+<<<<<<< HEAD
 class GameMenuView;
+=======
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 class Intro;
 class LuaConsole;
 class LuaNameGen;
@@ -30,13 +37,20 @@ class SectorView;
 class Ship;
 class ShipCpanel;
 class SpaceStation;
+<<<<<<< HEAD
 class SpaceStationView;
+=======
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 class StarSystem;
 class SystemInfoView;
 class SystemView;
 class UIView;
 class View;
 class WorldView;
+<<<<<<< HEAD
+=======
+class SDLGraphics;
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 namespace Graphics { class Renderer; }
 namespace SceneGraph { class Model; }
 namespace Sound { class MusicPlayer; }
@@ -76,8 +90,12 @@ public:
 	static void Quit() __attribute((noreturn));
 	static float GetFrameTime() { return frameTime; }
 	static float GetGameTickAlpha() { return gameTickAlpha; }
+<<<<<<< HEAD
 	static float GetScrAspect() { return scrAspect; }
 	static int KeyState(SDLKey k) { return keyState[k]; }
+=======
+	static bool KeyState(SDL_Keycode k) { return keyState[k]; }
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	static int KeyModState() { return keyModState; }
 	static bool IsConsoleActive();
 	static int JoystickButtonState(int joystick, int button);
@@ -89,6 +107,11 @@ public:
     static bool IsMouseYInvert() { return mouseYInvert; }
 	static bool IsNavTunnelDisplayed() { return navTunnelDisplayed; }
 	static void SetNavTunnelDisplayed(bool state) { navTunnelDisplayed = state; }
+<<<<<<< HEAD
+=======
+	static bool AreSpeedLinesDisplayed() { return speedLinesDisplayed; }
+	static void SetSpeedLinesDisplayed(bool state) { speedLinesDisplayed = state; }
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	static int MouseButtonState(int button) { return mouseButton[button]; }
 	/// Get the default speed modifier to apply to movement (scrolling, zooming...), depending on the "shift" keys.
 	/// This is a default value only, centralized here to promote uniform user expericience.
@@ -106,12 +129,25 @@ public:
 	static std::string GetSaveDir();
 	static SceneGraph::Model *FindModel(const std::string&, bool allowPlaceholder = true);
 
+<<<<<<< HEAD
 	static const char SAVE_DIR_NAME[];
 
 	static sigc::signal<void, SDL_keysym*> onKeyPress;
 	static sigc::signal<void, SDL_keysym*> onKeyRelease;
+=======
+	static void CreateRenderTarget(const Uint16 width, const Uint16 height);
+	static void DrawRenderTarget();
+	static void BeginRenderTarget();
+	static void EndRenderTarget();
+
+	static const char SAVE_DIR_NAME[];
+
+	static sigc::signal<void, SDL_Keysym*> onKeyPress;
+	static sigc::signal<void, SDL_Keysym*> onKeyRelease;
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	static sigc::signal<void, int, int, int> onMouseButtonUp;
 	static sigc::signal<void, int, int, int> onMouseButtonDown;
+	static sigc::signal<void, bool> onMouseWheel;
 	static sigc::signal<void> onPlayerChangeTarget; // navigation or combat
 	static sigc::signal<void> onPlayerChangeFlightControlState;
 	static sigc::signal<void> onPlayerChangeEquipment;
@@ -133,15 +169,28 @@ public:
 #if WITH_DEVKEYS
 	static bool showDebugInfo;
 #endif
+<<<<<<< HEAD
+=======
+#if PIONEER_PROFILER
+	static std::string profilerPath;
+	static bool doProfileSlow;
+	static bool doProfileOne;
+#endif
+
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	static Player *player;
 	static SectorView *sectorView;
 	static GalacticView *galacticView;
-	static GameMenuView *gameMenuView;
+	static UIView *settingsView;
 	static SystemInfoView *systemInfoView;
 	static SystemView *systemView;
 	static WorldView *worldView;
 	static DeathView *deathView;
+<<<<<<< HEAD
 	static SpaceStationView *spaceStationView;
+=======
+	static UIView *spaceStationView;
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	static UIView *infoView;
 	static LuaConsole *luaConsole;
 	static ShipCpanel *cpan;
@@ -149,17 +198,30 @@ public:
 	static Graphics::Renderer *renderer; // blargh
 	static ModelCache *modelCache;
 	static Intro *intro;
+<<<<<<< HEAD
 
 #if WITH_OBJECTVIEWER
 	static ObjectViewerView *objectViewerView;
 #endif
 
+=======
+	static SDLGraphics *sdl;
+
+#if WITH_OBJECTVIEWER
+	static ObjectViewerView *objectViewerView;
+#endif
+
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	static Game *game;
 
 	static struct DetailLevel detail;
 	static GameConfig *config;
 
+<<<<<<< HEAD
 	static JobQueue *Jobs() { return jobQueue.Get();}
+=======
+	static JobQueue *Jobs() { return jobQueue.get();}
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 	static bool DrawGUI;
 
@@ -167,7 +229,11 @@ private:
 	static void HandleEvents();
 	static void InitJoysticks();
 
+<<<<<<< HEAD
 	static ScopedPtr<JobQueue> jobQueue;
+=======
+	static std::unique_ptr<JobQueue> jobQueue;
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 	static bool menuDone;
 
@@ -182,8 +248,12 @@ private:
 	static int requestedTimeAccelIdx;
 	static bool forceTimeAccel;
 	static float frameTime;
+<<<<<<< HEAD
 	static float scrAspect;
 	static char keyState[SDLK_LAST];
+=======
+	static std::map<SDL_Keycode,bool> keyState;
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	static int keyModState;
 	static char mouseButton[6];
 	static int mouseMotion[2];
@@ -200,12 +270,26 @@ private:
 		std::vector<int> hats;
 		std::vector<float> axes;
 	};
+<<<<<<< HEAD
 	static std::vector<JoystickState> joysticks;
 	static Sound::MusicPlayer musicPlayer;
 
 	static bool navTunnelDisplayed;
 
 	static Gui::Fixed *menu;
+=======
+	static std::map<SDL_JoystickID,JoystickState> joysticks;
+	static Sound::MusicPlayer musicPlayer;
+
+	static bool navTunnelDisplayed;
+	static bool speedLinesDisplayed;
+
+	static Gui::Fixed *menu;
+
+	static Graphics::RenderTarget *renderTarget;
+	static RefCountedPtr<Graphics::Texture> renderTexture;
+	static std::unique_ptr<Graphics::Drawables::TexturedQuad> renderQuad;
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 };
 
 #endif /* _PI_H */

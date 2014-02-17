@@ -1,15 +1,33 @@
+<<<<<<< HEAD
 // Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "JobQueue.h"
+=======
+// Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+// Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
+
+#include "JobQueue.h"
+#include "StringF.h"
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 JobRunner::JobRunner(JobQueue *jq, const uint8_t idx) :
 	m_jobQueue(jq),
 	m_job(0),
+<<<<<<< HEAD
 	m_threadIdx(idx)
 {
 	m_jobLock = SDL_CreateMutex();
 	m_threadId = SDL_CreateThread(&JobRunner::Trampoline, this);
+=======
+	m_threadIdx(idx),
+	m_queueDestroyed(false)
+{
+	m_threadName = stringf("Thread %0{d}", m_threadIdx);
+	m_jobLock = SDL_CreateMutex();
+	m_queueDestroyingLock = SDL_CreateMutex();
+	m_threadId = SDL_CreateThread(&JobRunner::Trampoline, m_threadName.c_str(), this);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 }
 
 JobRunner::~JobRunner()
@@ -37,7 +55,21 @@ int JobRunner::Trampoline(void *data)
 
 void JobRunner::Main()
 {
+<<<<<<< HEAD
 	Job *job = m_jobQueue->GetJob();
+=======
+	Job *job;
+
+	// Lock to prevent destruction of the queue while calling GetJob.
+	SDL_LockMutex(m_queueDestroyingLock);
+	if (m_queueDestroyed) {
+		SDL_UnlockMutex(m_queueDestroyingLock);
+		return;
+	}
+	job = m_jobQueue->GetJob();
+	SDL_UnlockMutex(m_queueDestroyingLock);
+
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	while (job) {
 		// record the job so we can cancel it in case of premature shutdown
 		SDL_LockMutex(m_jobLock);
@@ -46,18 +78,55 @@ void JobRunner::Main()
 
 		// run the thing
 		job->OnRun();
+<<<<<<< HEAD
 		m_jobQueue->Finish(job, m_threadIdx);
+=======
+
+		// Lock to prevent destruction of the queue while calling Finish
+		SDL_LockMutex(m_queueDestroyingLock);
+		if (m_queueDestroyed) {
+			SDL_UnlockMutex(m_queueDestroyingLock);
+			return;
+		}
+		m_jobQueue->Finish(job, m_threadIdx);
+		SDL_UnlockMutex(m_queueDestroyingLock);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 		SDL_LockMutex(m_jobLock);
 		m_job = 0;
 		SDL_UnlockMutex(m_jobLock);
 
 		// get a new job. this will block normally, or return null during
+<<<<<<< HEAD
 		// shutdown
 		job = m_jobQueue->GetJob();
 	}
 }
 
+=======
+		// shutdown (Lock to protect against the queue being destroyed
+		// during GetJob)
+		SDL_LockMutex(m_queueDestroyingLock);
+		if (m_queueDestroyed) {
+			SDL_UnlockMutex(m_queueDestroyingLock);
+			return;
+		}
+		job = m_jobQueue->GetJob();
+		SDL_UnlockMutex(m_queueDestroyingLock);
+	}
+}
+
+SDL_mutex *JobRunner::GetQueueDestroyingLock()
+{
+	return m_queueDestroyingLock;
+}
+
+void JobRunner::SetQueueDestroyed()
+{
+	m_queueDestroyed = true;
+}
+
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 JobQueue::JobQueue(Uint32 numRunners) :
 	m_shutdown(false)
@@ -85,6 +154,19 @@ JobQueue::~JobQueue()
 	// a new job right now
 	SDL_CondBroadcast(m_queueWaitCond);
 
+<<<<<<< HEAD
+=======
+	// Flag each job runner that we're being destroyed (with lock so no one
+	// else is running one of our functions). Both the flag and the mutex
+	// must be owned by the runner, because we may not exist when it's
+	// checked.
+	for (std::vector<JobRunner*>::iterator i = m_runners.begin(); i != m_runners.end(); ++i) {
+		SDL_LockMutex((*i)->GetQueueDestroyingLock());
+		(*i)->SetQueueDestroyed();
+		SDL_UnlockMutex((*i)->GetQueueDestroyingLock());
+	}
+
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	const uint32_t numThreads = m_runners.size();
 	// delete the runners. this will tear down their underlying threads
 	for (std::vector<JobRunner*>::iterator i = m_runners.begin(); i != m_runners.end(); ++i)
@@ -160,6 +242,10 @@ void JobQueue::Finish(Job *job, const uint8_t threadIdx)
 // call OnFinish methods for completed jobs, and clean up
 Uint32 JobQueue::FinishJobs()
 {
+<<<<<<< HEAD
+=======
+	PROFILE_SCOPED()
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	Uint32 finished = 0;
 
 	const uint32_t numRunners = m_runners.size();
@@ -173,8 +259,15 @@ Uint32 JobQueue::FinishJobs()
 		m_finished[i].pop_front();
 		SDL_UnlockMutex(m_finishedLock[i]);
 
+<<<<<<< HEAD
 		// if its already been cancelled then its taken care of, so we just forget about it
 		if (!job->cancelled) {
+=======
+		assert(job);
+
+		// if its already been cancelled then its taken care of, so we just forget about it
+		if(!job->cancelled) {
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 			job->OnFinish();
 			finished++;
 		}

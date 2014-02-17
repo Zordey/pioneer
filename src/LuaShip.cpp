@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
+// Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "LuaObject.h"
@@ -21,7 +25,11 @@
 /*
  * Class: Ship
  *
+<<<<<<< HEAD
  * Class representing a ship. Inherits from <Body>.
+=======
+ * Class representing a ship. Inherits from <ModelBody>.
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
  */
 
 /*
@@ -59,6 +67,7 @@ static int l_ship_is_player(lua_State *l)
     return 1;
 }
 
+<<<<<<< HEAD
 /*
  * Method: GetStats
  *
@@ -126,6 +135,8 @@ static int l_ship_get_stats(lua_State *l)
 	return 1;
 }
 
+=======
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 /* Method: SetShipType
  *
  * Replaces the ship with a new ship of the specified type.
@@ -944,6 +955,59 @@ static int l_ship_hyperspace_to(lua_State *l)
 }
 
 /*
+<<<<<<< HEAD
+=======
+ * Method: GetInvulnerable
+ *
+ * Find out whether a ship can take damage or not.
+ *
+ * > is_invulnerable = ship:GetInvulnerable()
+ *
+ * Return:
+ *
+ *   is_invulnerable - boolean; true if the ship is invulnerable to damage
+ *
+ * Availability:
+ *
+ *  November 2013
+ *
+ * Status:
+ *
+ *  experimental
+ */
+static int l_ship_get_invulnerable(lua_State *l)
+{
+	Ship *s = LuaObject<Ship>::CheckFromLua(1);
+	lua_pushboolean(l, s->IsInvulnerable());
+	return 1;
+}
+
+/*
+ * Method: SetInvulnerable
+ *
+ * Make a ship invulnerable to damage (or not).
+ * Note: Invulnerability is not currently stored in the save game.
+ *
+ * > ship:SetInvulnerable(true)
+ *
+ * Availability:
+ *
+ *  November 2013
+ *
+ * Status:
+ *
+ *  experimental
+ */
+static int l_ship_set_invulnerable(lua_State *l)
+{
+	Ship *s = LuaObject<Ship>::CheckFromLua(1);
+	luaL_checkany(l, 2);
+	s->SetInvulnerable(lua_toboolean(l, 2));
+	return 0;
+}
+
+/*
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
  * Group: AI methods
  *
  * The AI methods are the script's equivalent of the autopilot. They are
@@ -1208,12 +1272,19 @@ template <> const char *LuaObject<Ship>::s_type = "Ship";
 
 template <> void LuaObject<Ship>::RegisterClass()
 {
+<<<<<<< HEAD
 	static const char *l_parent = "Body";
+=======
+	static const char *l_parent = "ModelBody";
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 	static const luaL_Reg l_methods[] = {
 		{ "IsPlayer", l_ship_is_player },
 
+<<<<<<< HEAD
 		{ "GetStats", l_ship_get_stats },
+=======
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		{ "SetShipType", l_ship_set_type },
 		{ "SetHullPercent", l_ship_set_hull_percent },
 		{ "SetFuelPercent", l_ship_set_fuel_percent },
@@ -1252,6 +1323,12 @@ template <> void LuaObject<Ship>::RegisterClass()
 		{ "GetHyperspaceDetails", l_ship_get_hyperspace_details },
 		{ "HyperspaceTo",    l_ship_hyperspace_to     },
 
+<<<<<<< HEAD
+=======
+		{ "GetInvulnerable", l_ship_get_invulnerable },
+		{ "SetInvulnerable", l_ship_set_invulnerable },
+
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		{ 0, 0 }
 	};
 
@@ -1314,5 +1391,146 @@ template <> void LuaObject<Ship>::RegisterClass()
  * Status:
  *
  *   experimental
+<<<<<<< HEAD
  */
 
+=======
+ *
+ *
+ * Attribute: fuelMassLeft
+ *
+ * Remaining thruster fuel mass in tonnes.
+ *
+ * Availability:
+ *
+ *   November 2013
+ *
+ * Status:
+ *
+ *   experimental
+ *
+ *
+ * Attribute: hullMassLeft
+ *
+ * Remaining hull integrity in tonnes. Ship damage reduces hull integrity.
+ * When this reaches 0, the ship is destroyed.
+ *
+ * Availability:
+ *
+ *   November 2013
+ *
+ * Status:
+ *
+ *   experimental
+ *
+ *
+ * Attribute: shieldMassLeft
+ *
+ * Remaining shield strength in tonnes. As shields are depleted, the
+ * shield strength decreases. When this reaches 0, the shields are
+ * fully depleted and the hull is exposed to damage.
+ *
+ * Availability:
+ *
+ *   November 2013
+ *
+ * Status:
+ *
+ *   experimental
+ *
+ *
+ * Attribute: shieldMass
+ *
+ * Maximum shield strength for installed shields. Measured in tonnes.
+ *
+ * Availability:
+ *
+ *   November 2013
+ *
+ * Status:
+ *
+ *   experimental
+ *
+ *
+ * Attribute: hyperspaceRange
+ *
+ * Furthest possible hyperjump given current hyperspace fuel available.
+ * Measured in light-years.
+ *
+ * Availability:
+ *
+ *   November 2013
+ *
+ * Status:
+ *
+ *   experimental
+ *
+ *
+ * Attribute: maxHyperspaceRange
+ *
+ * Furthest possible hyperjump assuming no limits to available hyperspace fuel.
+ * Measured in light-years.
+ *
+ * Availability:
+ *
+ *   November 2013
+ *
+ * Status:
+ *
+ *   experimental
+ *
+ *
+ * Attribute: totalMass
+ *
+ * Mass of the ship including hull, equipment and cargo, but excluding
+ * thruster fuel mass. Measured in tonnes.
+ *
+ * Availability:
+ *
+ *   November 2013
+ *
+ * Status:
+ *
+ *   experimental
+ *
+ *
+ * Attribute: usedCapacity
+ *
+ * Hull capacity used by equipment and cargo. Measured in tonnes.
+ *
+ * Availability:
+ *
+ *   November 2013
+ *
+ * Status:
+ *
+ *   experimental
+ *
+ *
+ * Attribute: usedCargo
+ *
+ * Hull capacity used by cargo only (not equipment). Measured in tonnes.
+ *
+ * Availability:
+ *
+ *   November 2013
+ *
+ * Status:
+ *
+ *   experimental
+ *
+ *
+ * Attribute: freeCapacity
+ *
+ * Total space remaining. Measured in tonnes.
+ *
+ * Availability:
+ *
+ *   November 2013
+ *
+ * Status:
+ *
+ *   experimental
+ *
+ */
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755

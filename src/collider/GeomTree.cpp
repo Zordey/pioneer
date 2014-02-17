@@ -1,28 +1,47 @@
+<<<<<<< HEAD
 // Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
+// Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "../libs.h"
 #include "GeomTree.h"
 #include "BVHTree.h"
+<<<<<<< HEAD
 #include <map>
+=======
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 int GeomTree::stats_rayTriIntersections;
 
+const unsigned int IGNORE_FLAG = 0x8000;
 
 GeomTree::~GeomTree()
 {
-	delete [] m_edges;
+	delete[] m_vertices;
+	delete[] m_indices;
+	delete[] m_triFlags;
+
+	delete[] m_edges;
 	delete m_triTree;
 	delete m_edgeTree;
 }
 
+<<<<<<< HEAD
 #include <SDL.h>
 
 GeomTree::GeomTree(int numVerts, int numTris, float *vertices, int *indices, unsigned int *triflags): m_numVertices(numVerts)
+=======
+GeomTree::GeomTree(int numVerts, int numTris, float *vertices, Uint16 *indices, unsigned int *triflags)
+: m_numVertices(numVerts)
+, m_numTris(numTris)
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 {
 	m_vertices = vertices;
-	m_indices = indices;
+	m_indices  = indices;
 	m_triFlags = triflags;
+
 	m_aabb.min = vector3d(FLT_MAX,FLT_MAX,FLT_MAX);
 	m_aabb.max = vector3d(-FLT_MAX,-FLT_MAX,-FLT_MAX);
 
@@ -30,7 +49,7 @@ GeomTree::GeomTree(int numVerts, int numTris, float *vertices, int *indices, uns
 	std::vector<int> activeTris;
 	/* So, we ignore tris with flag >= 0x8000 */
 	for (int i=0; i<numTris; i++) {
-		if (triflags[i] >= 0x8000) continue;
+		if (triflags[i] >= IGNORE_FLAG) continue;
 		activeTris.push_back(i*3);
 	}
 
@@ -55,8 +74,8 @@ GeomTree::GeomTree(int numVerts, int numTris, float *vertices, int *indices, uns
 	/* Get radius, m_aabb, and merge duplicate edges */
 	m_radius = 0;
 	for (int i=0; i<numTris; i++) {
-		const int triflag = m_triFlags[i];
-		if (triflag < 0x8000) {
+		const unsigned int triflag = m_triFlags[i];
+		if (triflag < IGNORE_FLAG) {
 			int vi1 = 3*m_indices[3*i];
 			int vi2 = 3*m_indices[3*i+1];
 			int vi3 = 3*m_indices[3*i+2];
@@ -198,7 +217,11 @@ void GeomTree::TraceCoherentRays(const BVHNode *currnode, int numRays, const vec
 {
 	bvhstack stack[32];
 	int stackpos = -1;
+<<<<<<< HEAD
 	vector3f *invDirs = reinterpret_cast<vector3f*>(alloca(sizeof(vector3f)*numRays));
+=======
+	vector3f *invDirs = static_cast<vector3f*>(alloca(sizeof(vector3f)*numRays));
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	for (int i=0; i<numRays; i++) {
 		invDirs[i] = vector3f(1.0f/a_dirs[i].x, 1.0f/a_dirs[i].y, 1.0f/a_dirs[i].z);
 	}

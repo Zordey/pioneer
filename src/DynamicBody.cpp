@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
+// Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "libs.h"
@@ -188,6 +192,11 @@ void DynamicBody::TimeStepUpdate(const float timeStep)
 	} else {
 		m_oldAngDisplacement = vector3d(0.0);
 	}
+<<<<<<< HEAD
+=======
+
+	ModelBody::TimeStepUpdate(timeStep);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 }
 
 void DynamicBody::UpdateInterpTransform(double alpha)
@@ -256,7 +265,12 @@ bool DynamicBody::OnCollision(Object *o, Uint32 flags, double relVel)
 	}
 	// damage (kineticEnergy is being passed as a damage value) is measured in kilograms
 	// ignore damage less than a gram
+<<<<<<< HEAD
 	if (kineticEnergy > 1e-3) OnDamage(o, float(kineticEnergy));
+=======
+	CollisionContact dummy;
+	if (kineticEnergy > 1e-3) OnDamage(o, float(kineticEnergy), dummy);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	return true;
 }
 

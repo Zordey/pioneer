@@ -1,6 +1,23 @@
+<<<<<<< HEAD
 -- Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
 -- Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
+=======
+-- Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+-- Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
+
+local Engine = import("Engine")
+local Game = import("Game")
+local Space = import("Space")
+local Comms = import("Comms")
+local Timer = import("Timer")
+local Event = import("Event")
+local Serializer = import("Serializer")
+local ShipDef = import("ShipDef")
+local Ship = import("Ship")
+local utils = import("utils")
+
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 --[[
 	trade_ships
 		interval - is minimum amount of time between hyperspace arrivals,
@@ -90,6 +107,7 @@ local addShipEquip = function (ship)
 	ship:AddEquip('AUTOPILOT')
 	ship:AddEquip('CARGO_LIFE_SUPPORT')
 
+<<<<<<< HEAD
 	local stats = ship:GetStats()
 
 	-- add defensive equipment based on lawlessness, luck and size
@@ -98,6 +116,14 @@ local addShipEquip = function (ship)
 
 	if Engine.rand:Number(1) - 0.1 < lawlessness then
 		local num = math.floor(math.sqrt(stats.freeCapacity / 50)) -
+=======
+	-- add defensive equipment based on lawlessness, luck and size
+	local lawlessness = Game.system.lawlessness
+	local size_factor = ship.freeCapacity ^ 2 / 2000000
+
+	if Engine.rand:Number(1) - 0.1 < lawlessness then
+		local num = math.floor(math.sqrt(ship.freeCapacity / 50)) -
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 					 ship:GetEquipCount('SHIELD', 'SHIELD_GENERATOR')
 		if num > 0 then ship:AddEquip('SHIELD_GENERATOR', num) end
 		if ship_type.equipSlotCapacity.ENERGYBOOSTER > 0 and
@@ -125,7 +151,11 @@ end
 local addShipCargo = function (ship, direction)
 	local prices = Game.system:GetCommodityBasePriceAlterations()
 	local total = 0
+<<<<<<< HEAD
 	local empty_space = ship:GetStats().freeCapacity
+=======
+	local empty_space = ship.freeCapacity
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	local size_factor = empty_space / 20
 	local cargo = {}
 
@@ -137,6 +167,18 @@ local addShipCargo = function (ship, direction)
 		cargo[exports[1]] = total
 	elseif (direction == 'import' and #imports > 1) or
 			(direction == 'export' and #exports > 1) then
+<<<<<<< HEAD
+=======
+
+		-- happens if there was very little space left to begin with (eg small
+		-- ship with lots of equipment). if we let it through then we end up
+		-- trying to add 0 cargo forever
+		if size_factor < 1 then
+			trade_ships[ship]['cargo'] = cargo
+			return 0
+		end
+
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		while total < empty_space do
 			local cargo_type
 
@@ -214,8 +256,12 @@ local getNearestStarport = function (ship, current)
 end
 
 local getSystem = function (ship)
+<<<<<<< HEAD
 	local stats = ship:GetStats()
 	local systems_in_range = Game.system:GetNearbySystems(stats.hyperspaceRange)
+=======
+	local systems_in_range = Game.system:GetNearbySystems(ship.hyperspaceRange)
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	if #systems_in_range == 0 then return nil end
 	if #systems_in_range == 1 then
 		return systems_in_range[1].path
@@ -243,7 +289,11 @@ local getSystem = function (ship)
 		target_system = systems_in_range[Engine.rand:Integer(1, #systems_in_range)]
 
 		-- get closer systems
+<<<<<<< HEAD
 		local systems_half_range = Game.system:GetNearbySystems(stats.hyperspaceRange / 2)
+=======
+		local systems_half_range = Game.system:GetNearbySystems(ship.hyperspaceRange / 2)
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 		if #systems_half_range > 1 then
 			target_system = systems_half_range[Engine.rand:Integer(1, #systems_half_range)]
@@ -299,11 +349,19 @@ local getAcceptableShips = function ()
 			return def.tag == 'SHIP' and def.defaultHyperdrive ~= 'NONE'
 		end
 	end
+<<<<<<< HEAD
 	return build_array(
 		map(function (k,def)
 			return k,def.id
 		end,
 		filter(filter_function,
+=======
+	return utils.build_array(
+		utils.map(function (k,def)
+			return k,def.id
+		end,
+		utils.filter(filter_function,
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		pairs(ShipDef)
 	)))
 end
@@ -384,6 +442,10 @@ local spawnInitialShips = function (game_start)
 
 			ship = Space.SpawnShipDocked(ship_name, starport)
 			if ship ~= nil then
+<<<<<<< HEAD
+=======
+				ship:SetLabel(Ship.MakeRandomLabel())
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 				trade_ships[ship] = {
 					status		= 'docked',
 					starport	= starport,
@@ -393,6 +455,10 @@ local spawnInitialShips = function (game_start)
 			else
 				-- the starport must have been full
 				ship = Space.SpawnShipNear(ship_name, starport, 10000000, 149598000) -- 10mkm - 1AU
+<<<<<<< HEAD
+=======
+				ship:SetLabel(Ship.MakeRandomLabel())
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 				trade_ships[ship] = {
 					status		= 'inbound',
 					starport	= starport,
@@ -408,6 +474,10 @@ local spawnInitialShips = function (game_start)
 			end
 
 			ship = Space.SpawnShip(ship_name, min_dist, min_dist + range)
+<<<<<<< HEAD
+=======
+			ship:SetLabel(Ship.MakeRandomLabel())
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 			trade_ships[ship] = {
 				status		= 'inbound',
 				ship_name	= ship_name,
@@ -424,6 +494,10 @@ local spawnInitialShips = function (game_start)
 			local from = from_paths[Engine.rand:Integer(1, #from_paths)]
 
 			ship = Space.SpawnShip(ship_name, 9, 11, {from, dest_time})
+<<<<<<< HEAD
+=======
+			ship:SetLabel(Ship.MakeRandomLabel())
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 			trade_ships[ship] = {
 				status		= 'hyperspace',
 				dest_time	= dest_time,
@@ -440,7 +514,15 @@ local spawnInitialShips = function (game_start)
 		if trader.status == 'docked' then
 			local delay = fuel_added + addShipCargo(ship, 'export')
 			-- have ship wait 30-45 seconds per unit of cargo
+<<<<<<< HEAD
 			trader['delay'] = Game.time + (delay * Engine.rand:Number(30, 45))
+=======
+			if delay > 0 then
+				trader['delay'] = Game.time + (delay * Engine.rand:Number(30, 45))
+			else
+				trader['delay'] = Game.time + Engine.rand:Number(600, 3600)
+			end
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 			Timer:CallAt(trader.delay, function () doUndock(ship) end)
 		else
 			addShipCargo(ship, 'import')
@@ -467,6 +549,10 @@ local spawnReplacement = function ()
 		local from = from_paths[Engine.rand:Integer(1, #from_paths)]
 
 		local ship = Space.SpawnShip(ship_name, 9, 11, {from, dest_time})
+<<<<<<< HEAD
+=======
+		ship:SetLabel(Ship.MakeRandomLabel())
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		trade_ships[ship] = {
 			status		= 'hyperspace',
 			dest_time	= dest_time,
@@ -617,7 +703,11 @@ local onShipDocked = function (ship, starport)
 	end
 
 	local damage = ShipDef[trader.ship_name].hullMass -
+<<<<<<< HEAD
 					ship:GetStats().hullMassLeft
+=======
+					ship.hullMassLeft
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	if damage > 0 then
 		ship:SetHullPercent()
 		addShipEquip(ship)
@@ -763,7 +853,11 @@ local onShipHit = function (ship, attacker)
 	-- maybe jettison a bit of cargo
 	if Engine.rand:Number(1) < trader.chance then
 		local cargo_type = nil
+<<<<<<< HEAD
 		local max_cap = ship:GetStats().maxCapacity
+=======
+		local max_cap = ShipDef[ship.shipId].capacity
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		for k, v in pairs(trader.cargo) do
 			if v > 1 and Engine.rand:Number(1) < v / max_cap then
 				cargo_type = k

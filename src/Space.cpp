@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
+// Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "libs.h"
@@ -20,6 +24,10 @@
 #include "HyperspaceCloud.h"
 #include "graphics/Graphics.h"
 #include "WorldView.h"
+<<<<<<< HEAD
+=======
+#include "galaxy/SectorCache.h"
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 #include "SectorView.h"
 #include "Lang.h"
 #include "Game.h"
@@ -67,7 +75,11 @@ Space::Space(Game *game)
 	, m_processingFinalizationQueue(false)
 #endif
 {
+<<<<<<< HEAD
 	m_rootFrame.Reset(new Frame(0, Lang::SYSTEM));
+=======
+	m_rootFrame.reset(new Frame(0, Lang::SYSTEM));
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	m_rootFrame->SetRadius(FLT_MAX);
 }
 
@@ -88,10 +100,17 @@ Space::Space(Game *game, const SystemPath &path)
 	CityOnPlanet::SetCityModelPatterns(m_starSystem->GetPath());
 
 	// XXX set radius in constructor
+<<<<<<< HEAD
 	m_rootFrame.Reset(new Frame(0, Lang::SYSTEM));
 	m_rootFrame->SetRadius(FLT_MAX);
 
 	GenBody(m_starSystem->rootBody.Get(), m_rootFrame.Get());
+=======
+	m_rootFrame.reset(new Frame(0, Lang::SYSTEM));
+	m_rootFrame->SetRadius(FLT_MAX);
+
+	GenBody(m_game->GetTime(), m_starSystem->rootBody.Get(), m_rootFrame.get());
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	m_rootFrame->UpdateOrbitRails(m_game->GetTime(), m_game->GetTimeStep());
 
 	//DebugDumpFrames();
@@ -115,7 +134,11 @@ Space::Space(Game *game, Serializer::Reader &rd)
 	CityOnPlanet::SetCityModelPatterns(m_starSystem->GetPath());
 
 	Serializer::Reader section = rd.RdSection("Frames");
+<<<<<<< HEAD
 	m_rootFrame.Reset(Frame::Unserialize(section, this, 0));
+=======
+	m_rootFrame.reset(Frame::Unserialize(section, this, 0));
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	RebuildFrameIndex();
 
 	Uint32 nbodies = rd.Int32();
@@ -123,7 +146,11 @@ Space::Space(Game *game, Serializer::Reader &rd)
 		m_bodies.push_back(Body::Unserialize(rd, this));
 	RebuildBodyIndex();
 
+<<<<<<< HEAD
 	Frame::PostUnserializeFixup(m_rootFrame.Get(), this);
+=======
+	Frame::PostUnserializeFixup(m_rootFrame.get(), this);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	for (BodyIterator i = m_bodies.begin(); i != m_bodies.end(); ++i)
 		(*i)->PostLoadFixup(this);
 }
@@ -145,7 +172,11 @@ void Space::Serialize(Serializer::Writer &wr)
 	StarSystem::Serialize(wr, m_starSystem.Get());
 
 	Serializer::Writer section;
+<<<<<<< HEAD
 	Frame::Serialize(section, m_rootFrame.Get(), this);
+=======
+	Frame::Serialize(section, m_rootFrame.get(), this);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	wr.WrSection("Frames", section.GetData());
 
 	wr.Int32(m_bodies.size());
@@ -223,7 +254,11 @@ void Space::RebuildFrameIndex()
 	m_frameIndex.push_back(0);
 
 	if (m_rootFrame)
+<<<<<<< HEAD
 		AddFrameToIndex(m_rootFrame.Get());
+=======
+		AddFrameToIndex(m_rootFrame.get());
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 	m_frameIndexValid = true;
 }
@@ -297,11 +332,19 @@ vector3d Space::GetHyperspaceExitPoint(const SystemPath &source) const
 
 	const SystemPath &dest = m_starSystem->GetPath();
 
+<<<<<<< HEAD
 	Sector source_sec(source.sectorX, source.sectorY, source.sectorZ);
 	Sector dest_sec(dest.sectorX, dest.sectorY, dest.sectorZ);
 
 	Sector::System source_sys = source_sec.m_systems[source.systemIndex];
 	Sector::System dest_sys = dest_sec.m_systems[dest.systemIndex];
+=======
+	const Sector* source_sec = Sector::cache.GetCached(source);
+	const Sector* dest_sec = Sector::cache.GetCached(dest);
+
+	Sector::System source_sys = source_sec->m_systems[source.systemIndex];
+	Sector::System dest_sys = dest_sec->m_systems[dest.systemIndex];
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 	const vector3d sourcePos = vector3d(source_sys.p) + vector3d(source.sectorX, source.sectorY, source.sectorZ);
 	const vector3d destPos = vector3d(dest_sys.p) + vector3d(dest.sectorX, dest.sectorY, dest.sectorZ);
@@ -367,7 +410,11 @@ static Frame *find_frame_with_sbody(Frame *f, const SystemBody *b)
 
 Frame *Space::GetFrameWithSystemBody(const SystemBody *b) const
 {
+<<<<<<< HEAD
 	return find_frame_with_sbody(m_rootFrame.Get(), b);
+=======
+	return find_frame_with_sbody(m_rootFrame.get(), b);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 }
 
 static void RelocateStarportIfUnderwaterOrBuried(SystemBody *sbody, Frame *frame, Planet *planet, vector3d &pos, matrix3x3d &rot)
@@ -485,7 +532,11 @@ static void RelocateStarportIfUnderwaterOrBuried(SystemBody *sbody, Frame *frame
 	}
 }
 
+<<<<<<< HEAD
 static Frame *MakeFrameFor(SystemBody *sbody, Body *b, Frame *f)
+=======
+static Frame *MakeFrameFor(double at_time, SystemBody *sbody, Body *b, Frame *f)
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 {
 	if (!sbody->parent) {
 		if (b) b->SetFrame(f);
@@ -527,7 +578,11 @@ static Frame *MakeFrameFor(SystemBody *sbody, Body *b, Frame *f)
 
 		if (sbody->rotationalPhaseAtStart != fixed(0))
 			rotMatrix = rotMatrix * matrix3x3d::RotateY(sbody->rotationalPhaseAtStart.ToDouble());
+<<<<<<< HEAD
 		rotFrame->SetOrient(rotMatrix);
+=======
+		rotFrame->SetInitialOrient(rotMatrix, at_time);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 		b->SetFrame(rotFrame);
 		return orbFrame;
@@ -586,7 +641,11 @@ static Frame *MakeFrameFor(SystemBody *sbody, Body *b, Frame *f)
 	return 0;
 }
 
+<<<<<<< HEAD
 void Space::GenBody(SystemBody *sbody, Frame *f)
+=======
+void Space::GenBody(double at_time, SystemBody *sbody, Frame *f)
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 {
 	Body *b = 0;
 
@@ -606,10 +665,17 @@ void Space::GenBody(SystemBody *sbody, Frame *f)
 		b->SetPosition(vector3d(0,0,0));
 		AddBody(b);
 	}
+<<<<<<< HEAD
 	f = MakeFrameFor(sbody, b, f);
 
 	for (std::vector<SystemBody*>::iterator i = sbody->children.begin(); i != sbody->children.end(); ++i) {
 		GenBody(*i, f);
+=======
+	f = MakeFrameFor(at_time, sbody, b, f);
+
+	for (std::vector<SystemBody*>::iterator i = sbody->children.begin(); i != sbody->children.end(); ++i) {
+		GenBody(at_time, *i, f);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	}
 }
 
@@ -730,7 +796,11 @@ static void CollideWithTerrain(Body *body)
 
 	const Aabb &aabb = dynBody->GetAabb();
 	double altitude = body->GetPosition().Length() + aabb.min.y;
+<<<<<<< HEAD
 	if (altitude >= terrain->GetMaxFeatureRadius()) return;
+=======
+	if (altitude >= (terrain->GetMaxFeatureRadius()*2.0)) return;
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 	double terrHeight = terrain->GetTerrainHeight(body->GetPosition().Normalized());
 	if (altitude >= terrHeight) return;
@@ -753,10 +823,18 @@ void Space::CollideFrame(Frame *f)
 
 void Space::TimeStep(float step)
 {
+<<<<<<< HEAD
 	m_frameIndexValid = m_bodyIndexValid = m_sbodyIndexValid = false;
 
 	// XXX does not need to be done this often
 	CollideFrame(m_rootFrame.Get());
+=======
+	PROFILE_SCOPED()
+	m_frameIndexValid = m_bodyIndexValid = m_sbodyIndexValid = false;
+
+	// XXX does not need to be done this often
+	CollideFrame(m_rootFrame.get());
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	for (BodyIterator i = m_bodies.begin(); i != m_bodies.end(); ++i)
 		CollideWithTerrain(*i);
 
@@ -838,5 +916,9 @@ void Space::DebugDumpFrames()
 	memset(space, ' ', sizeof(space));
 
 	printf("Frame structure for '%s':\n", m_starSystem->GetName().c_str());
+<<<<<<< HEAD
 	DebugDumpFrame(m_rootFrame.Get(), 2);
+=======
+	DebugDumpFrame(m_rootFrame.get(), 2);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 }

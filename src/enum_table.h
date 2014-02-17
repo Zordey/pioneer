@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 /* Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details */
+=======
+/* Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details */
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 /* Licensed under the terms of the GPL v3. See licenses/GPL-3.txt        */
 
 #ifndef HX_GEN_ENUM_TABLES
@@ -12,6 +16,10 @@ struct EnumTable { const char *name; const EnumItem *first; };
 
 extern const struct EnumItem ENUM_EquipSlot[];
 extern const struct EnumItem ENUM_EquipType[];
+<<<<<<< HEAD
+=======
+extern const struct EnumItem ENUM_DetailLevel[];
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 extern const struct EnumItem ENUM_FileSystemRoot[];
 extern const struct EnumItem ENUM_PolitCrime[];
 extern const struct EnumItem ENUM_PolitEcon[];
@@ -34,10 +42,19 @@ extern const struct EnumItem ENUM_UIKeyboardAction[];
 extern const struct EnumItem ENUM_UIMouseButtonAction[];
 extern const struct EnumItem ENUM_UIMouseButtonType[];
 extern const struct EnumItem ENUM_UIMouseWheelDirection[];
+<<<<<<< HEAD
+=======
+extern const struct EnumItem ENUM_UIJoystickHatDirection[];
+extern const struct EnumItem ENUM_UIJoystickButtonAction[];
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 extern const struct EnumItem ENUM_UIExpandDirection[];
 extern const struct EnumItem ENUM_UIGradientDirection[];
 extern const struct EnumItem ENUM_UIMarginDirection[];
 extern const struct EnumItem ENUM_UINumberLabelFormat[];
+<<<<<<< HEAD
+=======
+extern const struct EnumItem ENUM_UITableRowAlignDirection[];
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 extern const struct EnumItem ENUM_UISizeControl[];
 extern const struct EnumItem ENUM_UIFont[];
 

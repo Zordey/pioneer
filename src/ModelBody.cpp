@@ -1,11 +1,18 @@
+<<<<<<< HEAD
 // Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
+// Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "libs.h"
 #include "ModelBody.h"
 #include "Frame.h"
 #include "Game.h"
+<<<<<<< HEAD
 #include "matrix4x4.h"
+=======
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 #include "ModelCache.h"
 #include "Pi.h"
 #include "Serializer.h"
@@ -16,6 +23,7 @@
 #include "collider/collider.h"
 #include "graphics/Renderer.h"
 #include "scenegraph/SceneGraph.h"
+<<<<<<< HEAD
 
 ModelBody::ModelBody() :
 	Body(),
@@ -23,13 +31,71 @@ ModelBody::ModelBody() :
 	m_colliding(true),
 	m_geom(0),
 	m_model(0)
+=======
+#include "scenegraph/NodeVisitor.h"
+#include "scenegraph/CollisionGeometry.h"
+
+class DynGeomFinder : public SceneGraph::NodeVisitor {
+public:
+	std::vector<SceneGraph::CollisionGeometry*> results;
+
+	virtual void ApplyCollisionGeometry(SceneGraph::CollisionGeometry &cg)
+	{
+		if (cg.IsDynamic())
+			results.push_back(&cg);
+	}
+
+	SceneGraph::CollisionGeometry *GetCgForTree(GeomTree *t)
+	{
+		for (auto it = results.begin(); it != results.end(); ++it)
+			if ((*it)->GetGeomTree() == t) return (*it);
+		return 0;
+	}
+};
+
+class DynCollUpdateVisitor : public SceneGraph::NodeVisitor {
+private:
+	std::vector<matrix4x4f> m_matrixStack;
+
+public:
+	void Reset() { m_matrixStack.clear(); }
+
+	virtual void ApplyMatrixTransform(SceneGraph::MatrixTransform &m)
+	{
+		matrix4x4f matrix = matrix4x4f::Identity();
+		if (!m_matrixStack.empty()) matrix = m_matrixStack.back();
+
+		m_matrixStack.push_back(matrix * m.GetTransform());
+		m.Traverse(*this);
+		m_matrixStack.pop_back();
+	}
+
+	virtual void ApplyCollisionGeometry(SceneGraph::CollisionGeometry &cg)
+	{
+		if (!cg.GetGeom()) return;
+
+		matrix4x4ftod(m_matrixStack.back(), cg.GetGeom()->m_animTransform);
+	}
+};
+
+ModelBody::ModelBody()
+: m_isStatic(false)
+, m_colliding(true)
+, m_geom(0)
+, m_model(0)
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 {
 }
 
 ModelBody::~ModelBody()
 {
+<<<<<<< HEAD
 	SetFrame(0);	// Will remove geom from frame if necessary.
 	if (m_geom) delete m_geom;
+=======
+	SetFrame(0); // Will remove geom from frame if necessary.
+	DeleteGeoms();
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 	//delete instanced model
 	delete m_model;
@@ -42,6 +108,10 @@ void ModelBody::Save(Serializer::Writer &wr, Space *space)
 	wr.Bool(m_colliding);
 	wr.String(m_modelName);
 	m_model->Save(wr);
+<<<<<<< HEAD
+=======
+	m_shields->Save(wr);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 }
 
 void ModelBody::Load(Serializer::Reader &rd, Space *space)
@@ -51,6 +121,10 @@ void ModelBody::Load(Serializer::Reader &rd, Space *space)
 	m_colliding = rd.Bool();
 	SetModel(rd.String().c_str());
 	m_model->Load(rd);
+<<<<<<< HEAD
+=======
+	m_shields->Load(rd);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 }
 
 void ModelBody::SetStatic(bool isStatic)
@@ -72,8 +146,11 @@ void ModelBody::SetStatic(bool isStatic)
 void ModelBody::SetColliding(bool colliding)
 {
 	m_colliding = colliding;
+<<<<<<< HEAD
 	if (!m_geom) return;
 
+=======
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	if(colliding) m_geom->Enable();
 	else m_geom->Disable();
 }
@@ -81,13 +158,12 @@ void ModelBody::SetColliding(bool colliding)
 void ModelBody::RebuildCollisionMesh()
 {
 	if (m_geom) {
-		// only happens when player changes their ship
-		if (m_isStatic) GetFrame()->RemoveStaticGeom(m_geom);
-		else GetFrame()->RemoveGeom(m_geom);
-		delete m_geom;
+		if (GetFrame()) RemoveGeomsFromFrame(GetFrame());
+		DeleteGeoms();
 	}
 
 	m_collMesh = m_model->GetCollisionMesh();
+<<<<<<< HEAD
 	SetPhysRadius(m_collMesh->GetAabb().GetRadius());
 	m_geom = new Geom(m_collMesh->GetGeomTree());
 
@@ -97,20 +173,60 @@ void ModelBody::RebuildCollisionMesh()
 	if (GetFrame()) {
 		if (m_isStatic) GetFrame()->AddStaticGeom(m_geom);
 		else GetFrame()->AddGeom(m_geom);
+=======
+	double maxRadius= m_collMesh->GetAabb().GetRadius();
+
+	//static geom
+	m_geom = new Geom(m_collMesh->GetGeomTree());
+	m_geom->SetUserData(static_cast<void*>(this));
+	m_geom->MoveTo(GetOrient(), GetPosition());
+
+	SetPhysRadius(maxRadius);
+
+	//have to figure out which collision geometries are responsible for which geomtrees
+	DynGeomFinder dgf;
+	m_model->GetRoot()->Accept(dgf);
+
+	//dynamic geoms
+	for (auto it = m_collMesh->GetDynGeomTrees().begin(); it != m_collMesh->GetDynGeomTrees().end(); ++it) {
+		Geom *dynG = new Geom(*it);
+		dynG->SetUserData(static_cast<void*>(this));
+		dynG->MoveTo(GetOrient(), GetPosition());
+		dynG->m_animTransform = matrix4x4d::Identity();
+		SceneGraph::CollisionGeometry *cg = dgf.GetCgForTree(*it);
+		if (cg)
+			cg->SetGeom(dynG);
+		m_dynGeoms.push_back(dynG);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	}
+
+	if (GetFrame()) AddGeomsToFrame(GetFrame());
 }
 
 void ModelBody::SetModel(const char *modelName)
 {
 	//remove old instance
+<<<<<<< HEAD
 	delete m_model; m_model = 0;
+=======
+	delete m_model;
+	m_model = 0;
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 	m_modelName = modelName;
 
 	//create model instance (some modelbodies, like missiles could avoid this)
 	m_model = Pi::FindModel(m_modelName)->MakeInstance();
+<<<<<<< HEAD
 
 	SetClipRadius(m_model->GetDrawClipRadius());
+=======
+	m_idleAnimation = m_model->FindAnimation("idle");
+
+	SetClipRadius(m_model->GetDrawClipRadius());
+
+	m_shields.reset(new Shields(m_model));
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 	RebuildCollisionMesh();
 }
@@ -118,35 +234,253 @@ void ModelBody::SetModel(const char *modelName)
 void ModelBody::SetPosition(const vector3d &p)
 {
 	Body::SetPosition(p);
+<<<<<<< HEAD
 	if (!m_geom) return;
 	matrix4x4d m2 = GetOrient();
 	m_geom->MoveTo(m2, p);
+=======
+	MoveGeoms(GetOrient(), p);
+
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	// for rebuild of static objects in collision space
 	if (m_isStatic) SetFrame(GetFrame());
 }
 
 void ModelBody::SetOrient(const matrix3x3d &m)
+<<<<<<< HEAD
 {
 	Body::SetOrient(m);
 	if (!m_geom) return;
 	matrix4x4d m2 = m;
 	m_geom->MoveTo(m2, GetPosition());
+=======
+{
+	Body::SetOrient(m);
+	const matrix4x4d m2 = m;
+	MoveGeoms(m2, GetPosition());
 }
 
 void ModelBody::SetFrame(Frame *f)
 {
 	if (f == GetFrame()) return;
-	if (GetFrame()) {
-		if (m_isStatic) GetFrame()->RemoveStaticGeom(m_geom);
-		else GetFrame()->RemoveGeom(m_geom);
-	}
+
+	//remove collision geoms from old frame
+	if (GetFrame()) RemoveGeomsFromFrame(GetFrame());
+
 	Body::SetFrame(f);
-	if (f) {
-		if (m_isStatic) f->AddStaticGeom(m_geom);
-		else f->AddGeom(m_geom);
+
+	//add collision geoms to new frame
+	if (f) AddGeomsToFrame(f);
+}
+
+void ModelBody::DeleteGeoms()
+{
+	delete m_geom;
+	m_geom = 0;
+	for (auto it = m_dynGeoms.begin(); it != m_dynGeoms.end(); ++it)
+		delete *it;
+	m_dynGeoms.clear();
+}
+
+void ModelBody::AddGeomsToFrame(Frame *f)
+{
+	const int group = f->GetCollisionSpace()->GetGroupHandle();
+
+	m_geom->SetGroup(group);
+
+	if(m_isStatic) {
+		f->AddStaticGeom(m_geom);
+	} else {
+		f->AddGeom(m_geom);
+	}
+
+	for (auto it = m_dynGeoms.begin(); it != m_dynGeoms.end(); ++it) {
+		(*it)->SetGroup(group);
+		f->AddGeom(*it);
 	}
 }
 
+void ModelBody::RemoveGeomsFromFrame(Frame *f)
+{
+	if(m_isStatic) {
+		GetFrame()->RemoveStaticGeom(m_geom);
+	} else {
+		GetFrame()->RemoveGeom(m_geom);
+	}
+
+	for (auto it = m_dynGeoms.begin(); it != m_dynGeoms.end(); ++it)
+		GetFrame()->RemoveGeom(*it);
+}
+
+void ModelBody::MoveGeoms(const matrix4x4d &m, const vector3d &p)
+{
+	m_geom->MoveTo(m, p);
+
+	//accumulate transforms to animated positions
+	if (!m_dynGeoms.empty()) {
+		DynCollUpdateVisitor dcv;
+		m_model->GetRoot()->Accept(dcv);
+	}
+
+	for (auto it = m_dynGeoms.begin(); it != m_dynGeoms.end(); ++it) {
+		//combine orient & pos
+		static matrix4x4d s_tempMat;
+		for (unsigned int i = 0; i < 12; i++)
+			s_tempMat[i] = m[i];
+		s_tempMat[12] = p.x;
+		s_tempMat[13] = p.y;
+		s_tempMat[14] = p.z;
+		s_tempMat[15] = m[15];
+
+		(*it)->MoveTo(s_tempMat * (*it)->m_animTransform);
+	}
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
+}
+
+// Calculates the ambiently and directly lit portions of the lighting model taking into account the atmosphere and sun positions at a given location
+// 1. Calculates the amount of direct illumination available taking into account
+//    * multiple suns
+//    * sun positions relative to up direction i.e. light is dimmed as suns set
+//    * Thickness of the atmosphere overhead i.e. as atmospheres get thicker light starts dimming earlier as sun sets, without atmosphere the light switches off at point of sunset
+// 2. Calculates the split between ambient and directly lit portions taking into account
+//    * Atmosphere density (optical thickness) of the sky dome overhead
+//        as optical thickness increases the fraction of ambient light increases
+//        this takes altitude into account automatically
+//    * As suns set the split is biased towards ambient
+void ModelBody::CalcLighting(double &ambient, double &direct, const Camera *camera)
+{
+<<<<<<< HEAD
+	if (f == GetFrame()) return;
+	if (GetFrame()) {
+		if (m_isStatic) GetFrame()->RemoveStaticGeom(m_geom);
+		else GetFrame()->RemoveGeom(m_geom);
+=======
+	const double minAmbient = 0.05;
+	ambient = minAmbient;
+	direct = 1.0;
+	Body *astro = GetFrame()->GetBody();
+	if ( ! (astro && astro->IsType(Object::PLANET)) )
+		return;
+
+	Planet *planet = static_cast<Planet*>(astro);
+
+	// position relative to the rotating frame of the planet
+	vector3d upDir = GetInterpPositionRelTo(planet->GetFrame());
+	const double planetRadius = planet->GetSystemBody()->GetRadius();
+	const double dist = std::max(planetRadius, upDir.Length());
+	upDir = upDir.Normalized();
+
+	double pressure, density;
+	planet->GetAtmosphericState(dist, &pressure, &density);
+	double surfaceDensity;
+	Color cl;
+	planet->GetSystemBody()->GetAtmosphereFlavor(&cl, &surfaceDensity);
+
+	// approximate optical thickness fraction as fraction of density remaining relative to earths
+	double opticalThicknessFraction = density/EARTH_ATMOSPHERE_SURFACE_DENSITY;
+
+	// tweak optical thickness curve - lower exponent ==> higher altitude before ambient level drops
+	// Commenting this out, since it leads to a sharp transition at
+	// atmosphereRadius, where density is suddenly 0
+	//opticalThicknessFraction = pow(std::max(0.00001,opticalThicknessFraction),0.15); //max needed to avoid 0^power
+
+	if (opticalThicknessFraction < 0.0001)
+		return;
+
+	//step through all the lights and calculate contributions taking into account sun position
+	double light = 0.0;
+	double light_clamped = 0.0;
+
+	const std::vector<Camera::LightSource> &lightSources = camera->GetLightSources();
+	for(std::vector<Camera::LightSource>::const_iterator l = lightSources.begin();
+			l != lightSources.end(); ++l) {
+		double sunAngle;
+		// calculate the extent the sun is towards zenith
+		if (l->GetBody()){
+			// relative to the rotating frame of the planet
+			const vector3d lightDir = (l->GetBody()->GetInterpPositionRelTo(planet->GetFrame()).Normalized());
+			sunAngle = lightDir.Dot(upDir);
+		} else {
+			// light is the default light for systems without lights
+			sunAngle = 1.0;
+		}
+
+		const double critAngle = -sqrt(dist*dist-planetRadius*planetRadius)/dist;
+
+		//0 to 1 as sunangle goes from critAngle to 1.0
+		double sunAngle2 = (Clamp(sunAngle, critAngle, 1.0)-critAngle)/(1.0-critAngle);
+
+		// angle at which light begins to fade on Earth
+		const double surfaceStartAngle = 0.3;
+		// angle at which sun set completes, which should be after sun has dipped below the horizon on Earth
+		const double surfaceEndAngle = -0.18;
+
+		const double start = std::min((surfaceStartAngle*opticalThicknessFraction),1.0);
+		const double end = std::max((surfaceEndAngle*opticalThicknessFraction),-0.2);
+
+		sunAngle = (Clamp(sunAngle-critAngle, end, start)-end)/(start-end);
+
+		light += sunAngle;
+		light_clamped += sunAngle2;
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
+	}
+
+	light_clamped /= lightSources.size();
+	light /= lightSources.size();
+
+	// brightness depends on optical depth and intensity of light from all the stars
+	direct = 1.0 -  Clamp((1.0 - light),0.0,1.0) * Clamp(opticalThicknessFraction,0.0,1.0);
+
+	// ambient light fraction
+	// alter ratio between directly and ambiently lit portions towards ambiently lit as sun sets
+	const double fraction = ( 0.2 + 0.8 * (1.0-light_clamped) ) * Clamp(opticalThicknessFraction,0.0,1.0);
+
+	// fraction of light left over to be lit directly
+	direct = (1.0-fraction)*direct;
+
+	// scale ambient by amount of light
+	ambient = fraction*(Clamp((light),0.0,1.0))*0.25;
+
+	ambient = std::max(minAmbient, ambient);
+}
+
+// setLighting: set renderer lights according to current position and sun
+// positions. Original lighting is passed back in oldLights, oldAmbient, and
+// should be reset after rendering with ModelBody::ResetLighting.
+void ModelBody::SetLighting(Graphics::Renderer *r, const Camera *camera, std::vector<Graphics::Light> &oldLights, Color &oldAmbient) {
+	std::vector<Graphics::Light> newLights;
+	double ambient, direct;
+	CalcLighting(ambient, direct, camera);
+	const std::vector<Camera::LightSource> &lightSources = camera->GetLightSources();
+	newLights.reserve(lightSources.size());
+	oldLights.reserve(lightSources.size());
+	for(size_t i = 0; i < lightSources.size(); i++) {
+		Graphics::Light light(lightSources[i].GetLight());
+
+		oldLights.push_back(light);
+
+		const float intensity = direct * camera->ShadowedIntensity(i, this);
+
+		Color c = light.GetDiffuse();
+		Color cs = light.GetSpecular();
+		c.r*=float(intensity);
+		c.g*=float(intensity);
+		c.b*=float(intensity);
+		cs.r*=float(intensity);
+		cs.g*=float(intensity);
+		cs.b*=float(intensity);
+		light.SetDiffuse(c);
+		light.SetSpecular(cs);
+
+		newLights.push_back(light);
+	}
+
+	oldAmbient = r->GetAmbientColor();
+	r->SetAmbientColor(Color(ambient*255));
+	r->SetLights(newLights.size(), &newLights[0]);
+}
+
+<<<<<<< HEAD
 // Calculates the ambiently and directly lit portions of the lighting model taking into account the atmosphere and sun positions at a given location
 // 1. Calculates the amount of direct illumination available taking into account
 //    * multiple suns
@@ -284,6 +618,8 @@ void ModelBody::SetLighting(Graphics::Renderer *r, const Camera *camera, std::ve
 	r->SetLights(newLights.size(), &newLights[0]);
 }
 
+=======
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 void ModelBody::ResetLighting(Graphics::Renderer *r, const std::vector<Graphics::Light> &oldLights, const Color &oldAmbient) {
 	// restore old lights
 	if (!oldLights.empty())
@@ -314,4 +650,16 @@ void ModelBody::RenderModel(Graphics::Renderer *r, const Camera *camera, const v
 
 	if (setLighting)
 		ResetLighting(r, oldLights, oldAmbient);
+<<<<<<< HEAD
+=======
+}
+
+void ModelBody::TimeStepUpdate(const float timestep)
+{
+	if (m_idleAnimation)
+		// step animation by timestep/total length, loop to 0.0 if it goes >= 1.0
+		m_idleAnimation->SetProgress(fmod(m_idleAnimation->GetProgress() + timestep / m_idleAnimation->GetDuration(), 1.0));
+
+	m_model->UpdateAnimations();
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 }

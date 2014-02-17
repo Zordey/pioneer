@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
+// Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "Win32Setup.h"
@@ -123,7 +127,11 @@ namespace FileSystem {
 			}
 			size_t size = size_t(large_size.QuadPart);
 
+<<<<<<< HEAD
 			char *data = reinterpret_cast<char*>(std::malloc(size));
+=======
+			char *data = static_cast<char*>(std::malloc(size));
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 			if (!data) {
 				// XXX handling memory allocation failure gracefully is too hard right now
 				fprintf(stderr, "failed when allocating buffer for '%s'\n", fullpath.c_str());
@@ -138,7 +146,11 @@ namespace FileSystem {
 			}
 
 			DWORD read_size;
+<<<<<<< HEAD
 			BOOL ret = ::ReadFile(filehandle, reinterpret_cast<LPVOID>(data), (DWORD)size, &read_size, 0);
+=======
+			BOOL ret = ::ReadFile(filehandle, static_cast<LPVOID>(data), (DWORD)size, &read_size, 0);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 			if (!ret) {
 				fprintf(stderr, "error while reading file '%s'\n", fullpath.c_str());
 				CloseHandle(filehandle);

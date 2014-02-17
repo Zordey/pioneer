@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
+// Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "FontCache.h"
@@ -16,7 +20,12 @@ RefCountedPtr<Text::TextureFont> FontCache::GetTextureFont(const std::string &na
 	float scale[2];
 	Gui::Screen::GetCoords2Pixels(scale);
 
+<<<<<<< HEAD
 	const std::string &lang = Lang::GetCurrentLanguage();
+=======
+	// XXX reload the font on lang change
+	const std::string &lang = Lang::GetCore().GetLangCode();
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 	const Text::FontDescriptor desc =
 		Text::FontDescriptor::Load(FileSystem::gameDataFiles, "fonts/" + name + ".ini", lang, scale[0], scale[1]);

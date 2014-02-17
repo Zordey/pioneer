@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
+// Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #ifndef _FRUSTUM_H
@@ -15,10 +19,16 @@ namespace Graphics {
 // the one used for rendering
 class Frustum {
 public:
+<<<<<<< HEAD
 	static Frustum FromGLState();
 
 	// create for specified values
 	Frustum(float width, float height, float fovAng, float nearClip, float farClip);
+=======
+	// create for specified values
+	Frustum(float width, float height, float fovAng, float nearClip, float farClip);
+	Frustum(const matrix4x4d &modelview, const matrix4x4d &projection);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 	// apply the saved frustum
 	void Enable();
@@ -39,7 +49,10 @@ private:
 	Frustum();
 
 	void InitFromMatrix(const matrix4x4d &m);
+<<<<<<< HEAD
 	void InitFromGLState();
+=======
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 	struct Plane {
 		double a, b, c, d;

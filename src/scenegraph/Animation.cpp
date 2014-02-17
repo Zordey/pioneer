@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
+// Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "Animation.h"
@@ -61,7 +65,11 @@ void Animation::Interpolate()
 				double diffTime = b.time - a.time;
 				assert(diffTime > 0.0);
 				const float factor = Clamp(float((mtime - a.time) / diffTime), 0.f, 1.f);
+<<<<<<< HEAD
 				trans = Quaternionf::Nlerp(a.rotation, b.rotation, factor).ToMatrix3x3<float>();
+=======
+				trans = Quaternionf::Slerp(a.rotation, b.rotation, factor).ToMatrix3x3<float>();
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 			} else {
 				trans = a.rotation.ToMatrix3x3<float>();
 			}

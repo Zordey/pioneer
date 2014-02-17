@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
+// Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "ShipCpanelMultiFuncDisplays.h"
@@ -33,6 +37,7 @@ static const unsigned int SCANNER_STEPS = 100;
 enum ScannerBlobWeight { WEIGHT_LIGHT, WEIGHT_HEAVY };
 
 // XXX target colours should be unified throughout the game
+<<<<<<< HEAD
 static const Color scannerNavTargetColour     = Color( 0,      1.0f,   0      );
 static const Color scannerCombatTargetColour  = Color( 1.0f,   0,      0      );
 static const Color scannerStationColour       = Color( 1.0f,   1.0f,   1.0f   );
@@ -41,6 +46,16 @@ static const Color scannerMissileColour       = Color( 0.941f, 0.149f, 0.196f );
 static const Color scannerPlayerMissileColour = Color( 0.953f, 0.929f, 0.114f );
 static const Color scannerCargoColour         = Color( 0.65f,  0.65f,  0.65f  );
 static const Color scannerCloudColour         = Color( 0.5f,   0.5f,   1.0f   );
+=======
+static const Color scannerNavTargetColour     = Color( 0,   255, 0   );
+static const Color scannerCombatTargetColour  = Color( 255, 0,   0   );
+static const Color scannerStationColour       = Color( 255, 255, 255 );
+static const Color scannerShipColour          = Color( 243, 237, 29  );
+static const Color scannerMissileColour       = Color( 240, 38,  50  );
+static const Color scannerPlayerMissileColour = Color( 243, 237, 29  );
+static const Color scannerCargoColour         = Color( 166, 166, 166 );
+static const Color scannerCloudColour         = Color( 128, 128, 255 );
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 MsgLogWidget::MsgLogWidget()
 {
@@ -183,13 +198,18 @@ void ScannerWidget::Draw()
 
 	// disc
 	m_renderer->SetBlendMode(BLEND_ALPHA);
+<<<<<<< HEAD
 	Color green(0.f, 1.f, 0.f, 0.1f);
+=======
+	Color green(0, 255, 0, 26);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 	// XXX 2d vertices
 	VertexArray va(ATTRIB_POSITION | ATTRIB_DIFFUSE, 128); //reserve some space for positions & colors
 	va.Add(vector3f(m_x, m_y, 0.f), green);
 	for (float a = 0; a < 2 * float(M_PI); a += float(M_PI) * 0.02f) {
 		va.Add(vector3f(m_x + m_x * sin(a), m_y + SCANNER_YSHRINK * m_y * cos(a), 0.f), green);
+<<<<<<< HEAD
 	}
 	va.Add(vector3f(m_x, m_y + SCANNER_YSHRINK * m_y, 0.f), green);
 	m_renderer->DrawTriangles(&va, Graphics::vtxColorMaterial, TRIANGLE_FAN);
@@ -200,6 +220,19 @@ void ScannerWidget::Draw()
 	glScalef(m_x, m_y, 1.0f);
 	DrawRingsAndSpokes(false);
 	glPopMatrix();
+=======
+	}
+	va.Add(vector3f(m_x, m_y + SCANNER_YSHRINK * m_y, 0.f), green);
+	m_renderer->DrawTriangles(&va, Graphics::vtxColorMaterial, TRIANGLE_FAN);
+
+	// circles and spokes
+	{
+		Graphics::Renderer::MatrixTicket ticket(m_renderer, Graphics::MatrixMode::MODELVIEW);
+		m_renderer->Translate(m_x, m_y, 0);
+		m_renderer->Scale(m_x, m_y, 1.0f);
+		DrawRingsAndSpokes(false);
+	}
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 	// objects above
 	if (!m_contacts.empty()) DrawBlobs(false);
@@ -287,6 +320,17 @@ void ScannerWidget::Update()
 
 			default:
 				continue;
+<<<<<<< HEAD
+		}
+
+		m_contacts.push_back(c);
+	}
+
+	if (KeyBindings::increaseScanRange.IsActive()) {
+		if (m_mode == SCANNER_MODE_AUTO) {
+			m_manualRange = m_targetRange;
+			m_mode = SCANNER_MODE_MANUAL;
+=======
 		}
 
 		m_contacts.push_back(c);
@@ -328,8 +372,44 @@ void ScannerWidget::Update()
 			default:
 				m_targetRange = SCANNER_RANGE_MAX;
 				break;
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
+		}
+		else
+			m_manualRange = m_currentRange;
+		m_manualRange = Clamp(m_manualRange * 1.05f, SCANNER_RANGE_MIN, SCANNER_RANGE_MAX);
+	}
+<<<<<<< HEAD
+	else if (KeyBindings::decreaseScanRange.IsActive()) {
+		if (m_mode == SCANNER_MODE_AUTO) {
+			m_manualRange = m_targetRange;
+			m_mode = SCANNER_MODE_MANUAL;
+		}
+		else
+			m_manualRange = m_currentRange;
+		m_manualRange = Clamp(m_manualRange * 0.95f, SCANNER_RANGE_MIN, SCANNER_RANGE_MAX);
+	}
+
+	if (m_mode == SCANNER_MODE_AUTO) {
+		switch (range_type) {
+			case RANGE_COMBAT:
+				m_targetRange = Clamp(combat_dist * A_BIT, SCANNER_RANGE_MIN, SCANNER_RANGE_MAX);
+				break;
+			case RANGE_FAR_SHIP:
+				m_targetRange = Clamp(far_ship_dist * A_BIT, SCANNER_RANGE_MIN, SCANNER_RANGE_MAX);
+				break;
+			case RANGE_NAV:
+				m_targetRange = Clamp(nav_dist * A_BIT, SCANNER_RANGE_MIN, SCANNER_RANGE_MAX);
+				break;
+			case RANGE_FAR_OTHER:
+				m_targetRange = Clamp(far_other_dist * A_BIT, SCANNER_RANGE_MIN, SCANNER_RANGE_MAX);
+				break;
+			default:
+				m_targetRange = SCANNER_RANGE_MAX;
+				break;
 		}
 	}
+=======
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 	else
 		m_targetRange = m_manualRange;
@@ -382,6 +462,7 @@ void ScannerWidget::DrawBlobs(bool below)
 
 			default:
 				continue;
+<<<<<<< HEAD
 		}
 
 		float pointSize = 1.f;
@@ -394,6 +475,20 @@ void ScannerWidget::DrawBlobs(bool below)
 			pointSize = 4.f;
 		}
 
+=======
+		}
+
+		float pointSize = 1.f;
+		if (weight == WEIGHT_LIGHT) {
+			glLineWidth(1);
+			pointSize = 3.f;
+		}
+		else {
+			glLineWidth(2);
+			pointSize = 4.f;
+		}
+
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		vector3d pos = i->pos * Pi::player->GetOrient();
 		if ((pos.y > 0) && (below)) continue;
 		if ((pos.y < 0) && (!below)) continue;
@@ -422,6 +517,7 @@ void ScannerWidget::GenerateBaseGeometry()
 	for (unsigned int i = 1; i < SCANNER_STEPS; i++, a += step) {
 		vector2f v = vector2f(sin(a), SCANNER_YSHRINK * cos(a));
 		m_circle.push_back(v); m_circle.push_back(v);
+<<<<<<< HEAD
 	}
 	m_circle.push_back(vector2f(0.0f, SCANNER_YSHRINK));
 
@@ -496,6 +592,83 @@ void ScannerWidget::TimeStepUpdate(float step)
 	else if (m_targetRange > m_currentRange)
 		m_currentRange = Clamp(m_currentRange + (m_currentRange*step), SCANNER_RANGE_MIN, m_targetRange);
 
+=======
+	}
+	m_circle.push_back(vector2f(0.0f, SCANNER_YSHRINK));
+
+	// spokes
+	m_spokes.clear();
+	for (float ang = 0; ang < circle; ang += float(M_PI * 0.25)) {
+		m_spokes.push_back(vector2f(0.1f * sin(ang), 0.1f * SCANNER_YSHRINK * cos(ang)));
+		m_spokes.push_back(vector2f(sin(ang), SCANNER_YSHRINK * cos(ang)));
+	}
+}
+
+void ScannerWidget::GenerateRingsAndSpokes()
+{
+	int csize = m_circle.size();
+	int ssize = m_spokes.size();
+	m_vts.clear();
+
+	// inner circle
+	for (int i=0; i<csize; i++) m_vts.push_back(m_circle[i] * 0.1f);
+
+	// dynamic circles
+	for (int p = 0; p < 7; ++p) {
+		float sz = (pow(2.0f, p) * 1000.0f) / m_currentRange;
+		if (sz <= 0.1f) continue;
+		if (sz >= 1.0f) break;
+		for (int i=0; i<csize; i++) m_vts.push_back(m_circle[i] * sz);
+	}
+
+	// spokes
+	for (int i=0; i<ssize; i++) m_vts.push_back(m_spokes[i]);
+
+	// outer ring
+	m_edgeVts.clear();
+	m_edgeCols.clear();
+	int dimstart = 2 * int(SCANNER_STEPS * m_currentRange / SCANNER_RANGE_MAX);
+	float a = 2.0f * M_PI * m_currentRange / SCANNER_RANGE_MAX;
+	vector3f vn(sin(a), SCANNER_YSHRINK * cos(a), 0.0f);
+
+	// bright part
+	Color col = Color(178, 178, 0, 128);
+	if (m_mode == SCANNER_MODE_AUTO) {
+		// green like the scanner to indicate that the scanner is controlling the range
+		col = Color(0, 178, 0, 128);
+	}
+	for (int i=0; i<=dimstart; i++) {
+		if (i == csize) return;			// whole circle bright case
+		m_edgeVts.push_back(vector3f(m_circle[i].x, m_circle[i].y, 0.0f));
+		m_edgeCols.push_back(col);
+	}
+	m_edgeVts.push_back(vn); m_edgeCols.push_back(col);
+
+	// dim part
+	col = Color(51, 77, 51, 128);
+	m_edgeVts.push_back(vn); m_edgeCols.push_back(col);
+	for (int i=dimstart+1; i<csize; i++) {
+		m_edgeVts.push_back(vector3f(m_circle[i].x, m_circle[i].y, 0.0f));
+		m_edgeCols.push_back(col);
+	}
+}
+
+void ScannerWidget::DrawRingsAndSpokes(bool blend)
+{
+	Color col(0, 102, 0, 128);
+	m_renderer->DrawLines2D(m_vts.size(), &m_vts[0], col);
+	m_renderer->DrawLines(m_edgeVts.size(), &m_edgeVts[0], &m_edgeCols[0]);
+}
+
+void ScannerWidget::TimeStepUpdate(float step)
+{
+	PROFILE_SCOPED()
+	if (m_targetRange < m_currentRange)
+		m_currentRange = Clamp(m_currentRange - (m_currentRange*step), m_targetRange, SCANNER_RANGE_MAX);
+	else if (m_targetRange > m_currentRange)
+		m_currentRange = Clamp(m_currentRange + (m_currentRange*step), SCANNER_RANGE_MIN, m_targetRange);
+
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	m_scale = SCANNER_SCALE * (SCANNER_RANGE_MAX / m_currentRange);
 }
 

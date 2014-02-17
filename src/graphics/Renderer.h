@@ -1,11 +1,22 @@
+<<<<<<< HEAD
 // Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
+// Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #ifndef _RENDERER_H
 #define _RENDERER_H
 
+<<<<<<< HEAD
 #include "libs.h"
 #include <map>
+=======
+#include "WindowSDL.h"
+#include "libs.h"
+#include <map>
+#include <memory>
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 namespace Graphics {
 
@@ -35,7 +46,10 @@ namespace Graphics {
 class Light;
 class Material;
 class MaterialDescriptor;
+<<<<<<< HEAD
 class RendererLegacy;
+=======
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 class RenderTarget;
 class StaticMesh;
 class Surface;
@@ -69,15 +83,35 @@ enum BlendMode {
 	BLEND_DEST_ALPHA // XXX maybe crappy name
 };
 
+<<<<<<< HEAD
+=======
+enum class MatrixMode {
+	MODELVIEW,
+	PROJECTION
+};
+
+
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Renderer base, functions return false if
 // failed/unsupported
 class Renderer
 {
 public:
+<<<<<<< HEAD
 	Renderer(int width, int height);
 	virtual ~Renderer();
 
 	virtual const char* GetName() const = 0;
+=======
+	Renderer(WindowSDL *win, int width, int height);
+	virtual ~Renderer();
+
+	virtual const char* GetName() const = 0;
+
+	WindowSDL *GetWindow() const { return m_window.get(); }
+	float GetDisplayAspect() const { return static_cast<float>(m_width) / static_cast<float>(m_height); }
+
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	//get supported minimum for z near and maximum for z far values
 	virtual bool GetNearFarRange(float &near, float &far) const = 0;
 
@@ -103,6 +137,10 @@ public:
 	//set projection matrix
 	virtual bool SetPerspectiveProjection(float fov, float aspect, float near, float far) { return false; }
 	virtual bool SetOrthographicProjection(float xmin, float xmax, float ymin, float ymax, float zmin, float zmax) { return false; }
+<<<<<<< HEAD
+=======
+	virtual bool SetProjection(const matrix4x4f &m) { return false; }
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 	//render state functions
 	virtual bool SetBlendMode(BlendMode type) { return false; }
@@ -111,6 +149,10 @@ public:
 	virtual bool SetDepthWrite(bool enabled) { return false; }
 	virtual bool SetWireFrameMode(bool enabled) { return false; }
 
+<<<<<<< HEAD
+=======
+	virtual bool SetLightsEnabled(const bool enabled) { return false; }
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	virtual bool SetLights(int numlights, const Light *l) { return false; }
 	virtual bool SetAmbientColor(const Color &c) { return false; }
 	const Color &GetAmbientColor() const { return m_ambient; }
@@ -150,8 +192,29 @@ public:
 
 	virtual bool ReloadShaders() { return false; }
 
+<<<<<<< HEAD
 	// take a ticket representing the current renderer state. when the ticket
 	// is deleted, the renderer state is restored
+=======
+	// our own matrix stack
+	// XXX state must die
+	virtual const matrix4x4f& GetCurrentModelView() const  = 0;
+	virtual const matrix4x4f& GetCurrentProjection() const  = 0;
+	virtual void GetCurrentViewport(Sint32 *vp) const  = 0;
+
+	// XXX all quite GL specific. state must die!
+	virtual void SetMatrixMode(MatrixMode mm) = 0;
+	virtual void PushMatrix() = 0;
+	virtual void PopMatrix() = 0;
+	virtual void LoadIdentity() = 0;
+	virtual void LoadMatrix(const matrix4x4f &m) = 0;
+	virtual void Translate( const float x, const float y, const float z ) = 0;
+	virtual void Scale( const float x, const float y, const float z ) = 0;
+
+	// take a ticket representing the current renderer state. when the ticket
+	// is deleted, the renderer state is restored
+	// XXX state must die
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	class StateTicket {
 	public:
 		StateTicket(Renderer *r) : m_renderer(r) { m_renderer->PushState(); }
@@ -162,6 +225,29 @@ public:
 		Renderer *m_renderer;
 	};
 
+<<<<<<< HEAD
+=======
+	// take a ticket representing a single state matrix. when the ticket is
+	// deleted, the previous matrix state is restored
+	// XXX state must die
+	class MatrixTicket {
+	public:
+		MatrixTicket(Renderer *r, MatrixMode m) : m_renderer(r), m_matrixMode(m) {
+			m_renderer->SetMatrixMode(m_matrixMode);
+			m_renderer->PushMatrix();
+		}
+		virtual ~MatrixTicket() {
+			m_renderer->SetMatrixMode(m_matrixMode);
+			m_renderer->PopMatrix();
+		}
+	private:
+		MatrixTicket(const MatrixTicket&);
+		MatrixTicket &operator=(const MatrixTicket&);
+		Renderer *m_renderer;
+		MatrixMode m_matrixMode;
+	};
+
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 protected:
 	int m_width;
 	int m_height;
@@ -175,10 +261,18 @@ private:
 	typedef std::map<TextureCacheKey,RefCountedPtr<Texture>*> TextureCacheMap;
 	TextureCacheMap m_textures;
 
+<<<<<<< HEAD
 };
 
 // subclass this to store renderer specific information
 // See top of RendererLegacy.cpp
+=======
+	std::unique_ptr<WindowSDL> m_window;
+};
+
+// subclass this to store renderer specific information
+// See top of RendererGL2.cpp
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 struct RenderInfo {
 	RenderInfo() { }
 	virtual ~RenderInfo() { }
@@ -188,6 +282,7 @@ struct RenderInfo {
 // can store renderer-specific data in it (RenderInfo)
 struct Renderable : public RefCounted {
 public:
+<<<<<<< HEAD
 	Renderable(): m_renderInfo(0) {}
 
 	RenderInfo *GetRenderInfo() const { return m_renderInfo.Get(); }
@@ -195,6 +290,15 @@ public:
 
 private:
 	ScopedPtr<RenderInfo> m_renderInfo;
+=======
+	Renderable(): m_renderInfo(nullptr) {}
+
+	RenderInfo *GetRenderInfo() const { return m_renderInfo.get(); }
+	void SetRenderInfo(RenderInfo *renderInfo) { m_renderInfo.reset(renderInfo); }
+
+private:
+	std::unique_ptr<RenderInfo> m_renderInfo;
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 };
 
 }

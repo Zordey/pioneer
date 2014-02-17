@@ -15,6 +15,10 @@ mesh pumpkinseed_2med.dae
 
 lod 300
 mesh pumpkinseed_1hi.dae
+<<<<<<< HEAD
+=======
+mesh pumpkinseed_shield.dae
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 collision pumpkinseed_collision.dae
 

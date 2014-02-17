@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
+// Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "libs.h"
@@ -27,8 +31,13 @@ namespace FileSystem {
 		if (!path.empty() && path[0] == '/') { return path; }
 		else {
 			const size_t bufsize = 512;
+<<<<<<< HEAD
 			ScopedMalloc<char> buf(std::malloc(bufsize));
 			char *cwd = getcwd(buf.Get(), bufsize);
+=======
+			std::unique_ptr<char, FreeDeleter> buf(static_cast<char*>(std::malloc(bufsize)));
+			char *cwd = getcwd(buf.get(), bufsize);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 			if (!cwd) {
 				fprintf(stderr, "failed to get current working directory\n");
 				abort();
@@ -128,7 +137,11 @@ namespace FileSystem {
 			fseek(fl, 0, SEEK_END);
 			long sz = ftell(fl);
 			fseek(fl, 0, SEEK_SET);
+<<<<<<< HEAD
 			char *data = reinterpret_cast<char*>(std::malloc(sz));
+=======
+			char *data = static_cast<char*>(std::malloc(sz));
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 			if (!data) {
 				// XXX handling memory allocation failure gracefully is too hard right now
 				fprintf(stderr, "failed when allocating buffer for '%s'\n", fullpath.c_str());

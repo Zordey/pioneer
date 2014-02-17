@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
+// Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "View.h"
@@ -7,7 +11,11 @@
 
 View::View(): Gui::Fixed(float(Gui::Screen::GetWidth()), float(Gui::Screen::GetHeight()-64)) {
 	m_rightButtonBar = new Gui::Fixed(128, 26);
+<<<<<<< HEAD
 	m_rightButtonBar->SetBgColor(.65f, .65f, .65f, 1.0f);
+=======
+	m_rightButtonBar->SetBgColor(Color(160,160,160,255));
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 	m_rightRegion2 = new Gui::Fixed(126, 17);
 	m_rightRegion2->SetTransparency(true);

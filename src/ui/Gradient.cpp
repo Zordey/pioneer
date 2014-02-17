@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
+// Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "Gradient.h"
@@ -14,7 +18,11 @@ Gradient::Gradient(Context *context, const Color &beginColor, const Color &endCo
 {
 	Graphics::MaterialDescriptor desc;
 	desc.vertexColors = true;
+<<<<<<< HEAD
 	m_material.Reset(GetContext()->GetRenderer()->CreateMaterial(desc));
+=======
+	m_material.reset(GetContext()->GetRenderer()->CreateMaterial(desc));
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 }
 
 void Gradient::Draw()
@@ -35,7 +43,11 @@ void Gradient::Draw()
 
 	Graphics::Renderer *r = GetContext()->GetRenderer();
 	r->SetBlendMode(Graphics::BLEND_ALPHA);
+<<<<<<< HEAD
 	r->DrawTriangles(&va, m_material.Get(), Graphics::TRIANGLE_STRIP);
+=======
+	r->DrawTriangles(&va, m_material.get(), Graphics::TRIANGLE_STRIP);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 	Container::Draw();
 }

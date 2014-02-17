@@ -1,6 +1,10 @@
 #include <cstdlib>
 #include "SDL.h"
 #include "FileSystem.h"
+<<<<<<< HEAD
+=======
+#include "OS.h"
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 #include "graphics/Graphics.h"
 #include "graphics/Renderer.h"
 #include "text/FontDescriptor.h"
@@ -18,6 +22,7 @@ int main(int argc, char **argv)
 		exit(-1);
 	}
 
+<<<<<<< HEAD
     const SDL_VideoInfo *info = SDL_GetVideoInfo();
     switch (info->vfmt->BitsPerPixel) {
         case 16:
@@ -48,14 +53,26 @@ int main(int argc, char **argv)
 
 	SDL_WM_SetCaption("textstress", "textstress");
 
+=======
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	Graphics::Settings videoSettings;
 	videoSettings.width = WIDTH;
 	videoSettings.height = HEIGHT;
 	videoSettings.fullscreen = false;
+<<<<<<< HEAD
 	videoSettings.shaders = false;
 	videoSettings.requestedSamples = 0;
 	videoSettings.vsync = false;
 	videoSettings.useTextureCompression = false;
+=======
+	videoSettings.requestedSamples = 0;
+	videoSettings.vsync = false;
+	videoSettings.useTextureCompression = false;
+	videoSettings.enableDebugMessages = false;
+	videoSettings.iconFile = OS::GetIconFilename();
+	videoSettings.title = "textstress";
+
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	Graphics::Renderer *r = Graphics::Init(videoSettings);
 
 	r->SetOrthographicProjection(0, WIDTH, HEIGHT, 0, -1, 1);
@@ -64,7 +81,11 @@ int main(int argc, char **argv)
 	r->SetBlendMode(Graphics::BLEND_ALPHA);
 	r->SetDepthTest(false);
 
+<<<<<<< HEAD
 	const Text::FontDescriptor fontDesc(Text::FontDescriptor::Load(FileSystem::gameDataFiles, "fonts/UIFont.ini", "English"));
+=======
+	const Text::FontDescriptor fontDesc(Text::FontDescriptor::Load(FileSystem::gameDataFiles, "fonts/UIFont.ini", "en"));
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	Text::TextureFont *font = new Text::TextureFont(fontDesc, r);
 
 	std::string str;

@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
+// Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "libs.h"
@@ -34,6 +38,64 @@ void Ship::AIModelCoordsMatchAngVel(vector3d desiredAngVel, double softness)
 	SetAngThrusterState(thrust);
 }
 
+<<<<<<< HEAD
+
+void Ship::AIModelCoordsMatchSpeedRelTo(const vector3d v, const Ship *other)
+{
+	vector3d relToVel = other->GetVelocity() * GetOrient() + v;
+	AIAccelToModelRelativeVelocity(relToVel);
+}
+
+
+// Try to reach this model-relative velocity.
+// (0,0,-100) would mean going 100m/s forward.
+
+void Ship::AIAccelToModelRelativeVelocity(const vector3d v)
+{
+	vector3d difVel = v - GetVelocity() * GetOrient();		// required change in velocity
+	vector3d maxThrust = GetMaxThrust(difVel);
+	vector3d maxFrameAccel = maxThrust * (Pi::game->GetTimeStep() / GetMass());
+
+	SetThrusterState(0, difVel.x / maxFrameAccel.x);
+	SetThrusterState(1, difVel.y / maxFrameAccel.y);
+	SetThrusterState(2, difVel.z / maxFrameAccel.z);	// use clamping
+}
+
+
+// returns true if command is complete
+bool Ship::AITimeStep(float timeStep)
+{
+	// allow the launch thruster thing to happen
+	if (m_launchLockTimeout > 0.0) return false;
+
+	m_decelerating = false;
+	if (!m_curAICmd) {
+		if (this == Pi::player) return true;
+
+		// just in case the AI left it on
+		ClearThrusterState();
+		for (int i=0; i<ShipType::GUNMOUNT_MAX; i++)
+			SetGunState(i,0);
+		return true;
+	}
+
+	if (m_curAICmd->TimeStepUpdate()) {
+		AIClearInstructions();
+//		ClearThrusterState();		// otherwise it does one timestep at 10k and gravity is fatal
+		LuaEvent::Queue("onAICompleted", this, EnumStrings::GetString("ShipAIError", AIMessage()));
+		return true;
+	}
+	else return false;
+}
+
+void Ship::AIClearInstructions()
+{
+	if (!m_curAICmd) return;
+
+	delete m_curAICmd;		// rely on destructor to kill children
+	m_curAICmd = 0;
+	m_decelerating = false;		// don't adjust unless AI is running
+=======
 
 void Ship::AIModelCoordsMatchSpeedRelTo(const vector3d v, const Ship *other)
 {
@@ -117,9 +179,67 @@ void Ship::AIJourney(SystemBodyPath &dest)
 {
 	AIClearInstructions();
 //	m_curAICmd = new AICmdJourney(this, dest);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 }
 */
 
+<<<<<<< HEAD
+void Ship::AIGetStatusText(char *str)
+{
+	if (!m_curAICmd) strcpy(str, "AI inactive");
+	else m_curAICmd->GetStatusText(str);
+}
+
+void Ship::AIKamikaze(Body *target)
+{
+	AIClearInstructions();
+	m_curAICmd = new AICmdKamikaze(this, target);
+}
+
+void Ship::AIKill(Ship *target)
+=======
+void Ship::AIFlyTo(Body *target)
+{
+	AIClearInstructions();
+	SetFuelReserve((GetFuel() < 0.5) ? GetFuel() / 2 : 0.25);
+
+	if (target->IsType(Object::SHIP)) {		// test code
+		vector3d posoff(-1000.0, 0.0, 1000.0);
+		m_curAICmd = new AICmdFormation(this, static_cast<Ship*>(target), posoff);
+	}
+	else m_curAICmd = new AICmdFlyTo(this, target);
+}
+
+void Ship::AIDock(SpaceStation *target)
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
+{
+	AIClearInstructions();
+	SetFuelReserve((GetFuel() < 0.5) ? GetFuel() / 2 : 0.25);
+
+<<<<<<< HEAD
+	m_curAICmd = new AICmdKill(this, target);
+}
+
+/*
+void Ship::AIJourney(SystemBodyPath &dest)
+{
+	AIClearInstructions();
+//	m_curAICmd = new AICmdJourney(this, dest);
+=======
+	m_curAICmd = new AICmdDock(this, target);
+}
+
+void Ship::AIOrbit(Body *target, double alt)
+{
+	AIClearInstructions();
+	SetFuelReserve((GetFuel() < 0.5) ? GetFuel() / 2 : 0.25);
+
+	m_curAICmd = new AICmdFlyAround(this, target, alt);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
+}
+*/
+
+<<<<<<< HEAD
 void Ship::AIFlyTo(Body *target)
 {
 	AIClearInstructions();
@@ -241,6 +361,101 @@ void Ship::AIMatchAngVelObjSpace(const vector3d &angvel)
 	double maxAccel = m_type->angThrust / GetAngularInertia();
 	double invFrameAccel = 1.0 / (maxAccel * Pi::game->GetTimeStep());
 
+=======
+void Ship::AIHoldPosition()
+{
+	AIClearInstructions();
+	m_curAICmd = new AICmdHoldPosition(this);
+}
+
+// Because of issues when reducing timestep, must do parts of this as if 1x accel
+// final frame has too high velocity to correct if timestep is reduced
+// fix is too slow in the terminal stages:
+//	if (endvel <= vel) { endvel = vel; ivel = dist / Pi::game->GetTimeStep(); }	// last frame discrete correction
+//	ivel = std::min(ivel, endvel + 0.5*acc/PHYSICS_HZ);	// unknown next timestep discrete overshoot correction
+
+// yeah ok, this doesn't work
+// sometimes endvel is too low to catch moving objects
+// worked around with half-accel hack in dynamicbody & pi.cpp
+
+double calc_ivel(double dist, double vel, double acc)
+{
+	bool inv = false;
+	if (dist < 0) { dist = -dist; vel = -vel; inv = true; }
+	double ivel = 0.9 * sqrt(vel*vel + 2.0 * acc * dist);		// fudge hardly necessary
+
+	double endvel = ivel - (acc * Pi::game->GetTimeStep());
+	if (endvel <= 0.0) ivel = dist / Pi::game->GetTimeStep();	// last frame discrete correction
+	else ivel = (ivel + endvel) * 0.5;					// discrete overshoot correction
+//	else ivel = endvel + 0.5*acc/PHYSICS_HZ;			// unknown next timestep discrete overshoot correction
+
+	return (inv) ? -ivel : ivel;
+}
+
+// version for all-positive values
+double calc_ivel_pos(double dist, double vel, double acc)
+{
+	double ivel = 0.9 * sqrt(vel*vel + 2.0 * acc * dist);		// fudge hardly necessary
+
+	double endvel = ivel - (acc * Pi::game->GetTimeStep());
+	if (endvel <= 0.0) ivel = dist / Pi::game->GetTimeStep();	// last frame discrete correction
+	else ivel = (ivel + endvel) * 0.5;					// discrete overshoot correction
+
+	return ivel;
+}
+
+// vel is desired velocity in ship's frame
+// returns true if this can be attained in a single timestep
+bool Ship::AIMatchVel(const vector3d &vel)
+{
+	vector3d diffvel = (vel - GetVelocity()) * GetOrient();
+	return AIChangeVelBy(diffvel);
+}
+
+// diffvel is required change in velocity in object space
+// returns true if this can be done in a single timestep
+bool Ship::AIChangeVelBy(const vector3d &diffvel)
+{
+	// counter external forces
+	vector3d extf = GetExternalForce() * (Pi::game->GetTimeStep() / GetMass());
+	vector3d diffvel2 = diffvel - extf * GetOrient();
+
+	vector3d maxThrust = GetMaxThrust(diffvel2);
+	vector3d maxFrameAccel = maxThrust * (Pi::game->GetTimeStep() / GetMass());
+	vector3d thrust(diffvel2.x / maxFrameAccel.x,
+					diffvel2.y / maxFrameAccel.y,
+					diffvel2.z / maxFrameAccel.z);
+	SetThrusterState(thrust);			// use clamping
+	if (thrust.x*thrust.x > 1.0 || thrust.y*thrust.y > 1.0 || thrust.z*thrust.z > 1.0) return false;
+	return true;
+}
+
+// Change object-space velocity in direction of param
+vector3d Ship::AIChangeVelDir(const vector3d &reqdiffvel)
+{
+	// get max thrust in desired direction after external force compensation
+	vector3d maxthrust = GetMaxThrust(reqdiffvel);
+	maxthrust += GetExternalForce() * GetOrient();
+	vector3d maxFA = maxthrust * (Pi::game->GetTimeStep() / GetMass());
+	maxFA.x = fabs(maxFA.x); maxFA.y = fabs(maxFA.y); maxFA.z = fabs(maxFA.z);
+
+	// crunch diffvel by relative thruster power to get acceleration in right direction
+	vector3d diffvel = reqdiffvel;
+	if (fabs(diffvel.x) > maxFA.x) diffvel *= maxFA.x / fabs(diffvel.x);
+	if (fabs(diffvel.y) > maxFA.y) diffvel *= maxFA.y / fabs(diffvel.y);
+	if (fabs(diffvel.z) > maxFA.z) diffvel *= maxFA.z / fabs(diffvel.z);
+
+	AIChangeVelBy(diffvel);		// should always return true because it's already capped?
+	return GetOrient() * (reqdiffvel - diffvel);		// should be remaining diffvel to correct
+}
+
+// Input in object space
+void Ship::AIMatchAngVelObjSpace(const vector3d &angvel)
+{
+	double maxAccel = m_type->angThrust / GetAngularInertia();
+	double invFrameAccel = 1.0 / (maxAccel * Pi::game->GetTimeStep());
+
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	vector3d diff = angvel - GetAngVelocity() * GetOrient();		// find diff between current & desired angvel
 	SetAngThrusterState(diff * invFrameAccel);
 }
@@ -314,6 +529,7 @@ double Ship::AIFaceDirection(const vector3d &dir, double av)
 // returns direction in ship's frame from this ship to target lead position
 vector3d Ship::AIGetLeadDir(const Body *target, const vector3d& targaccel, int gunindex)
 {
+<<<<<<< HEAD
 	vector3d targpos = target->GetPositionRelTo(this);
 	vector3d targvel = target->GetVelocityRelTo(this);
 	// todo: should adjust targpos for gunmount offset
@@ -328,6 +544,33 @@ vector3d Ship::AIGetLeadDir(const Body *target, const vector3d& targaccel, int g
 	// second pass
 	projtime = leadpos.Length() / projspeed;
 	leadpos = targpos + targvel*projtime + 0.5*targaccel*projtime*projtime;
+=======
+	assert(target);
+	if (m_equipment.Get(Equip::SLOT_LASER) == Equip::NONE)
+		return target->GetPositionRelTo(this).Normalized();
+
+	const vector3d targpos = target->GetPositionRelTo(this);
+	const vector3d targvel = target->GetVelocityRelTo(this);
+	// todo: should adjust targpos for gunmount offset
+
+	const int laser = Equip::types[m_equipment.Get(Equip::SLOT_LASER, gunindex)].tableIndex;
+	const double projspeed = Equip::lasers[laser].speed;
+
+	vector3d leadpos;
+	// avoid a divide-by-zero floating point exception (very nearly zero is ok)
+	if( !is_zero_exact(projspeed) ) {
+		// first attempt
+		double projtime = targpos.Length() / projspeed;
+		leadpos = targpos + targvel*projtime + 0.5*targaccel*projtime*projtime;
+
+		// second pass
+		projtime = leadpos.Length() / projspeed;
+		leadpos = targpos + targvel*projtime + 0.5*targaccel*projtime*projtime;
+	} else {
+		// default
+		leadpos = targpos;
+	}
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 	return leadpos.Normalized();
 }

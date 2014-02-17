@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
+// Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 /*
@@ -445,7 +449,11 @@ void DestroyAllEvents()
 
 static void load_sound(const std::string &basename, const std::string &path, bool is_music)
 {
+<<<<<<< HEAD
 	if (!ends_with(basename, ".ogg")) return;
+=======
+	if (!ends_with_ci(basename, ".ogg")) return;
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 	Sample sample;
 	OggVorbis_File oggv;
@@ -462,7 +470,11 @@ static void load_sound(const std::string &basename, const std::string &path, boo
 	struct vorbis_info *info;
 	info = ov_info(&oggv, -1);
 
+<<<<<<< HEAD
 	if ((info->rate != FREQ) && (info->rate != (FREQ>>1))) {
+=======
+	if ((static_cast<unsigned int>(info->rate) != FREQ) && (static_cast<unsigned int>(info->rate) != (FREQ>>1))) {
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		Error("Vorbis file %s is not %dHz or %dHz. Bad!", path.c_str(), FREQ, FREQ>>1);
 	}
 	if ((info->channels < 1) || (info->channels > 2)) {

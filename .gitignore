@@ -43,6 +43,11 @@ configure
 depcomp
 install-sh
 missing
+<<<<<<< HEAD
+=======
+compile
+test-driver
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 stamp-h1
 *~
 *.orig
@@ -50,3 +55,8 @@ pioneer-*.tar.*
 Thumbs.db
 *.wwdb
 gmon.out
+<<<<<<< HEAD
+=======
+.project
+.cproject
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755

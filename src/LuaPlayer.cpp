@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
+// Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "LuaObject.h"
@@ -9,6 +13,10 @@
 #include "Pi.h"
 #include "Game.h"
 #include "SectorView.h"
+<<<<<<< HEAD
+=======
+#include "EnumStrings.h"
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 /*
  * Class: Player
@@ -23,6 +31,7 @@ static int l_player_is_player(lua_State *l)
 }
 
 /*
+<<<<<<< HEAD
  * Method: GetMoney
  *
  * Get the player's current money
@@ -109,6 +118,8 @@ static int l_player_add_money(lua_State *l)
 }
 
 /*
+=======
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
  * Method: AddCrime
  *
  * Add a crime to the player's criminal record
@@ -138,6 +149,39 @@ static int l_player_add_crime(lua_State *l)
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+// XXX temporary until crime is moved out to Lua properly
+static int l_player_get_crime(lua_State *l)
+{
+	LuaObject<Player>::CheckFromLua(1); // check that the method is being called on a Player object
+
+	Sint64 crimeBitset, fine;
+	Polit::GetCrime(&crimeBitset, &fine);
+
+	lua_newtable(l);
+	for (Sint64 i = 0; i < 4; i++) { // hardcoding 4 possible Polit::Crime flags
+		if (crimeBitset & (Sint64(1)<<i)) {
+			lua_pushstring(l, EnumStrings::GetString("PolitCrime", 1<<i));
+			lua_rawseti(l, -2, lua_rawlen(l, -2)+1);
+		}
+	}
+
+	lua_pushnumber(l, double(fine) * 0.01);
+
+	return 2;
+}
+
+static int l_player_clear_crime_fine(lua_State *l)
+{
+	LuaObject<Player>::CheckFromLua(1); // check that the method is being called on a Player object
+	Sint64 crimeBitset, fine;
+	Polit::GetCrime(&crimeBitset, &fine);
+	Polit::AddCrime(0, -fine);
+	return 0;
+}
+
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 /*
  * Method: GetNavTarget
  *
@@ -323,11 +367,17 @@ template <> void LuaObject<Player>::RegisterClass()
 	static const luaL_Reg l_methods[] = {
 		{ "IsPlayer", l_player_is_player },
 
+<<<<<<< HEAD
 		{ "GetMoney", l_player_get_money },
 		{ "SetMoney", l_player_set_money },
 		{ "AddMoney", l_player_add_money },
 
 		{ "AddCrime",      l_player_add_crime },
+=======
+		{ "AddCrime",       l_player_add_crime },
+		{ "GetCrime",       l_player_get_crime },
+		{ "ClearCrimeFine", l_player_clear_crime_fine },
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 		{ "GetNavTarget",    l_get_nav_target    },
 		{ "SetNavTarget",    l_set_nav_target    },

@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
+// Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "libs.h"
@@ -163,7 +167,11 @@ static void enumerateNewBuildings(std::vector<std::string> &filenames)
 	const std::string fullpath = FileSystem::JoinPathBelow("models", "buildings");
 	for (FileSystem::FileEnumerator files(FileSystem::gameDataFiles, fullpath, FileSystem::FileEnumerator::Recurse); !files.Finished(); files.Next()) {
 		const std::string &name = files.Current().GetName();
+<<<<<<< HEAD
 		if (ends_with(name, ".model")) {
+=======
+		if (ends_with_ci(name, ".model")) {
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 			filenames.push_back(name.substr(0, name.length()-6));
 		}
 	}
@@ -250,8 +258,13 @@ void CityOnPlanet::SetCityModelPatterns(const SystemPath &path)
 		SceneGraph::Model *m = (*it);
 		if (!m->SupportsPatterns()) continue;
 		skin.SetRandomColors(rand);
+<<<<<<< HEAD
 		skin.SetPattern(rand.Int32(0, m->GetNumPatterns()));
 		skin.Apply(m);
+=======
+		skin.Apply(m);
+		m->SetPattern(rand.Int32(0, m->GetNumPatterns()));
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	}
 }
 

@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
+// Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "Frame.h"
@@ -84,6 +88,10 @@ void Frame::Init(Frame *parent, const char *label, unsigned int flags)
 	m_vel = vector3d(0.0);
 	m_angSpeed = 0.0;
 	m_orient = matrix3x3d::Identity();
+<<<<<<< HEAD
+=======
+	m_initialOrient = matrix3x3d::Identity();
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	ClearMovement();
 	m_collisionSpace = new CollisionSpace();
 	if (m_parent) m_parent->AddChild(this);
@@ -100,6 +108,10 @@ Frame::~Frame()
 
 void Frame::RemoveChild(Frame *f)
 {
+<<<<<<< HEAD
+=======
+	PROFILE_SCOPED()
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	const std::vector<Frame*>::iterator it
 		= std::find(m_children.begin(), m_children.end(), f);
 	if (it != m_children.end())
@@ -149,6 +161,7 @@ vector3d Frame::GetInterpPositionRelTo(const Frame *relTo) const
 	if (relTo->IsRotFrame()) return diff * relTo->m_rootInterpOrient;
 	else return diff;
 }
+<<<<<<< HEAD
 
 matrix3x3d Frame::GetOrientRelTo(const Frame *relTo) const
 {
@@ -173,6 +186,33 @@ void Frame::UpdateInterpTransform(double alpha)
 {
 	m_interpPos = alpha*m_pos + (1.0-alpha)*m_oldPos;
 
+=======
+
+matrix3x3d Frame::GetOrientRelTo(const Frame *relTo) const
+{
+	if (this == relTo) return matrix3x3d::Identity();
+	return relTo->m_rootOrient.Transpose() * m_rootOrient;
+}
+
+matrix3x3d Frame::GetInterpOrientRelTo(const Frame *relTo) const
+{
+	if (this == relTo) return matrix3x3d::Identity();
+	return relTo->m_rootInterpOrient.Transpose() * m_rootInterpOrient;
+/*	if (IsRotFrame()) {
+		if (relTo->IsRotFrame()) return m_interpOrient * relTo->m_interpOrient.Transpose();
+		else return m_interpOrient;
+	}
+	if (relTo->IsRotFrame()) return relTo->m_interpOrient.Transpose();
+	else return matrix3x3d::Identity();
+*/
+}
+
+void Frame::UpdateInterpTransform(double alpha)
+{
+	PROFILE_SCOPED()
+	m_interpPos = alpha*m_pos + (1.0-alpha)*m_oldPos;
+
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	double len = m_oldAngDisplacement * (1.0-alpha);
 	if (!is_zero_exact(len)) {			// very small values are normal here
 		matrix3x3d rot = matrix3x3d::RotateY(len);		// RotateY is backwards
@@ -214,6 +254,7 @@ void Frame::ClearMovement()
 	m_interpOrient = m_orient;
 	m_oldAngDisplacement = 0.0;
 }
+<<<<<<< HEAD
 
 void Frame::UpdateOrbitRails(double time, double timestep)
 {
@@ -234,6 +275,27 @@ void Frame::UpdateOrbitRails(double time, double timestep)
 	if (!is_zero_exact(ang)) {			// frequently used with e^-10 etc
 		matrix3x3d rot = matrix3x3d::RotateY(-ang);		// RotateY is backwards
 		m_orient = m_orient * rot;		// angvel always +y
+=======
+
+void Frame::UpdateOrbitRails(double time, double timestep)
+{
+	m_oldPos = m_pos;
+	m_oldAngDisplacement = m_angSpeed * timestep;
+
+	// update frame position and velocity
+	if (m_parent && m_sbody && !IsRotFrame()) {
+		m_pos = m_sbody->orbit.OrbitalPosAtTime(time);
+		vector3d pos2 = m_sbody->orbit.OrbitalPosAtTime(time+timestep);
+		m_vel = (pos2 - m_pos) / timestep;
+	}
+	// temporary test thing
+	else m_pos = m_pos + m_vel * timestep;
+	
+	// update frame rotation
+	double ang = fmod(m_angSpeed * time, 2.0 * M_PI);
+	if (!is_zero_exact(ang)) {			// frequently used with e^-10 etc
+		matrix3x3d rot = matrix3x3d::RotateY(-ang);		// RotateY is backwards
+		m_orient = m_initialOrient * rot;		// angvel always +y
 	}
 	UpdateRootRelativeVars();			// update root-relative pos/vel/orient
 
@@ -241,6 +303,36 @@ void Frame::UpdateOrbitRails(double time, double timestep)
 		(*it)->UpdateOrbitRails(time, timestep);
 }
 
+void Frame::SetInitialOrient(const matrix3x3d &m, double time) {
+	m_initialOrient = m;
+	double ang = fmod(m_angSpeed * time, 2.0 * M_PI);
+	if (!is_zero_exact(ang)) {			// frequently used with e^-10 etc
+		matrix3x3d rot = matrix3x3d::RotateY(-ang);		// RotateY is backwards
+		m_orient = m_initialOrient * rot;		// angvel always +y
+	} else {
+		m_orient = m_initialOrient;
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
+	}
+	UpdateRootRelativeVars();			// update root-relative pos/vel/orient
+
+	for (ChildIterator it = m_children.begin(); it != m_children.end(); ++it)
+		(*it)->UpdateOrbitRails(time, timestep);
+}
+
+<<<<<<< HEAD
+=======
+void Frame::SetOrient(const matrix3x3d &m, double time) {
+	m_orient = m;
+	double ang = fmod(m_angSpeed * time, 2.0 * M_PI);
+	if (!is_zero_exact(ang)) {			// frequently used with e^-10 etc
+		matrix3x3d rot = matrix3x3d::RotateY(ang);		// RotateY is backwards
+		m_initialOrient = m_orient * rot;		// angvel always +y
+	} else {
+		m_initialOrient = m_orient;
+	}
+}
+
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 void Frame::UpdateRootRelativeVars()
 {
 	// update pos & vel relative to parent frame

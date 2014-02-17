@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
+// Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "libs.h"
@@ -90,8 +94,13 @@ float VScrollPortal::GetScrollPixels()
 
 bool VScrollPortal::OnMouseDown(MouseButtonEvent *e)
 {
+<<<<<<< HEAD
 	if (e->button == SDL_BUTTON_WHEELUP || e->button == SDL_BUTTON_WHEELDOWN) {
 		float change = e->button == SDL_BUTTON_WHEELUP ? -0.1 : 0.1;
+=======
+	if (e->button == MouseButtonEvent::BUTTON_WHEELUP || e->button == MouseButtonEvent::BUTTON_WHEELDOWN) {
+		float change = e->button == MouseButtonEvent::BUTTON_WHEELUP ? -0.1 : 0.1;
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		float pos = vscrollAdjust.GetValue();
 		vscrollAdjust.SetValue(Clamp(pos+change, 0.0f, 1.0f));
 		return false;
@@ -113,6 +122,10 @@ bool VScrollPortal::OnMouseMotion(MouseMotionEvent *e)
 
 void VScrollPortal::Draw()
 {
+<<<<<<< HEAD
+=======
+	PROFILE_SCOPED()
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	SetScissor(true);
 
 	float size[2];
@@ -126,11 +139,20 @@ void VScrollPortal::Draw()
 	float scale[2];
 	Screen::GetCoords2Pixels(scale);
 
+<<<<<<< HEAD
 	glPushMatrix();
 	// scroll to whole pixel locations whatever the resolution
 	glTranslatef(0, floor((-m_scrollY*toScroll)/scale[1])*scale[1], 0);
 	Container::Draw();
 	glPopMatrix();
+=======
+	Graphics::Renderer *r = Gui::Screen::GetRenderer();
+	Graphics::Renderer::MatrixTicket ticket(r, Graphics::MatrixMode::MODELVIEW);
+
+	// scroll to whole pixel locations whatever the resolution
+	r->Translate(0, floor((-m_scrollY*toScroll)/scale[1])*scale[1], 0);
+	Container::Draw();
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 	SetScissor(false);
 }

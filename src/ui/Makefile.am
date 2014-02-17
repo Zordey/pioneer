@@ -2,7 +2,11 @@ include $(top_srcdir)/Makefile.common
 
 AM_CFLAGS += $(WARN_CFLAGS)
 AM_CPPFLAGS += $(WARN_CPPFLAGS)
+<<<<<<< HEAD
 AM_CXXFLAGS += $(WARN_CXXFLAGS)
+=======
+AM_CXXFLAGS += $(STD_CXXFLAGS) $(WARN_CXXFLAGS)
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 INCLUDES = -isystem $(top_srcdir)/contrib -I$(srcdir)/..
 if !HAVE_LUA
@@ -24,13 +28,20 @@ noinst_HEADERS = \
 	Event.h \
 	EventDispatcher.h \
 	Expand.h \
+<<<<<<< HEAD
 	FloatContainer.h \
+=======
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	Gauge.h \
 	Gradient.h \
 	Grid.h \
 	Icon.h \
 	Image.h \
 	Label.h \
+<<<<<<< HEAD
+=======
+	Layer.h \
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	List.h \
 	Lua.h \
 	LuaSignal.h \
@@ -63,13 +74,20 @@ libui_a_SOURCES = \
 	Event.cpp \
 	EventDispatcher.cpp \
 	Expand.cpp \
+<<<<<<< HEAD
 	FloatContainer.cpp \
+=======
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	Gauge.cpp \
 	Gradient.cpp \
 	Grid.cpp \
 	Icon.cpp \
 	Image.cpp \
 	Label.cpp \
+<<<<<<< HEAD
+=======
+	Layer.cpp \
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	List.cpp \
 	Margin.cpp \
 	MultiLineText.cpp \
@@ -100,6 +118,10 @@ libui_a_SOURCES = \
 	LuaIcon.cpp \
 	LuaImage.cpp \
 	LuaLabel.cpp \
+<<<<<<< HEAD
+=======
+	LuaLayer.cpp \
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	LuaList.cpp \
 	LuaMargin.cpp \
 	LuaMultiLineText.cpp \

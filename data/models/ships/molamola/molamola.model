@@ -7,8 +7,15 @@ tex_diff molamola_diff.png
 tex_glow molamola_glow.png
 tex_spec molamola_spec.png
 
+<<<<<<< HEAD
 lod 300
 mesh molamola_1hi.dae
+=======
+
+lod 300
+mesh molamola_1hi.dae
+mesh molamola_shield.dae
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 lod 100
 mesh molamola_2med.dae

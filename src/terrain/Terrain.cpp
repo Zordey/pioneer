@@ -1,10 +1,18 @@
+<<<<<<< HEAD
 // Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
+// Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "Terrain.h"
 #include "perlin.h"
 #include "Pi.h"
 #include "FileSystem.h"
+<<<<<<< HEAD
+=======
+#include "FloatComparison.h"
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 // static instancer. selects the best height and color classes for the body
 Terrain *Terrain::InstanceTerrain(const SystemBody *body)
@@ -15,7 +23,11 @@ Terrain *Terrain::InstanceTerrain(const SystemBody *body)
 	// the check in CustomSystem::l_height_map
 	if (body->heightMapFilename) {
 		const GeneratorInstancer choices[] = {
+<<<<<<< HEAD
 			InstanceGenerator<TerrainHeightMapped,TerrainColorEarthLike>,
+=======
+			InstanceGenerator<TerrainHeightMapped,TerrainColorEarthLikeHeightmapped>,
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 			InstanceGenerator<TerrainHeightMapped2,TerrainColorRock2>
 		};
 		assert(body->heightMapFractal < COUNTOF(choices));
@@ -351,7 +363,11 @@ Terrain *Terrain::InstanceTerrain(const SystemBody *body)
 
 static size_t bufread_or_die(void *ptr, size_t size, size_t nmemb, ByteRange &buf)
 {
+<<<<<<< HEAD
 	size_t read_count = buf.read(reinterpret_cast<char*>(ptr), size, nmemb);
+=======
+	size_t read_count = buf.read(static_cast<char*>(ptr), size, nmemb);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	if (read_count < nmemb) {
 		fprintf(stderr, "Error: failed to read file (truncated)\n");
 		abort();
@@ -359,7 +375,22 @@ static size_t bufread_or_die(void *ptr, size_t size, size_t nmemb, ByteRange &bu
 	return read_count;
 }
 
+<<<<<<< HEAD
 Terrain::Terrain(const SystemBody *body) : m_body(body), m_seed(body->seed), m_rand(body->seed), m_heightMap(0), m_heightMapScaled(0), m_heightScaling(0), m_minh(0) {
+=======
+// XXX this sucks, but there isn't a reliable cross-platform way to get them
+#ifndef INT16_MIN
+# define INT16_MIN   (-32767-1)
+#endif
+#ifndef INT16_MAX
+# define INT16_MAX   (32767)
+#endif
+#ifndef UINT16_MAX
+# define UINT16_MAX  (65535)
+#endif
+
+Terrain::Terrain(const SystemBody *body) : m_body(body), m_seed(body->seed), m_rand(body->seed), m_heightScaling(0), m_minh(0) {
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 	// load the heightmap
 	if (m_body->heightMapFilename) {
@@ -371,24 +402,59 @@ Terrain::Terrain(const SystemBody *body) : m_body(body), m_seed(body->seed), m_r
 
 		ByteRange databuf = fdata->AsByteRange();
 
+<<<<<<< HEAD
 		// read size!
 		Uint16 v;
+=======
+		Sint16 minHMap = INT16_MAX, maxHMap = INT16_MIN;
+		Uint16 minHMapScld = UINT16_MAX, maxHMapScld = 0;
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 		// XXX unify heightmap types
 		switch (m_body->heightMapFractal) {
 			case 0: {
+<<<<<<< HEAD
 				bufread_or_die(&v, 2, 1, databuf); m_heightMapSizeX = v;
 				bufread_or_die(&v, 2, 1, databuf); m_heightMapSizeY = v;
 
 				m_heightMap = new Sint16[m_heightMapSizeX * m_heightMapSizeY];
 				bufread_or_die(m_heightMap, sizeof(Sint16), m_heightMapSizeX * m_heightMapSizeY, databuf);
+=======
+				Uint16 v;
+				bufread_or_die(&v, 2, 1, databuf); m_heightMapSizeX = v;
+				bufread_or_die(&v, 2, 1, databuf); m_heightMapSizeY = v;
+				const Uint32 heightmapPixelArea = (m_heightMapSizeX * m_heightMapSizeY);
+
+				std::unique_ptr<Sint16[]> heightMap(new Sint16[heightmapPixelArea]);
+				bufread_or_die(heightMap.get(), sizeof(Sint16), heightmapPixelArea, databuf);
+				m_heightMap.reset(new double[heightmapPixelArea]);
+				double *pHeightMap = m_heightMap.get();
+				for(Uint32 i=0; i<heightmapPixelArea; i++) {
+					const Sint16 val = heightMap.get()[i];
+					minHMap = std::min(minHMap, val);
+					maxHMap = std::max(maxHMap, val);
+					// store then increment pointer
+					(*pHeightMap) = val;
+					++pHeightMap;
+				}
+				assert(is_equal_general(*pHeightMap, m_heightMap[heightmapPixelArea]));
+				//printf("minHMap = (%hd), maxHMap = (%hd)\n", minHMap, maxHMap);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 				break;
 			}
 
 			case 1: {
+<<<<<<< HEAD
 				// XXX x and y reversed from above *sigh*
 				bufread_or_die(&v, 2, 1, databuf); m_heightMapSizeY = v;
 				bufread_or_die(&v, 2, 1, databuf); m_heightMapSizeX = v;
+=======
+				Uint16 v;
+				// XXX x and y reversed from above *sigh*
+				bufread_or_die(&v, 2, 1, databuf); m_heightMapSizeY = v;
+				bufread_or_die(&v, 2, 1, databuf); m_heightMapSizeX = v;
+				const Uint32 heightmapPixelArea = (m_heightMapSizeX * m_heightMapSizeY);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 				// read height scaling and min height which are doubles
 				double te;
@@ -397,15 +463,36 @@ Terrain::Terrain(const SystemBody *body) : m_body(body), m_seed(body->seed), m_r
 				bufread_or_die(&te, 8, 1, databuf);
 				m_minh = te;
 
+<<<<<<< HEAD
 				m_heightMapScaled = new Uint16[m_heightMapSizeX * m_heightMapSizeY];
 				bufread_or_die(m_heightMapScaled, sizeof(Uint16), m_heightMapSizeX * m_heightMapSizeY, databuf);
 
+=======
+				std::unique_ptr<Uint16[]> heightMapScaled(new Uint16[heightmapPixelArea]);
+				bufread_or_die(heightMapScaled.get(), sizeof(Uint16), heightmapPixelArea, databuf);
+				m_heightMap.reset(new double[heightmapPixelArea]);
+				double *pHeightMap = m_heightMap.get();
+				for(Uint32 i=0; i<heightmapPixelArea; i++) {
+					const Uint16 val = heightMapScaled[i];
+					minHMapScld = std::min(minHMapScld, val);
+					maxHMapScld = std::max(maxHMapScld, val);
+					// store then increment pointer
+					(*pHeightMap) = val;
+					++pHeightMap;
+				}
+				assert(is_equal_general(*pHeightMap, m_heightMap[heightmapPixelArea]));
+				//printf("minHMapScld = (%hu), maxHMapScld = (%hu)\n", minHMapScld, maxHMapScld);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 				break;
 			}
 
 			default:
 				assert(0);
 		}
+<<<<<<< HEAD
+=======
+
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	}
 
 	switch (Pi::detail.textures) {
@@ -437,7 +524,11 @@ Terrain::Terrain(const SystemBody *body) : m_body(body), m_seed(body->seed), m_r
 		m_maxHeightInMeters = 1.1*pow(2.0, 16.0)*m_heightScaling; // no min height required as it's added to radius in lua
 	}else {
 		m_maxHeightInMeters = std::max(100.0, (9000.0*rad*rad*(m_volcanic+0.5)) / (m_body->GetMass() * 6.64e-12));
+<<<<<<< HEAD
 		if (!isfinite(m_maxHeightInMeters)) m_maxHeightInMeters = rad * 0.5;
+=======
+		if (!is_finite(m_maxHeightInMeters)) m_maxHeightInMeters = rad * 0.5;
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		//             ^^^^ max mountain height for earth-like planet (same mass, radius)
 		// and then in sphere normalized jizz
 	}
@@ -573,10 +664,13 @@ Terrain::Terrain(const SystemBody *body) : m_body(body), m_seed(body->seed), m_r
 
 Terrain::~Terrain()
 {
+<<<<<<< HEAD
 	if (m_heightMap)
 		delete [] m_heightMap;
 	if (m_heightMapScaled)
 		delete [] m_heightMapScaled;
+=======
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 }
 
 
@@ -584,8 +678,14 @@ Terrain::~Terrain()
  * Feature width means roughly one perlin noise blob or grain.
  * This will end up being one hill, mountain or continent, roughly.
  */
+<<<<<<< HEAD
 void Terrain::SetFracDef(unsigned int index, double featureHeightMeters, double featureWidthMeters, double smallestOctaveMeters)
 {
+=======
+void Terrain::SetFracDef(const unsigned int index, const double featureHeightMeters, const double featureWidthMeters, const double smallestOctaveMeters)
+{
+	assert(index>=0 && index<MAX_FRACDEFS);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	// feature
 	m_fracdef[index].amplitude = featureHeightMeters / (m_maxHeight * m_planetRadius);
 	m_fracdef[index].frequency = m_planetRadius / featureWidthMeters;

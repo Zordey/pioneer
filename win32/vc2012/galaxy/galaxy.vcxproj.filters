@@ -9,6 +9,10 @@
     <ClCompile Include="..\..\..\src\win32\pch.cpp">
       <Filter>win32</Filter>
     </ClCompile>
+<<<<<<< HEAD
+=======
+    <ClCompile Include="..\..\..\src\galaxy\SectorCache.cpp" />
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\src\galaxy\CustomSystem.h" />
@@ -19,6 +23,10 @@
     <ClInclude Include="..\..\..\src\win32\pch.h">
       <Filter>win32</Filter>
     </ClInclude>
+<<<<<<< HEAD
+=======
+    <ClInclude Include="..\..\..\src\galaxy\SectorCache.h" />
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
   </ItemGroup>
   <ItemGroup>
     <Filter Include="win32">

@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
+// Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "SpaceStationType.h"
@@ -360,7 +364,11 @@ void SpaceStationType::Init()
 	for (fs::FileEnumerator files(fs::gameDataFiles, "stations", fs::FileEnumerator::Recurse);
 			!files.Finished(); files.Next()) {
 		const fs::FileInfo &info = files.Current();
+<<<<<<< HEAD
 		if (ends_with(info.GetPath(), ".lua")) {
+=======
+		if (ends_with_ci(info.GetPath(), ".lua")) {
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 			const std::string name = info.GetName();
 			s_currentStationFile = name.substr(0, name.size()-4);
 			pi_lua_dofile(L, info.GetPath());

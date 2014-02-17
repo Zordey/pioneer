@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
+// Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #ifndef _SHIP_H
@@ -24,9 +28,17 @@ class ShipController;
 class CargoBody;
 class Missile;
 namespace Graphics { class Renderer; }
+<<<<<<< HEAD
+=======
+
+struct HeatGradientParameters_t {
+	matrix3x3f heatingMatrix;
+	vector3f heatingNormal; // normalised
+	float heatingAmount; // 0.0 to 1.0 used for `u` component of heatGradient texture
+};
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 struct shipstats_t {
-	int max_capacity;
 	int used_capacity;
 	int used_cargo;
 	int free_capacity;
@@ -36,6 +48,7 @@ struct shipstats_t {
 	float hyperspace_range_max;
 	float shield_mass;
 	float shield_mass_left;
+<<<<<<< HEAD
 	float fuel_tank_mass; //thruster, not hyperspace fuel
 	float fuel_tank_mass_left;
 	float fuel_use; // percentage (ie, 0--100) of tank used per second at full thrust
@@ -47,6 +60,17 @@ public:
 	void Load(Serializer::Reader &rd);
 };
 
+=======
+	float fuel_tank_mass_left;
+};
+
+class SerializableEquipSet: public EquipSet {
+public:
+	void Save(Serializer::Writer &wr);
+	void Load(Serializer::Reader &rd);
+};
+
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 class Ship: public DynamicBody {
 	friend class ShipController; //only controllers need access to AITimeStep
 	friend class PlayerShipController;
@@ -106,7 +130,11 @@ public:
 
 	virtual void NotifyRemoved(const Body* const removedBody);
 	virtual bool OnCollision(Object *o, Uint32 flags, double relVel);
+<<<<<<< HEAD
 	virtual bool OnDamage(Object *attacker, float kgDamage);
+=======
+	virtual bool OnDamage(Object *attacker, float kgDamage, const CollisionContact& contactData);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 	enum FlightState { // <enum scope='Ship' name=ShipFlightState public>
 		FLYING,     // open flight (includes autopilot)
@@ -138,6 +166,10 @@ public:
 		HYPERJUMP_SAFETY_LOCKOUT
 	};
 
+<<<<<<< HEAD
+=======
+	HyperjumpStatus GetHyperspaceDetails(const SystemPath &src, const SystemPath &dest, int &outFuelRequired, double &outDurationSecs);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	HyperjumpStatus GetHyperspaceDetails(const SystemPath &dest, int &outFuelRequired, double &outDurationSecs);
 	HyperjumpStatus CheckHyperspaceTo(const SystemPath &dest, int &outFuelRequired, double &outDurationSecs);
 	HyperjumpStatus CheckHyperspaceTo(const SystemPath &dest) {
@@ -216,12 +248,19 @@ public:
 	void SetSkin(const SceneGraph::ModelSkin &skin);
 
 	void SetLabel(const std::string &label);
+<<<<<<< HEAD
 	static std::string MakeRandomLabel(); // XXX doesn't really belong here
+=======
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 	float GetPercentShields() const;
 	float GetPercentHull() const;
 	void SetPercentHull(float);
+<<<<<<< HEAD
 	float GetGunTemperature(int idx) const { return m_gunTemperature[idx]; }
+=======
+	float GetGunTemperature(int idx) const { return m_gun[idx].temperature; }
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 	enum FuelState { // <enum scope='Ship' name=ShipFuelStatus prefix=FUEL_ public>
 		FUEL_OK,
@@ -236,8 +275,12 @@ public:
 	double GetFuelReserve() const { return m_reserveFuel; }
 	void SetFuelReserve(const double f) { m_reserveFuel = Clamp(f, 0.0, 1.0); }
 
+<<<<<<< HEAD
 	// percentage (ie, 0--100) of tank used per second at full thrust
 	double GetFuelUseRate() const;
+=======
+	// available delta-V given the ship's current fuel state
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	double GetSpeedReachedWithFuel() const;
 
 	void EnterSystem();
@@ -251,6 +294,12 @@ public:
 	// actually changing state
 	mutable sigc::signal<void> onFlavourChanged;
 
+<<<<<<< HEAD
+=======
+	bool IsInvulnerable() const { return m_invulnerable; }
+	void SetInvulnerable(bool b) { m_invulnerable = b; }
+
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 protected:
 	virtual void Save(Serializer::Writer &wr, Space *space);
 	virtual void Load(Serializer::Reader &rd, Space *space);
@@ -265,9 +314,22 @@ protected:
 
 	SpaceStation *m_dockedWith;
 	int m_dockedWithPort;
+<<<<<<< HEAD
 	Uint32 m_gunState[ShipType::GUNMOUNT_MAX];
 	float m_gunRecharge[ShipType::GUNMOUNT_MAX];
 	float m_gunTemperature[ShipType::GUNMOUNT_MAX];
+=======
+
+	struct Gun {
+		vector3f pos;
+		vector3f dir;
+		Uint32 state;
+		float recharge;
+		float temperature;
+	};
+	Gun m_gun[ShipType::GUNMOUNT_MAX];
+
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	float m_ecmRecharge;
 
 	ShipController *m_controller;
@@ -284,7 +346,17 @@ private:
     void SetShipId(const ShipType::Id &shipId);
 	void OnEquipmentChange(Equip::Type e);
 	void EnterHyperspace();
+<<<<<<< HEAD
 
+=======
+	void InitGun(const char *tag, int num);
+	void InitMaterials();
+
+	bool m_invulnerable;
+
+	static const float DEFAULT_SHIELD_COOLDOWN_TIME;
+	float m_shieldCooldown;
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	shipstats_t m_stats;
 	const ShipType *m_type;
 	SceneGraph::ModelSkin m_skin;
@@ -320,7 +392,13 @@ private:
 	int m_dockedWithIndex; // deserialisation
 
 	SceneGraph::Animation *m_landingGearAnimation;
+<<<<<<< HEAD
 	ScopedPtr<NavLights> m_navLights;
+=======
+	std::unique_ptr<NavLights> m_navLights;
+
+	static HeatGradientParameters_t s_heatGradientParams;
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 };
 
 

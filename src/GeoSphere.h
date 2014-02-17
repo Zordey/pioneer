@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
+// Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #ifndef _GEOSPHERE_H
@@ -35,7 +39,11 @@ public:
 	void Update();
 	void Render(Graphics::Renderer *renderer, const matrix4x4d &modelView, vector3d campos, const float radius, const float scale, const std::vector<Camera::Shadow> &shadows);
 
+<<<<<<< HEAD
 	inline double GetHeight(vector3d p) const {
+=======
+	inline double GetHeight(const vector3d &p) const {
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		const double h = m_terrain->GetHeight(p);
 		s_vtxGenCount++;
 #ifdef DEBUG
@@ -75,11 +83,19 @@ public:
 
 private:
 	void BuildFirstPatches();
+<<<<<<< HEAD
 	ScopedPtr<GeoPatch> m_patches[6];
 	const SystemBody *m_sbody;
 
 	// all variables for GetHeight(), GetColor()
 	ScopedPtr<Terrain> m_terrain;
+=======
+	std::unique_ptr<GeoPatch> m_patches[6];
+	const SystemBody *m_sbody;
+
+	// all variables for GetHeight(), GetColor()
+	RefCountedPtr<Terrain> m_terrain;
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 	static const uint32_t MAX_SPLIT_OPERATIONS = 128;
 	std::deque<SQuadSplitResult*> mQuadSplitResults;
@@ -100,8 +116,13 @@ private:
 	static RefCountedPtr<GeoPatchContext> s_patchContext;
 
 	void SetUpMaterials();
+<<<<<<< HEAD
 	ScopedPtr<Graphics::Material> m_surfaceMaterial;
 	ScopedPtr<Graphics::Material> m_atmosphereMaterial;
+=======
+	std::unique_ptr<Graphics::Material> m_surfaceMaterial;
+	std::unique_ptr<Graphics::Material> m_atmosphereMaterial;
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	//special parameters for shaders
 	MaterialParameters m_materialParameters;
 

@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
+// Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "libs.h"
@@ -37,8 +41,13 @@ bool ScrollBar::OnMouseDown(MouseButtonEvent *e)
 		_m_release = RawEvents::onMouseUp.connect(sigc::mem_fun(this, &ScrollBar::OnRawMouseUp));
 		_m_motion = RawEvents::onMouseMotion.connect(sigc::mem_fun(this, &ScrollBar::OnRawMouseMotion));
 	}
+<<<<<<< HEAD
 	else if (e->button == SDL_BUTTON_WHEELUP || e->button == SDL_BUTTON_WHEELDOWN) {
 		float change = e->button == SDL_BUTTON_WHEELUP ? -0.1 : 0.1;
+=======
+	else if (e->button == MouseButtonEvent::BUTTON_WHEELUP || e->button == MouseButtonEvent::BUTTON_WHEELDOWN) {
+		float change = e->button == MouseButtonEvent::BUTTON_WHEELUP ? -0.1 : 0.1;
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		float pos = m_adjustment->GetValue();
 		m_adjustment->SetValue(Clamp(pos+change, 0.0f, 1.0f));
 	}
@@ -70,6 +79,10 @@ void ScrollBar::OnRawMouseMotion(MouseMotionEvent *e)
 
 void ScrollBar::Draw()
 {
+<<<<<<< HEAD
+=======
+	PROFILE_SCOPED()
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	float size[2]; GetSize(size);
 	Theme::DrawIndent(size);
 	float pos = m_adjustment->GetValue();
@@ -106,6 +119,10 @@ void ScrollBar::GetMinimumSize(float size[2])
 
 void HScale::Draw()
 {
+<<<<<<< HEAD
+=======
+	PROFILE_SCOPED()
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	float size[2]; GetSize(size);
 	float pos = m_adjustment->GetValue();
 

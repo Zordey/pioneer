@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
+// Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "Widget.h"
@@ -19,6 +23,19 @@ public:
 		return 1;
 	}
 
+<<<<<<< HEAD
+=======
+	static int l_set_enabled(lua_State *l) {
+		UI::Widget *w = LuaObject<UI::Widget>::CheckFromLua(1);
+		const bool enable = lua_toboolean(l, 2);
+		if (enable) {
+			w->Enable();
+		} else {
+			w->Disable();
+		}
+		return 0;
+	}
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 	static int l_disable(lua_State *l) {
 		UI::Widget *w = LuaObject<UI::Widget>::CheckFromLua(1);
@@ -28,7 +45,11 @@ public:
 
 	static int l_enable(lua_State *l) {
 		UI::Widget *w = LuaObject<UI::Widget>::CheckFromLua(1);
+<<<<<<< HEAD
 		w->Disable();
+=======
+		w->Enable();
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		return 0;
 	}
 
@@ -75,9 +96,15 @@ public:
 		return 1;
 	}
 
+<<<<<<< HEAD
 	static int l_attr_on_key_press(lua_State *l) {
 		UI::Widget *w = LuaObject<UI::Widget>::CheckFromLua(1);
 		LuaSignalAccumulated<const KeyboardEvent &>().Wrap(l, w->onKeyPress);
+=======
+	static int l_attr_on_text_input(lua_State *l) {
+		UI::Widget *w = LuaObject<UI::Widget>::CheckFromLua(1);
+		LuaSignalAccumulated<const TextInputEvent &>().Wrap(l, w->onTextInput);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		return 1;
 	}
 
@@ -136,6 +163,10 @@ template <> void LuaObject<UI::Widget>::RegisterClass()
 	static const luaL_Reg l_methods[] = {
 		{ "SetFont", LuaWidget::l_set_font_size },
 
+<<<<<<< HEAD
+=======
+		{ "SetEnabled", LuaWidget::l_set_enabled },
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		{ "Disable", LuaWidget::l_disable       },
 		{ "Enable",  LuaWidget::l_enable        },
 
@@ -152,7 +183,11 @@ template <> void LuaObject<UI::Widget>::RegisterClass()
 
 		{ "onKeyDown",    LuaWidget::l_attr_on_key_down    },
 		{ "onKeyUp",      LuaWidget::l_attr_on_key_up      },
+<<<<<<< HEAD
 		{ "onKeyPress",   LuaWidget::l_attr_on_key_press   },
+=======
+		{ "onTextInput",  LuaWidget::l_attr_on_text_input  },
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		{ "onMouseDown",  LuaWidget::l_attr_on_mouse_down  },
 		{ "onMouseUp",    LuaWidget::l_attr_on_mouse_up    },
 		{ "onMouseMove",  LuaWidget::l_attr_on_mouse_move  },

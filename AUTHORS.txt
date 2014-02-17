@@ -11,6 +11,10 @@ The Pioneer Developers are:
 * Alessandro Giachi
 * Andrew Cook
 * Andrew Copland
+<<<<<<< HEAD
+=======
+* Antti Salonen
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 * Asier Basagoiti
 * Benamucki
 * Benjamin Hodgetts
@@ -37,16 +41,28 @@ The Pioneer Developers are:
 * jmf
 * John Bartholomew
 * John Jordan
+<<<<<<< HEAD
+=======
+* Karl Fogelmark
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 * Kimmo Kotajärvi
 * Konrad Mruk
 * Krzysztof Niedźwiecki
 * Lars Westerhoff
 * Lee Reilly
 * Leonardo Manna
+<<<<<<< HEAD
+=======
+* Luca Ganzerla
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 * Maksim Kulikov aka sapog662
 * Marcel Tulloh
 * Marcus de Roos
 * Michele Botticelli
+<<<<<<< HEAD
+=======
+* Miha Vitorovič
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 * Nic
 * Oleg Ovcharenko
 * Paul Mahol
@@ -56,6 +72,10 @@ The Pioneer Developers are:
 * Phil Howlett
 * Piotr Gredka
 * Radek Valášek aka vaLin
+<<<<<<< HEAD
+=======
+* Rémi Boutemy
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 * Robert Norris
 * Robert Pallier
 * Roland Mas
@@ -70,6 +90,10 @@ The Pioneer Developers are:
 * Thierry Dupré
 * Tim Jones
 * Tom Morton
+<<<<<<< HEAD
+=======
+* Torham2234
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 * Ulf Pettersson
 * Uncle Bob
 * Vincent Teerling
@@ -77,7 +101,12 @@ The Pioneer Developers are:
 Licensing
 =========
 
+<<<<<<< HEAD
 Copyright © 2008-2013 Pioneer Developers
+=======
+Copyright © 2008-2014 Pioneer Developers
+Portions copyright © 2013-2014 Meteoric Games Ltd.
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 Pioneer's core code and extension modules are licensed under the terms of the
 GNU General Public License version 3. See licenses/GPL-3.txt for details.
@@ -92,6 +121,15 @@ Pioneer includes the following third-party software:
   Copyright (C) 1994-2012 Lua.org, PUC-Rio
   Licensed under the MIT licence (see contrib/lua/lua.h)
 
+<<<<<<< HEAD
+=======
+  GLEW: The OpenGL Extension Wrangler
+  Copyright (C) 2002-2008, Milan Ikits <milan ikits[]ieee org>
+  Copyright (C) 2002-2008, Marcelo E. Magallon <mmagallo[]debian org>
+  Copyright (C) 2002, Lev Povalahev
+  Licensed under the Modified BSD licence (see licenses/GLEW.txt)
+
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
   miniz by Rich Geldreich, April 2012
   Public domain (see contrib/miniz/miniz.h)
 
@@ -110,6 +148,17 @@ Pioneer includes the following third-party software:
   GTL and PicoDDS are licensed under the zlib License
     (see contrib/PicoDDS/PicoDDS.h)
 
+<<<<<<< HEAD
+=======
+  jsoncpp
+  Copyright (c) 2007-2010 Baptiste Lepilleur
+  Licensed under the MIT licence (see contrib/json/json.h)
+
+  High Performance C++ Profiler
+  https://code.google.com/p/high-performance-cplusplus-profiler/
+  Licensed under the MIT license
+
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
   Titillium Text font
   Copyright (C) 2007-2009 Academia di Belle Arte di Urbino - Campivisivi
   Licensed under the SIL Open Font Licence v1.1 (see licenses/SIL-1.1.txt)

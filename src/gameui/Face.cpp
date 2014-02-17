@@ -1,10 +1,18 @@
+<<<<<<< HEAD
 // Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
+// Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "Face.h"
 #include "FileSystem.h"
 #include "SDLWrappers.h"
 #include "graphics/TextureBuilder.h"
+<<<<<<< HEAD
+=======
+#include "FaceGenManager.h"
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 using namespace UI;
 
@@ -13,6 +21,7 @@ namespace GameUI {
 static const Uint32 FACE_WIDTH = 295;
 static const Uint32 FACE_HEIGHT = 285;
 
+<<<<<<< HEAD
 // XXX these shouldn't really be hardcoded. it'd be much nicer to poke through
 // the facegen/ dir and figure out what we've got available. that or some
 // config file
@@ -51,10 +60,18 @@ Face::Face(Context *context, Uint32 flags, Uint32 seed) : Single(context)
 {
 	if (!seed) seed = time(0);
 	Random rand(seed);
+=======
+RefCountedPtr<Graphics::Material> Face::s_material;
+
+Face::Face(Context *context, Uint32 flags, Uint32 seed) : Single(context), m_preferredSize(INT_MAX)
+{
+	if (!seed) seed = time(0);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 	m_flags = flags;
 	m_seed = seed;
 
+<<<<<<< HEAD
 	int race = rand.Int32(0,2);
 
 	int gender;
@@ -122,12 +139,30 @@ Face::Face(Context *context, Uint32 flags, Uint32 seed) : Single(context)
 	}
 
 	m_texture.Reset(Graphics::TextureBuilder(faceim, Graphics::LINEAR_CLAMP, true, true).CreateTexture(GetContext()->GetRenderer()));
+=======
+	SDLSurfacePtr faceim = SDLSurfacePtr::WrapNew(SDL_CreateRGBSurface(SDL_SWSURFACE, FACE_WIDTH, FACE_HEIGHT, 24, 0xff, 0xff00, 0xff0000, 0));
+
+	Sint8 gender=0;
+	FaceGenManager::BlitFaceIm(faceim, gender, flags, seed);
+
+	m_texture.reset(Graphics::TextureBuilder(faceim, Graphics::LINEAR_CLAMP, true, true).CreateTexture(GetContext()->GetRenderer()));
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 	if (!s_material) {
 		Graphics::MaterialDescriptor matDesc;
 		matDesc.textures = 1;
 		s_material.Reset(GetContext()->GetRenderer()->CreateMaterial(matDesc));
 	}
+<<<<<<< HEAD
+=======
+
+	m_preferredSize = UI::Point(FACE_WIDTH, FACE_HEIGHT);
+	SetSizeControlFlags(UI::Widget::PRESERVE_ASPECT);
+}
+
+UI::Point Face::PreferredSize() {
+	return m_preferredSize;
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 }
 
 void Face::Layout()
@@ -162,10 +197,26 @@ void Face::Draw()
 	va.Add(vector3f(x+sx, y+sy, 0.0f), vector2f(texSize.x, texSize.y));
 
 	Graphics::Renderer *r = GetContext()->GetRenderer();
+<<<<<<< HEAD
 	s_material->texture0 = m_texture.Get();
+=======
+	s_material->texture0 = m_texture.get();
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	r->DrawTriangles(&va, s_material.Get(), Graphics::TRIANGLE_STRIP);
 
 	Single::Draw();
 }
 
+<<<<<<< HEAD
+=======
+Face *Face::SetHeightLines(Uint32 lines)
+{
+	const Text::TextureFont *font = GetContext()->GetFont(GetFont()).Get();
+	const float height = font->GetHeight() * lines;
+	m_preferredSize = UI::Point(height * float(FACE_WIDTH) / float(FACE_HEIGHT), height);
+	GetContext()->RequestLayout();
+	return this;
+}
+
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 }

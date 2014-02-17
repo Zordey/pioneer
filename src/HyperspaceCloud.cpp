@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
+// Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "HyperspaceCloud.h"
@@ -42,10 +46,17 @@ HyperspaceCloud::HyperspaceCloud()
 
 void HyperspaceCloud::InitGraphics()
 {
+<<<<<<< HEAD
 	m_graphic.vertices.Reset(new Graphics::VertexArray(ATTRIB_POSITION | ATTRIB_DIFFUSE));
 	Graphics::MaterialDescriptor desc;
 	desc.vertexColors = true;
 	m_graphic.material.Reset(Pi::renderer->CreateMaterial(desc));
+=======
+	m_graphic.vertices.reset(new Graphics::VertexArray(ATTRIB_POSITION | ATTRIB_DIFFUSE));
+	Graphics::MaterialDescriptor desc;
+	desc.vertexColors = true;
+	m_graphic.material.reset(Pi::renderer->CreateMaterial(desc));
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 }
 
 HyperspaceCloud::~HyperspaceCloud()
@@ -78,7 +89,11 @@ void HyperspaceCloud::Load(Serializer::Reader &rd, Space *space)
 	m_due = rd.Double();
 	m_isArrival = rd.Bool();
 	if (rd.Bool()) {
+<<<<<<< HEAD
 		m_ship = reinterpret_cast<Ship*>(Body::Unserialize(rd, space));
+=======
+		m_ship = static_cast<Ship*>(Body::Unserialize(rd, space));
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	}
 }
 
@@ -155,9 +170,16 @@ void HyperspaceCloud::Render(Renderer *renderer, const Camera *camera, const vec
 	// XXX could just alter the scale instead of recreating the model
 	const float radius = 1000.0f + 200.0f*float(noise(10.0*preciseTime, 0, 0));
 	m_graphic.vertices->Clear();
+<<<<<<< HEAD
 	Color4f outerColor = m_isArrival ? Color::BLUE : Color::RED;
 	outerColor.a = 0.f;
 	make_circle_thing(*m_graphic.vertices.Get(), radius, Color(1.0,1.0,1.0,1.0), outerColor);
 	renderer->DrawTriangles(m_graphic.vertices.Get(), m_graphic.material.Get(), TRIANGLE_FAN);
+=======
+	Color outerColor = m_isArrival ? Color::BLUE : Color::RED;
+	outerColor.a = 0;
+	make_circle_thing(*m_graphic.vertices.get(), radius, Color::WHITE, outerColor);
+	renderer->DrawTriangles(m_graphic.vertices.get(), m_graphic.material.get(), TRIANGLE_FAN);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	renderer->SetBlendMode(BLEND_SOLID);
 }

@@ -42,13 +42,21 @@ RenderTarget::~RenderTarget()
 
 Texture *RenderTarget::GetColorTexture() const
 {
+<<<<<<< HEAD
 	return m_colorTexture.Valid() ? m_colorTexture.Get() : 0;
+=======
+	return m_colorTexture.Get();
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 }
 
 Texture *RenderTarget::GetDepthTexture() const
 {
 	assert(GetDesc().allowDepthTexture);
+<<<<<<< HEAD
 	return m_depthTexture.Valid() ? m_depthTexture.Get() : 0;
+=======
+	return m_depthTexture.Get();
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 }
 
 void RenderTarget::SetColorTexture(Texture* t)
@@ -106,4 +114,8 @@ void RenderTarget::CreateDepthRenderbuffer()
 	m_depthRenderBuffer->Unbind();
 }
 
+<<<<<<< HEAD
 } }
+=======
+} }
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755

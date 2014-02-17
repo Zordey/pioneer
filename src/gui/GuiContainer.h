@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
+// Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #ifndef _GUICONTAINER_H
@@ -9,6 +13,10 @@
 
 #include "GuiWidget.h"
 #include <list>
+<<<<<<< HEAD
+=======
+#include <SDL_stdinc.h>
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 namespace Gui {
 	class Container: public Widget {
@@ -30,7 +38,10 @@ namespace Gui {
 		virtual void HideAll();
 		virtual void OnChildResizeRequest(Widget *) = 0;
 		void SetBgColor(const Color &col);
+<<<<<<< HEAD
 		void SetBgColor(float r, float g, float b, float a);
+=======
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		void SetTransparency(bool a) { m_transparent = a; }
 		virtual void UpdateAllChildSizes() = 0;
 		void RemoveChild(Widget *w);

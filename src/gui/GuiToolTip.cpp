@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
+// Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "Gui.h"
@@ -52,6 +56,10 @@ void ToolTip::SetText(std::string &text)
 
 void ToolTip::Draw()
 {
+<<<<<<< HEAD
+=======
+	PROFILE_SCOPED()
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	if (m_owner && !m_owner->IsVisible())
 		return;
 
@@ -75,11 +83,22 @@ void ToolTip::Draw()
 		glVertex2f(0, size[1]);
 		glVertex2f(0, 0);
 	glEnd();
+<<<<<<< HEAD
 	glPushMatrix();
 	glTranslatef(TOOLTIP_PADDING,0,0);
 	glColor4f(1,1,1,alpha);
 	m_layout->Render(size[0]-2*TOOLTIP_PADDING);
 	glPopMatrix();
+=======
+
+	Graphics::Renderer *r = Gui::Screen::GetRenderer();
+	Graphics::Renderer::MatrixTicket ticket(r, Graphics::MatrixMode::MODELVIEW);
+
+	r->Translate(TOOLTIP_PADDING,0,0);
+	glColor4f(1,1,1,alpha);
+	m_layout->Render(size[0]-2*TOOLTIP_PADDING);
+
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	glBlendFunc(GL_ONE, GL_ZERO);
 	glDisable(GL_BLEND);
 }

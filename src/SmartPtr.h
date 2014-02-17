@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
+// Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #ifndef _SMARTPTR_H
@@ -88,6 +92,7 @@ DEF_SMARTPTR_COMPARISON(> )
 DEF_SMARTPTR_COMPARISON(>=)
 #undef DEF_SMARTPTR_COMPARISON
 
+<<<<<<< HEAD
 template <typename T>
 class ScopedPtr : public SmartPtrBase<ScopedPtr<T>, T> {
 	typedef ScopedPtr<T> this_type;
@@ -142,6 +147,11 @@ public:
 private:
 	ScopedMalloc(const ScopedMalloc&);
 	ScopedMalloc &operator=(const ScopedMalloc&);
+=======
+// a deleter type for use with std::unique_ptr
+struct FreeDeleter {
+	void operator()(void* p) { std::free(p); }
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 };
 
 #endif

@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
+// Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "Model.h"
@@ -22,6 +26,10 @@ Model::Model(Graphics::Renderer *r, const std::string &name)
 : m_boundingRadius(10.f)
 , m_renderer(r)
 , m_name(name)
+<<<<<<< HEAD
+=======
+, m_curPatternIndex(0)
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 , m_curPattern(0)
 {
 	m_root.Reset(new Group(m_renderer));
@@ -36,6 +44,10 @@ Model::Model(const Model &model)
 , m_collMesh(model.m_collMesh) //might have to make this per-instance at some point
 , m_renderer(model.m_renderer)
 , m_name(model.m_name)
+<<<<<<< HEAD
+=======
+, m_curPatternIndex(model.m_curPatternIndex)
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 , m_curPattern(model.m_curPattern)
 {
 	//selective copying of node structure
@@ -50,10 +62,17 @@ Model::Model(const Model &model)
 	//create unique color texture, if used
 	//patterns are shared
 	if (SupportsPatterns()) {
+<<<<<<< HEAD
 		std::vector<Color4ub> colors;
 		colors.push_back(Color4ub::RED);
 		colors.push_back(Color4ub::GREEN);
 		colors.push_back(Color4ub::BLUE);
+=======
+		std::vector<Color> colors;
+		colors.push_back(Color::RED);
+		colors.push_back(Color::GREEN);
+		colors.push_back(Color::BLUE);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		SetColors(colors);
 		SetPattern(0);
 	}
@@ -98,7 +117,11 @@ void Model::Render(const matrix4x4f &trans, const RenderData *rd)
 
 	//update decals (materials and geometries are shared)
 	for (unsigned int i=0; i < MAX_DECAL_MATERIALS; i++)
+<<<<<<< HEAD
 		if (m_decalMaterials[i].Valid())
+=======
+		if (m_decalMaterials[i])
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 			m_decalMaterials[i]->texture0 = m_curDecals[i];
 
 	//Override renderdata if this model is called from ModelNode
@@ -191,10 +214,18 @@ void Model::SetPattern(unsigned int index)
 	if (m_patterns.empty() || index > m_patterns.size() - 1) return;
 	const Pattern &pat = m_patterns.at(index);
 	m_colorMap.SetSmooth(pat.smoothColor);
+<<<<<<< HEAD
 	m_curPattern = pat.texture.Get();
 }
 
 void Model::SetColors(const std::vector<Color4ub> &colors)
+=======
+	m_curPatternIndex = index;
+	m_curPattern = pat.texture.Get();
+}
+
+void Model::SetColors(const std::vector<Color> &colors)
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 {
 	assert(colors.size() == 3); //primary, seconday, trim
 	m_colorMap.Generate(GetRenderer(), colors.at(0), colors.at(1), colors.at(2));
@@ -203,7 +234,11 @@ void Model::SetColors(const std::vector<Color4ub> &colors)
 void Model::SetDecalTexture(Graphics::Texture *t, unsigned int index)
 {
 	index = std::min(index, MAX_DECAL_MATERIALS-1);
+<<<<<<< HEAD
 	if (m_decalMaterials[index].Valid())
+=======
+	if (m_decalMaterials[index])
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		m_curDecals[index] = t;
 }
 
@@ -224,14 +259,22 @@ void Model::ClearDecals()
 void Model::ClearDecal(unsigned int index)
 {
 	index = std::min(index, MAX_DECAL_MATERIALS-1);
+<<<<<<< HEAD
 	if (m_decalMaterials[index].Valid())
+=======
+	if (m_decalMaterials[index])
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		m_curDecals[index] = Graphics::TextureBuilder::GetTransparentTexture(m_renderer);
 }
 
 bool Model::SupportsDecals()
 {
 	for (unsigned int i=0; i<MAX_DECAL_MATERIALS; i++)
+<<<<<<< HEAD
 		if (m_decalMaterials[i].Valid()) return true;
+=======
+		if (m_decalMaterials[i]) return true;
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 	return false;
 }
@@ -297,6 +340,11 @@ void Model::Save(Serializer::Writer &wr) const
 
 	for (AnimationContainer::const_iterator i = m_animations.begin(); i != m_animations.end(); ++i)
 		wr.Double((*i)->GetProgress());
+<<<<<<< HEAD
+=======
+
+	wr.Int32(m_curPatternIndex);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 }
 
 class LoadVisitor : public NodeVisitor {
@@ -322,6 +370,11 @@ void Model::Load(Serializer::Reader &rd)
 	for (AnimationContainer::const_iterator i = m_animations.begin(); i != m_animations.end(); ++i)
 		(*i)->SetProgress(rd.Double());
 	UpdateAnimations();
+<<<<<<< HEAD
+=======
+
+	SetPattern(rd.Int32());
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 }
 
 }

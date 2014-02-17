@@ -1,8 +1,26 @@
+<<<<<<< HEAD
 -- Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
 -- Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 -- Get the translator function
 local t = Translate:GetTranslator()
+=======
+-- Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+-- Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
+
+local Engine = import("Engine")
+local Lang = import("Lang")
+local Game = import("Game")
+local Comms = import("Comms")
+local Event = import("Event")
+local Rand = import("Rand")
+local NameGen = import("NameGen")
+local Format = import("Format")
+local Serializer = import("Serializer")
+local EquipDef = import("EquipDef")
+
+local l = Lang.GetResource("module-breakdownservicing")
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 -- Default numeric values --
 ----------------------------
@@ -15,6 +33,40 @@ local seedbump = 10
 -- where probability = 1
 local max_jumps_unserviced = 255
 
+<<<<<<< HEAD
+=======
+local flavours = {
+	{
+		strength = 1.5,
+		baseprice = 6,
+	}, {
+		strength = 1.2, -- At least a year... hidden bonus!
+		baseprice = 4,
+	}, {
+		strength = 1.0,
+		baseprice = 3,
+	}, {
+		strength = 0.5,
+		baseprice = 2,
+	}, {
+		strength = 2.1, -- these guys are good.
+		baseprice = 10,
+	}, {
+		strength = 0.0, -- These guys just reset the jump count.  Shoddy.
+		baseprice = 1.8,
+	}
+}
+
+-- add strings to flavours
+for i = 1,#flavours do
+	local f = flavours[i]
+	f.title     = l["FLAVOUR_" .. i-1 .. "_TITLE"]
+	f.intro     = l["FLAVOUR_" .. i-1 .. "_INTRO"]
+	f.yesplease = l["FLAVOUR_" .. i-1 .. "_YESPLEASE"]
+	f.response  = l["FLAVOUR_" .. i-1 .. "_RESPONSE"]
+end
+
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 local ads = {}
 local service_history = {
 	lastdate = 0, -- Default will be overwritten on game start
@@ -27,11 +79,19 @@ local lastServiceMessage = function (hyperdrive)
 	-- Fill in the blanks tokens on the {lasttime} string from service_history
 	local message
 	if hyperdrive == 'NONE' then
+<<<<<<< HEAD
 		message = t("You do not have a drive to service!")
 	elseif not service_history.company then
 		message = t("Your drive has not been serviced since it was installed on {date}")
 	else
 		message = t("Your drive was last serviced on {date} by {company}")
+=======
+		message = l.YOU_DO_NOT_HAVE_A_DRIVE_TO_SERVICE
+	elseif not service_history.company then
+		message = l.YOUR_DRIVE_HAS_NOT_BEEN_SERVICED
+	else
+		message = l.YOUR_DRIVE_WAS_LAST_SERVICED_ON
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	end
 	return string.interp(message, {date = Format.Date(service_history.lastdate), company = service_history.company})
 end
@@ -86,11 +146,18 @@ local onChat = function (form, ref, option)
 		if hyperdrive == 'NONE' then
 			-- er, do nothing, I suppose.
 		elseif Game.player:GetMoney() < price then
+<<<<<<< HEAD
 			form:AddOption(t("I don't have enough money"), -1)
 		else
 			form:AddOption(ad.yesplease, 1)
 		end
 		form:AddOption(t('HANG_UP'), -1)
+=======
+			form:AddOption(l.I_DONT_HAVE_ENOUGH_MONEY, -1)
+		else
+			form:AddOption(ad.yesplease, 1)
+		end
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		print(('DEBUG: %.2f years / %.2f price = %.2f'):format(ad.strength, ad.baseprice, ad.strength/ad.baseprice))
 	end
 
@@ -101,7 +168,10 @@ local onChat = function (form, ref, option)
 		if Game.player:GetMoney() >= price then -- We did check earlier, but...
 			-- Say thanks
 			form:SetMessage(ad.response)
+<<<<<<< HEAD
 			form:AddOption(t('HANG_UP'), -1)
+=======
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 			Game.player:AddMoney(-price)
 			service_history.lastdate = Game.time
 			service_history.service_period = ad.strength * oneyear
@@ -132,9 +202,14 @@ local onShipEquipmentChanged = function (ship, equipment)
 end
 
 local onCreateBB = function (station)
+<<<<<<< HEAD
 	local service_flavours = Translate:GetFlavours('BreakdownServicing')
 	local rand = Rand.New(station.seed + seedbump)
 	local n = rand:Integer(1,#service_flavours)
+=======
+	local rand = Rand.New(station.seed + seedbump)
+	local n = rand:Integer(1,#flavours)
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	local isfemale = rand:Integer(1) == 1
 	local name = NameGen.FullName(isfemale,rand)
 
@@ -142,6 +217,7 @@ local onCreateBB = function (station)
 		name = name,
 		isfemale = isfemale,
 		-- Only replace tokens which are not subject to further change
+<<<<<<< HEAD
 		title = string.interp(service_flavours[n].title, {
 			name = station.label,
 			proprietor = name,
@@ -156,6 +232,22 @@ local onCreateBB = function (station)
 		faceseed = rand:Integer(),
 		strength = service_flavours[n].strength,
 		baseprice = service_flavours[n].baseprice *rand:Number(0.8,1.2), -- A little per-station flavouring
+=======
+		title = string.interp(flavours[n].title, {
+			name = station.label,
+			proprietor = name,
+		}),
+		intro = string.interp(flavours[n].intro, {
+			name = station.label,
+			proprietor = name,
+		}),
+		yesplease = flavours[n].yesplease,
+		response = flavours[n].response,
+		station = station,
+		faceseed = rand:Integer(),
+		strength = flavours[n].strength,
+		baseprice = flavours[n].baseprice *rand:Number(0.8,1.2), -- A little per-station flavouring
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	}
 
 	local ref = station:AddAdvert(ad.title, onChat, onDelete)
@@ -207,15 +299,25 @@ local onEnterSystem = function (ship)
 			local engine = ship:GetEquip('ENGINE',1)
 			ship:RemoveEquip(engine)
 			ship:AddEquip('RUBBISH',EquipDef[engine].mass)
+<<<<<<< HEAD
 			Comms.Message(t("The ship's hyperdrive has been destroyed by a malfunction"))
+=======
+			Comms.Message(l.THE_SHIPS_HYPERDRIVE_HAS_BEEN_DESTROYED_BY_A_MALFUNCTION)
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		end
 	end
 	if saved_by_this_guy then
 		-- Brag to the player
 		if saved_by_this_guy.player then
+<<<<<<< HEAD
 			Comms.Message(t("You fixed the hyperdrive before it broke down."))
 		else
 			Comms.Message(t("I fixed the hyperdrive before it broke down."),saved_by_this_guy.name)
+=======
+			Comms.Message(l.YOU_FIXED_THE_HYPERDRIVE_BEFORE_IT_BROKE_DOWN)
+		else
+			Comms.Message(l.I_FIXED_THE_HYPERDRIVE_BEFORE_IT_BROKE_DOWN,saved_by_this_guy.name)
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		end
 		-- Rewind the servicing countdown by a random amount based on crew member's ability
 		local fixup = saved_by_this_guy.engineering - saved_by_this_guy.DiceRoll()

@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
+// Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #ifndef _MATRIX4X4_H
@@ -116,6 +120,33 @@ class matrix4x4 {
 		m[ 3] =  0; m[ 7] =  0; m[11] = -1; m[15] = 0;
 		return m;
 	}
+<<<<<<< HEAD
+=======
+	///////////////////////////////////////////////////////////////////////////////
+	// set a orthographic frustum with 6 params similar to glOrtho()
+	// (left, right, bottom, top, near, far)
+	///////////////////////////////////////////////////////////////////////////////
+	static matrix4x4 OrthoFrustum (T left, T right, T bottom, T top, T znear, T zfar) {
+		assert((znear >= T(-1)) && (zfar > T(0)));
+		T a = T(2) / (right - left);
+        T b = T(2) / (top - bottom);
+        T c = -T(2) / (zfar - znear);
+
+        T tx = - (right + left)/(right - left);
+        T ty = - (top + bottom)/(top - bottom);
+        T tz = - (zfar + znear)/(zfar - znear);
+
+		T ortho[16] = {
+			a, 0, 0, 0,
+			0, b, 0, 0,
+			0, 0, c, 0,
+			tx, ty, tz, T(1)
+		};
+		matrix4x4 m(&ortho[0]);
+		return m;
+	}
+
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	//glRotate equivalent (except radians instead of degrees)
 	void Rotate (T ang, T x, T y, T z) {
 		*this = (*this) * RotateMatrix (ang, x, y, z);
@@ -368,5 +399,16 @@ class matrix4x4 {
 
 typedef matrix4x4<float> matrix4x4f;
 typedef matrix4x4<double> matrix4x4d;
+
+static inline void matrix4x4ftod(const matrix4x4f &in, matrix4x4d &out)
+{
+	for (int i = 0; i < 16; i++) 
+		out[i] = double(in[i]);
+}
+static inline void matrix4x4dtof(const matrix4x4d &in, matrix4x4f &out)
+{
+	for (int i = 0; i < 16; i++) 
+		out[i] = float(in[i]);
+}
 
 #endif /* _MATRIX4X4_H */

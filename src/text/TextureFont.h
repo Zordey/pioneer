@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
+// Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #ifndef _TEXT_TEXTUREFONT_H
@@ -60,7 +64,11 @@ private:
 	float m_height;
 	float m_descender;
 	RefCountedPtr<Graphics::Texture> m_texture;
+<<<<<<< HEAD
 	ScopedPtr<Graphics::Material> m_mat;
+=======
+	std::unique_ptr<Graphics::Material> m_mat;
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	Graphics::VertexArray m_vertices;
 
 	static int s_glyphCount;

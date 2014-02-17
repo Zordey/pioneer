@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
+// Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "Event.h"
@@ -8,8 +12,13 @@
 namespace UI {
 
 struct KeyMap {
+<<<<<<< HEAD
 	const char *name;
 	SDLKey     sym;
+=======
+	const char  *name;
+	SDL_Keycode sym;
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 };
 static const KeyMap keymap[] = {
 	{ "backspace",   SDLK_BACKSPACE },
@@ -66,6 +75,7 @@ static const KeyMap keymap[] = {
 	{ "y",           SDLK_y },
 	{ "z",           SDLK_z },
 	{ "delete",      SDLK_DELETE },
+<<<<<<< HEAD
 	{ "kp0",         SDLK_KP0 },
 	{ "kp1",         SDLK_KP1 },
 	{ "kp2",         SDLK_KP2 },
@@ -76,6 +86,18 @@ static const KeyMap keymap[] = {
 	{ "kp7",         SDLK_KP7 },
 	{ "kp8",         SDLK_KP8 },
 	{ "kp9",         SDLK_KP9 },
+=======
+	{ "kp0",         SDLK_KP_0 },
+	{ "kp1",         SDLK_KP_1 },
+	{ "kp2",         SDLK_KP_2 },
+	{ "kp3",         SDLK_KP_3 },
+	{ "kp4",         SDLK_KP_4 },
+	{ "kp5",         SDLK_KP_5 },
+	{ "kp6",         SDLK_KP_6 },
+	{ "kp7",         SDLK_KP_7 },
+	{ "kp8",         SDLK_KP_8 },
+	{ "kp9",         SDLK_KP_9 },
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	{ "kp.",         SDLK_KP_PERIOD },
 	{ "kp/",         SDLK_KP_DIVIDE },
 	{ "kp*",         SDLK_KP_MULTIPLY },
@@ -107,15 +129,24 @@ static const KeyMap keymap[] = {
 	{ "f14",         SDLK_F14 },
 	{ "f15",         SDLK_F15 },
 	{ "help",        SDLK_HELP },
+<<<<<<< HEAD
 	{ "printscreen", SDLK_PRINT },
 	{ 0, SDLK_LAST }
+=======
+	{ "printscreen", SDLK_PRINTSCREEN },
+	{ 0, 0 }
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 };
 
 KeySym KeySym::FromString(const std::string &spec)
 {
 	static const std::string delim("+");
 
+<<<<<<< HEAD
 	SDLKey sym = SDLK_UNKNOWN;
+=======
+	SDL_Keycode sym = SDLK_UNKNOWN;
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	Uint32 mod = KMOD_NONE;
 
 	size_t start = 0, end = 0;
@@ -140,7 +171,11 @@ KeySym KeySym::FromString(const std::string &spec)
 		else if (token == "alt")
 			mod |= KMOD_ALT;
 		else if (token == "meta")
+<<<<<<< HEAD
 			mod |= KMOD_META;
+=======
+			mod |= KMOD_GUI;
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 		else {
 			if (sym != SDLK_UNKNOWN)
@@ -155,7 +190,11 @@ KeySym KeySym::FromString(const std::string &spec)
 		}
 	}
 
+<<<<<<< HEAD
 	return KeySym(sym, SDLMod(mod));
+=======
+	return KeySym(sym, SDL_Keymod(mod));
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 }
 
 static void _settable(lua_State *l, const char *key, const Point &value)
@@ -173,12 +212,29 @@ void KeyboardEvent::ToLuaTable(lua_State *l) const
 {
 	lua_newtable(l);
 	pi_lua_settable(l, "type", EnumStrings::GetString("UIEventType", type));
+<<<<<<< HEAD
 
 	pi_lua_settable(l, "action", EnumStrings::GetString("UIKeyboardAction", action));
+=======
+	pi_lua_settable(l, "action", EnumStrings::GetString("UIKeyboardAction", action));
+	pi_lua_settable(l, "repeat", repeat);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 	// XXX expose sym and mod constants
 }
 
+<<<<<<< HEAD
+=======
+void TextInputEvent::ToLuaTable(lua_State *l) const
+{
+	lua_newtable(l);
+	pi_lua_settable(l, "type", EnumStrings::GetString("UIEventType", type));
+
+	lua_pushvalue(l, unicode);
+	lua_setfield(l, -2, "unicode");
+}
+
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 void MouseButtonEvent::ToLuaTable(lua_State *l) const
 {
 	lua_newtable(l);
@@ -209,4 +265,34 @@ void MouseWheelEvent::ToLuaTable(lua_State *l) const
 	pi_lua_settable(l, "direction", EnumStrings::GetString("UIMouseWheelDirection", direction));
 }
 
+<<<<<<< HEAD
+=======
+void JoystickAxisMotionEvent::ToLuaTable(lua_State *l) const
+{
+	lua_newtable(l);
+	pi_lua_settable(l, "type", EnumStrings::GetString("UIEventType", type));
+	pi_lua_settable(l, "joystick", joystick);
+	pi_lua_settable(l, "value", value);
+	pi_lua_settable(l, "axis", axis);
+}
+
+void JoystickHatMotionEvent::ToLuaTable(lua_State *l) const
+{
+	lua_newtable(l);
+	pi_lua_settable(l, "type", EnumStrings::GetString("UIEventType", type));
+	pi_lua_settable(l, "joystick", joystick);
+	pi_lua_settable(l, "direction", EnumStrings::GetString("UIJoystickHatDirection", direction));
+	pi_lua_settable(l, "hat", hat);
+}
+
+void JoystickButtonEvent::ToLuaTable(lua_State *l) const
+{
+	lua_newtable(l);
+	pi_lua_settable(l, "type", EnumStrings::GetString("UIEventType", type));
+	pi_lua_settable(l, "joystick", joystick);
+	pi_lua_settable(l, "action", EnumStrings::GetString("UIJoystickButtonAction", action));
+	pi_lua_settable(l, "button", button);
+}
+
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 }

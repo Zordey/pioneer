@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
+// Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "LuaObject.h"
@@ -275,6 +279,7 @@ static int l_space_spawn_ship_docked(lua_State *l)
 
 	SpaceStation *station = LuaObject<SpaceStation>::CheckFromLua(2);
 
+<<<<<<< HEAD
 	int port = station->GetFreeDockingPort();
 	if (port < 0)
 		return 0;
@@ -282,6 +287,17 @@ static int l_space_spawn_ship_docked(lua_State *l)
 	Ship *ship = new Ship(type);
 	assert(ship);
 
+=======
+	Ship *ship = new Ship(type);
+	assert(ship);
+
+	int port = station->GetFreeDockingPort(ship);	// pass in the ship to get a port we fit into
+	if(port < 0) {
+		delete ship;
+		return 0;
+	}
+
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	ship->SetFrame(station->GetFrame());
 	Pi::game->GetSpace()->AddBody(ship);
 	ship->SetDockedWith(station, port);
@@ -667,7 +683,11 @@ void LuaSpace::Register()
 
 	LUA_DEBUG_START(l);
 
+<<<<<<< HEAD
 	static const luaL_Reg methods[] = {
+=======
+	static const luaL_Reg l_methods[] = {
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		{ "SpawnShip",       l_space_spawn_ship        },
 		{ "SpawnShipNear",   l_space_spawn_ship_near   },
 		{ "SpawnShipDocked", l_space_spawn_ship_docked },
@@ -680,8 +700,15 @@ void LuaSpace::Register()
 		{ 0, 0 }
 	};
 
+<<<<<<< HEAD
 	luaL_newlib(l, methods);
 	lua_setglobal(l, "Space");
+=======
+	lua_getfield(l, LUA_REGISTRYINDEX, "CoreImports");
+	LuaObjectBase::CreateObject(l_methods, 0, 0);
+	lua_setfield(l, -2, "Space");
+	lua_pop(l, 1);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 	LUA_DEBUG_END(l, 0);
 }

@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
+// Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "CustomSystem.h"
@@ -491,6 +495,10 @@ static void RegisterCustomSystemsAPI(lua_State *L)
 
 void CustomSystem::Init()
 {
+<<<<<<< HEAD
+=======
+	PROFILE_SCOPED()
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	lua_State *L = luaL_newstate();
 	LUA_DEBUG_START(L);
 
@@ -527,6 +535,10 @@ void CustomSystem::Init()
 
 void CustomSystem::Uninit()
 {
+<<<<<<< HEAD
+=======
+	PROFILE_SCOPED()
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	for (SectorMap::iterator secIt = s_sectorMap.begin(); secIt != s_sectorMap.end(); ++secIt) {
 		for (CustomSystem::SystemList::iterator
 				sysIt = secIt->second.begin(); sysIt != secIt->second.end(); ++sysIt) {
@@ -538,6 +550,10 @@ void CustomSystem::Uninit()
 
 const CustomSystem::SystemList &CustomSystem::GetCustomSystemsForSector(int x, int y, int z)
 {
+<<<<<<< HEAD
+=======
+	PROFILE_SCOPED()
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	SystemPath path(x,y,z);
 	SectorMap::const_iterator it = s_sectorMap.find(path);
 	return (it != s_sectorMap.end()) ? it->second : s_emptySystemList;
@@ -551,6 +567,10 @@ CustomSystem::CustomSystem():
 	faction(0),
 	govType(Polit::GOV_INVALID)
 {
+<<<<<<< HEAD
+=======
+	PROFILE_SCOPED()
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	for (int i = 0; i < 4; ++i)
 		primaryType[i] = SystemBody::TYPE_GRAVPOINT;
 }
@@ -570,7 +590,13 @@ CustomSystemBody::CustomSystemBody():
 	ringStatus(WANT_RANDOM_RINGS),
 	seed(0),
 	want_rand_seed(true)
+<<<<<<< HEAD
 {}
+=======
+{
+	PROFILE_SCOPED()
+}
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 CustomSystemBody::~CustomSystemBody()
 {

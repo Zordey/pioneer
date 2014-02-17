@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
+// Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #ifndef _FLOATCOMPARISON_H
@@ -6,6 +10,14 @@
 
 #include <SDL_stdinc.h>
 #include <limits>
+<<<<<<< HEAD
+=======
+#ifdef _MSC_VER
+#include <float.h> // for _finite
+#else
+#include <cmath> // for std::isfinite
+#endif
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 // Fuzzy floating point comparisons based on:
 //   http://realtimecollisiondetection.net/blog/?p=89
@@ -29,12 +41,18 @@
 // bool is_equal_general(float a, float b, float relative_tolerance, float absolute_tolerance);
 
 // bool is_zero_exact(float x);
+<<<<<<< HEAD
 // bool is_zero_or_denorm(float x);
+=======
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // bool is_zero_general(float x, float tolerance = IEEEFloatTraits<float>::DefaultRelTolerance());
 
 // bool is_nan(float x);
 // bool is_finite(float x);
+<<<<<<< HEAD
 // bool is_denorm(float x);
+=======
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 
 // ====================================================================
@@ -84,6 +102,7 @@ inline typename IEEEFloatTraits<T>::bool_type is_finite_bits
 	return ((bits & ebits) != ebits);
 }
 
+<<<<<<< HEAD
 template <typename T>
 inline typename IEEEFloatTraits<T>::bool_type is_denorm_bits
 	(const typename IEEEFloatTraits<T>::uint_type& bits)
@@ -116,6 +135,17 @@ inline typename IEEEFloatTraits<T>::bool_type is_denorm(T x) {
 template <typename T>
 inline typename IEEEFloatTraits<T>::bool_type is_zero_or_denorm(T x) {
 	return (float_abs(x) < IEEEFloatTraits<T>::SmallestNormalisedValue());
+=======
+// --- infinity
+
+template <typename T>
+inline typename IEEEFloatTraits<T>::bool_type is_finite(T x) {
+#ifdef _MSC_VER
+	return _finite(x);
+#else
+	return std::isfinite(x);
+#endif
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 }
 
 // --- exact comparisons, and checking for NaN

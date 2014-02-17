@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
+// Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "NavLights.h"
@@ -67,6 +71,10 @@ void NavLights::Uninit()
 	delete matRed->texture0;
 	delete matGreen->texture0;
 	delete matBlue->texture0;
+<<<<<<< HEAD
+=======
+	delete matYellow->texture0;
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 	g_initted = false;
 }
@@ -94,7 +102,11 @@ NavLights::NavLights(SceneGraph::Model *model, float period)
 		MatrixTransform *mt = dynamic_cast<MatrixTransform*>(results.at(i));
 		assert(mt);
 		Billboard *bblight = new Billboard(renderer, matBlue, vector3f(0.f), BILLBOARD_SIZE);
+<<<<<<< HEAD
 		Uint8 group = 0;
+=======
+		Uint32 group = 0;
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		Uint8 mask  = 0xff; //always on
 		Uint8 color = NAVLIGHT_BLUE;
 
@@ -107,7 +119,13 @@ NavLights::NavLights(SceneGraph::Model *model, float period)
 			color = NAVLIGHT_GREEN;
 		} else if (mt->GetName().substr(9, 3) == "pad") {
 			//group by pad number
+<<<<<<< HEAD
 			group = atoi(mt->GetName().substr(12, 1).c_str());
+=======
+			// due to this problem: http://stackoverflow.com/questions/15825254/why-is-scanfhhu-char-overwriting-other-variables-when-they-are-local
+			// where MSVC is still using a C89 compiler the format identifer %hhu is not recognised. Therefore I've switched to Uint32 for group.
+			PiVerify(1 == sscanf(mt->GetName().c_str(), "navlight_pad%u", &group));
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 			mask  = 0xf0;
 		}
 		bblight->SetMaterial(get_material(color));

@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
+// Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "MultiMaterial.h"
@@ -8,6 +12,10 @@
 #include "graphics/RendererGL2.h"
 #include <sstream>
 #include "StringF.h"
+<<<<<<< HEAD
+=======
+#include "Ship.h"
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 namespace Graphics {
 namespace GL2 {
@@ -36,6 +44,11 @@ MultiProgram::MultiProgram(const MaterialDescriptor &desc, int lights)
 		ss << "#define MAP_EMISSIVE\n";
 	if (desc.usePatterns)
 		ss << "#define MAP_COLOR\n";
+<<<<<<< HEAD
+=======
+	if (desc.quality & HAS_HEAT_GRADIENT)
+		ss << "#define HEAT_COLOURING\n";
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 	m_name = "multi";
 	m_defines = ss.str();
@@ -81,6 +94,21 @@ void MultiMaterial::Apply()
 	p->texture3.Set(this->texture3, 3);
 	p->texture4.Set(this->texture4, 4);
 
+<<<<<<< HEAD
+=======
+	p->heatGradient.Set(this->heatGradient, 5);
+	if(nullptr!=specialParameter0) {
+		HeatGradientParameters_t *pMGP = static_cast<HeatGradientParameters_t*>(specialParameter0);
+		p->heatingMatrix.Set(pMGP->heatingMatrix);
+		p->heatingNormal.Set(pMGP->heatingNormal);
+		p->heatingAmount.Set(pMGP->heatingAmount);
+	} else {
+		p->heatingMatrix.Set(matrix3x3f::Identity());
+		p->heatingNormal.Set(vector3f(0.0f, -1.0f, 0.0f));
+		p->heatingAmount.Set(0.0f);
+	}
+
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	glPushAttrib(GL_ENABLE_BIT);
 	if (this->twoSided)
 		glDisable(GL_CULL_FACE);
@@ -111,6 +139,13 @@ void MultiMaterial::Unapply()
 {
 	glPopAttrib();
 	// Might not be necessary to unbind textures, but let's not old graphics code (eg, old-UI)
+<<<<<<< HEAD
+=======
+	if (heatGradient) {
+		static_cast<TextureGL*>(heatGradient)->Unbind();
+		glActiveTexture(GL_TEXTURE4);
+	}
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	if (texture4) {
 		static_cast<TextureGL*>(texture4)->Unbind();
 		glActiveTexture(GL_TEXTURE3);

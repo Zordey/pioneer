@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
+// Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "libs.h"
@@ -118,6 +122,42 @@ int LuaObjectBase::l_exists(lua_State *l)
 	return 1;
 }
 
+<<<<<<< HEAD
+=======
+int LuaObjectBase::l_setprop(lua_State *l)
+{
+	luaL_checktype(l, 1, LUA_TUSERDATA);
+	const std::string key(luaL_checkstring(l, 2));
+
+	int isnum;
+	double vn = lua_tonumberx(l, 3, &isnum);
+	std::string vs;
+	if (!isnum)
+		vs = luaL_checkstring(l, 3);
+
+	// quick check to make sure this object actually has properties
+	// before we go diving through the stack etc
+	lua_getuservalue(l, 1);
+	if (lua_isnil(l, -1))
+		return luaL_error(l, "Object has no property map");
+
+	LuaObjectBase *lo = static_cast<LuaObjectBase*>(lua_touserdata(l, 1));
+	LuaWrappable *o = lo->GetObject();
+	if (!o)
+		return luaL_error(l, "Object is no longer valid");
+
+	PropertiedObject *po = dynamic_cast<PropertiedObject*>(o);
+	assert(po);
+
+	if (isnum)
+		po->Properties().Set(key, vn);
+	else
+		po->Properties().Set(key, vs);
+
+	return 0;
+}
+
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 int LuaObjectBase::l_isa(lua_State *l)
 {
 	luaL_checktype(l, 1, LUA_TUSERDATA);
@@ -141,6 +181,7 @@ int LuaObjectBase::l_gc(lua_State *l)
 	return 0;
 }
 
+<<<<<<< HEAD
 // drill down from global looking for the appropriate table for the given
 // path. returns with the table and the last fragment on the stack, ready for
 // set a value in the table with that key.
@@ -186,6 +227,8 @@ static void SplitTablePath(lua_State *l, const std::string &path)
 	LUA_DEBUG_END(l, 2);
 }
 
+=======
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 int LuaObjectBase::l_tostring(lua_State *l)
 {
 	luaL_checktype(l, 1, LUA_TUSERDATA);
@@ -205,6 +248,7 @@ static void get_next_method_table(lua_State *l)
 
 	// get the type from the table
 	lua_pushstring(l, "type");
+<<<<<<< HEAD
 	lua_rawget(l, -2);           // object, metatable, type
 
 	const std::string type(lua_tostring(l, -1));
@@ -216,6 +260,19 @@ static void get_next_method_table(lua_State *l)
 	// see if the metatable has a parent
 	lua_pushstring(l, "parent");
 	lua_rawget(l, -3);           // object, metatable, method table, parent type
+=======
+	lua_rawget(l, -2);                 // object, metatable, type
+
+	const std::string type(lua_tostring(l, -1));
+	lua_pop(l, 1);                     // object, metatable
+	pi_lua_split_table_path(l, type);  // object, metatable, "global" table, leaf type name
+	lua_rawget(l, -2);                 // object, metatable, "global" table, method table
+	lua_remove(l, -2);                 // object, metatable, method table
+
+	// see if the metatable has a parent
+	lua_pushstring(l, "parent");
+	lua_rawget(l, -3);                 // object, metatable, method table, parent type
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 	// it does, lets fetch it
 	if (!lua_isnil(l, -1)) {
@@ -551,7 +608,11 @@ void LuaObjectBase::CreateClass(const char *type, const char *parent, const luaL
 	lua_pop(l, 1);
 
 	// drill down to the proper "global" table to add the method table to
+<<<<<<< HEAD
 	SplitTablePath(l, type);
+=======
+	pi_lua_split_table_path(l, type);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 	// create table, attach methods to it, leave it on the stack
 	lua_newtable(l);
@@ -576,6 +637,14 @@ void LuaObjectBase::CreateClass(const char *type, const char *parent, const luaL
 	lua_pushcfunction(l, LuaObjectBase::l_isa);
 	lua_rawset(l, -3);
 
+<<<<<<< HEAD
+=======
+	// add the setprop method
+	lua_pushstring(l, "setprop");
+	lua_pushcfunction(l, LuaObjectBase::l_setprop);
+	lua_rawset(l, -3);
+
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	// publish the method table
 	lua_rawset(l, -3);
 

@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
+// Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "Background.h"
@@ -15,6 +19,10 @@
 #include "graphics/StaticMesh.h"
 #include "graphics/Surface.h"
 #include "graphics/VertexArray.h"
+<<<<<<< HEAD
+=======
+#include <SDL_stdinc.h>
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 using namespace Graphics;
 
@@ -23,7 +31,11 @@ namespace Background
 
 void BackgroundElement::SetIntensity(float intensity)
 {
+<<<<<<< HEAD
 	m_material->emissive = Color(intensity);
+=======
+	m_material->emissive = Color(intensity*255);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 }
 
 Starfield::Starfield(Graphics::Renderer *r)
@@ -70,7 +82,11 @@ void Starfield::Fill(Uint32 seed)
 
 	//fill the array
 	for (int i=0; i<BG_STAR_MAX; i++) {
+<<<<<<< HEAD
 		float col = float(rand.Double(0.2,0.7));
+=======
+		Uint8 col = rand.Double(0.2,0.7)*255;
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 		// this is proper random distribution on a sphere's surface
 		const float theta = float(rand.Double(0.0, 2.0*M_PI));
@@ -80,7 +96,11 @@ void Starfield::Fill(Uint32 seed)
 				1000.0f * sqrt(1.0f - u*u) * cos(theta),
 				1000.0f * u,
 				1000.0f * sqrt(1.0f - u*u) * sin(theta)
+<<<<<<< HEAD
 			), Color(col, col, col,	1.f)
+=======
+			), Color(col, col, col,	255)
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		);
 	}
 }
@@ -132,8 +152,13 @@ MilkyWay::MilkyWay(Graphics::Renderer *r)
 	VertexArray *bottom = new VertexArray(ATTRIB_POSITION | ATTRIB_DIFFUSE);
 	VertexArray *top = new VertexArray(ATTRIB_POSITION | ATTRIB_DIFFUSE);
 
+<<<<<<< HEAD
 	const Color dark(0.f);
 	const Color bright(0.05f, 0.05f, 0.05f, 0.05f);
+=======
+	const Color dark(0);
+	const Color bright(13, 13, 13, 13);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 	//bottom
 	float theta;
@@ -211,6 +236,10 @@ void Container::Refresh(Uint32 seed)
 
 void Container::Draw(Graphics::Renderer *renderer, const matrix4x4d &transform) const
 {
+<<<<<<< HEAD
+=======
+	PROFILE_SCOPED()
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	//XXX not really const - renderer can modify the buffers
 	renderer->SetBlendMode(BLEND_SOLID);
 	renderer->SetDepthTest(false);
@@ -225,6 +254,10 @@ void Container::Draw(Graphics::Renderer *renderer, const matrix4x4d &transform) 
 
 void Container::SetIntensity(float intensity)
 {
+<<<<<<< HEAD
+=======
+	PROFILE_SCOPED()
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	m_starField.SetIntensity(intensity);
 	m_milkyWay.SetIntensity(intensity);
 }

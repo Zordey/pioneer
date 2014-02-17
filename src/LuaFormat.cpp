@@ -1,9 +1,18 @@
+<<<<<<< HEAD
 // Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
+// Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "LuaFormat.h"
 #include "LuaObject.h"
 #include "LuaUtils.h"
+<<<<<<< HEAD
+=======
+#include "Lang.h"
+#include "StringF.h"
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 #include "utils.h"
 
 /*
@@ -106,12 +115,32 @@ static int l_format_money(lua_State *l)
 	return 1;
 }
 
+<<<<<<< HEAD
+=======
+static int l_format_accel_g(lua_State *l)
+{
+	double a = luaL_checknumber(l, 1);
+	const std::string str = stringf(Lang::NUMBER_G, formatarg("acceleration", a));
+	lua_pushlstring(l, str.c_str(), str.size());
+	return 1;
+}
+
+static int l_format_mass_tonnes(lua_State *l)
+{
+	double t = luaL_checknumber(l, 1);
+	const std::string str = stringf(Lang::NUMBER_TONNES, formatarg("mass", t));
+	lua_pushlstring(l, str.c_str(), str.size());
+	return 1;
+}
+
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 void LuaFormat::Register()
 {
 	lua_State *l = Lua::manager->GetLuaState();
 
 	LUA_DEBUG_START(l);
 
+<<<<<<< HEAD
 	static const luaL_Reg methods[] = {
 		{ "Date",     l_format_date     },
 		{ "Distance", l_format_distance },
@@ -121,6 +150,21 @@ void LuaFormat::Register()
 
 	luaL_newlib(l, methods);
 	lua_setglobal(l, "Format");
+=======
+	static const luaL_Reg l_methods[] = {
+		{ "Date",       l_format_date        },
+		{ "Distance",   l_format_distance    },
+		{ "Money",      l_format_money       },
+		{ "AccelG",     l_format_accel_g     },
+		{ "MassTonnes", l_format_mass_tonnes },
+		{ 0, 0 }
+	};
+
+	lua_getfield(l, LUA_REGISTRYINDEX, "CoreImports");
+	LuaObjectBase::CreateObject(l_methods, 0, 0);
+	lua_setfield(l, -2, "Format");
+	lua_pop(l, 1);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 	LUA_DEBUG_END(l, 0);
 }

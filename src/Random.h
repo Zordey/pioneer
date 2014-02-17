@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
+// Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 // A deterministic random number generator for use by the rest of the
@@ -11,6 +15,10 @@
 #define RAND_H
 
 #include <assert.h>
+<<<<<<< HEAD
+=======
+#include <cmath>
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 #include "fixed.h"
 #include "RefCounted.h"
@@ -24,6 +32,13 @@ class Random : public RefCounted
 {
     Uint32 current;
 
+<<<<<<< HEAD
+=======
+	// For storing second rand from Normal
+	bool cached;
+	double z1;
+
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 public:
 
 	//
@@ -57,6 +72,10 @@ public:
 	void seed(const Uint32* const seeds, size_t length)
 	{
 		current = lookup3_hashword(seeds, length, 0);
+<<<<<<< HEAD
+=======
+		cached = false;
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	}
 
 	// Seed using an array of 64-bit integers
@@ -165,6 +184,49 @@ public:
 		return o;
 	}
 
+<<<<<<< HEAD
+=======
+	// Normal distribution with zero mean, and unit variance
+	double Normal()
+	{
+		return Normal(0.0,1.0);
+	}
+
+	// Normal distribution with unit variance
+	double Normal(double mean)
+	{
+		return Normal(mean, 1.0);
+	}
+
+	//Normal (Gauss) distribution
+	double Normal(double mean, double stddev)
+	{
+		//https://en.wikipedia.org/wiki/Box-Muller_transform#Polar_form
+		double u, v, s, z0;
+
+		if (cached)
+		{
+			z0 = z1;
+			cached = false;
+		}
+		else
+		{
+			do{
+				u = Double_closed(-1, 1);
+				v = Double_closed(-1, 1);
+				s = u*u + v*v;
+			}while (s >= 1.0);
+
+			s = sqrt((-2.0 * log(s))/s);
+			z0 = u * s;
+			z1 = v * s;
+			cached = true;
+		}
+
+		return  mean + z0 * stddev;
+	}
+
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	// Pick a fixed-point integer half open interval [0,1)
 	fixed Fixed()
 	{

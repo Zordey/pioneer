@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
+// Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "Gui.h"
@@ -9,6 +13,7 @@ static const float PARAGRAPH_SPACING = 1.5f;
 
 namespace Gui {
 
+<<<<<<< HEAD
 static double _clip[2][4];
 static vector3d _clipoffset;
 static bool _do_clip;
@@ -43,6 +48,8 @@ static bool line_clip_test(float topy, float bottomy)
 	return false;
 }
 
+=======
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 TextLayout::TextLayout(const char *_str, RefCountedPtr<Text::TextureFont> font, ColourMarkupMode markup)
 {
 	// XXX ColourMarkupSkip not correctly implemented yet
@@ -51,7 +58,11 @@ TextLayout::TextLayout(const char *_str, RefCountedPtr<Text::TextureFont> font, 
 	m_colourMarkup = markup;
 	m_font = font ? font : Gui::Screen::GetFont();
 
+<<<<<<< HEAD
 	str = reinterpret_cast<char *>(malloc(strlen(_str)+1));
+=======
+	str = static_cast<char *>(malloc(strlen(_str)+1));
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	strcpy(str, _str);
 
 	m_justify = false;
@@ -104,6 +115,7 @@ void TextLayout::MeasureSize(const float width, float outSize[2]) const
 
 void TextLayout::Render(const float width, const Color &color) const
 {
+<<<<<<< HEAD
 	float fontScale[2];
 	Gui::Screen::GetCoords2Pixels(fontScale);
 	GLdouble modelMatrix[16];
@@ -117,14 +129,40 @@ void TextLayout::Render(const float width, const Color &color) const
 	glScalef(fontScale[0], fontScale[1], 1);
 	_RenderRaw(width / fontScale[0], color);
 	glPopMatrix();
+=======
+	PROFILE_SCOPED()
+	float fontScale[2];
+	Gui::Screen::GetCoords2Pixels(fontScale);
+
+	Graphics::Renderer *r = Gui::Screen::GetRenderer();
+
+	const matrix4x4f &modelMatrix = r->GetCurrentModelView();
+	Graphics::Renderer::MatrixTicket ticket(r, Graphics::MatrixMode::MODELVIEW);
+	{
+		const float x = modelMatrix[12];
+		const float y = modelMatrix[13];
+		r->LoadIdentity();
+		r->Translate(floor(x/fontScale[0])*fontScale[0], floor(y/fontScale[1])*fontScale[1], 0);
+		r->Scale(fontScale[0], fontScale[1], 1);
+		_RenderRaw(width / fontScale[0], color);
+	}
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 }
 
 void TextLayout::_RenderRaw(float maxWidth, const Color &color) const
 {
+<<<<<<< HEAD
 	float py = 0;
 	init_clip_test();
 
 	glPushMatrix();
+=======
+	PROFILE_SCOPED()
+	float py = 0;
+
+	Graphics::Renderer *r = Gui::Screen::GetRenderer();
+	Graphics::Renderer::MatrixTicket ticket(r, Graphics::MatrixMode::MODELVIEW);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 	const float spaceWidth = m_font->GetGlyph(' ').advx;
 
@@ -164,6 +202,7 @@ void TextLayout::_RenderRaw(float maxWidth, const Color &color) const
 			_spaceWidth = spaceWidth;
 		}
 
+<<<<<<< HEAD
 		if (line_clip_test(py, py+m_font->GetHeight()*2.0)) {
 			float px = 0;
 			for (int j=0; j<num; j++) {
@@ -182,6 +221,21 @@ void TextLayout::_RenderRaw(float maxWidth, const Color &color) const
 		py += m_font->GetHeight() * (explicit_newline ? PARAGRAPH_SPACING : 1.0f);
 	}
 	glPopMatrix();
+=======
+		float px = 0;
+		for (int j=0; j<num; j++) {
+			if ((*wpos).word) {
+				if (m_colourMarkup == ColourMarkupUse)
+					c = m_font->RenderMarkup((*wpos).word, round(px), round(py), c);
+				else
+					m_font->RenderString((*wpos).word, round(px), round(py), c);
+			}
+			px += (*wpos).advx + _spaceWidth;
+			wpos++;
+		}
+		py += m_font->GetHeight() * (explicit_newline ? PARAGRAPH_SPACING : 1.0f);
+	}
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 }
 
 void TextLayout::_MeasureSizeRaw(const float layoutWidth, float outSize[2]) const

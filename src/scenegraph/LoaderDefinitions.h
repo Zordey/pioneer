@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
+// Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #ifndef _LOADERDEFINITIONS_H_
@@ -15,10 +19,17 @@ struct MaterialDefinition {
 		tex_diff(""),
 		tex_spec(""),
 		tex_glow(""),
+<<<<<<< HEAD
 		diffuse(Color(1.f)),
 		specular(Color(1.f)),
 		ambient(Color(0.f)),
 		emissive(Color(0.f)),
+=======
+		diffuse(Color(255)),
+		specular(Color(255)),
+		ambient(Color(0)),
+		emissive(Color(0)),
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		shininess(100),
 		opacity(100),
 		alpha_test(false),

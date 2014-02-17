@@ -1,7 +1,15 @@
+<<<<<<< HEAD
 // Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "Drawables.h"
+=======
+// Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+// Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
+
+#include "Drawables.h"
+#include "Texture.h"
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 namespace Graphics {
 
@@ -9,7 +17,11 @@ namespace Drawables {
 
 Disk::Disk(Graphics::Renderer *r, const Color &c, float rad)
 {
+<<<<<<< HEAD
 	m_vertices.Reset(new VertexArray(ATTRIB_POSITION));
+=======
+	m_vertices.reset(new VertexArray(ATTRIB_POSITION));
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	m_material.Reset(r->CreateMaterial(MaterialDescriptor()));
 	m_material->diffuse = c;
 
@@ -22,12 +34,35 @@ Disk::Disk(Graphics::Renderer *r, const Color &c, float rad)
 	}
 }
 
+<<<<<<< HEAD
 void Disk::Draw(Renderer *r)
 {
 	r->DrawTriangles(m_vertices.Get(), m_material.Get(), TRIANGLE_FAN);
 }
 
 void Disk::SetColor(const Color4f &c)
+=======
+Disk::Disk(RefCountedPtr<Material> material, const int numEdges/*=72*/, const float radius/*=1.0f*/) : m_material(material)
+{
+	m_vertices.reset(new VertexArray(ATTRIB_POSITION));
+
+	m_vertices->Add(vector3f(0.f, 0.f, 0.f));
+	const float edgeStep = 360.0f / float(numEdges);
+	for (int i = numEdges; i >= 0; i--) {
+		m_vertices->Add(vector3f(
+			0.f+sinf(DEG2RAD(i*edgeStep))*radius,
+			0.f+cosf(DEG2RAD(i*edgeStep))*radius,
+			0.f));
+	}
+}
+
+void Disk::Draw(Renderer *r)
+{
+	r->DrawTriangles(m_vertices.get(), m_material.Get(), TRIANGLE_FAN);
+}
+
+void Disk::SetColor(const Color &c)
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 {
 	m_material->diffuse = c;
 }
@@ -36,8 +71,13 @@ Line3D::Line3D()
 {
 	m_points[0] = vector3f(0.f);
 	m_points[1] = vector3f(0.f);
+<<<<<<< HEAD
 	m_colors[0] = Color(0.f);
 	m_colors[1] = Color(1.f);
+=======
+	m_colors[0] = Color(0);
+	m_colors[1] = Color(255);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	m_width     = 2.f; // XXX bug in Radeon drivers will cause crash in glLineWidth if width >= 3
 }
 
@@ -89,7 +129,11 @@ Sphere3D::Sphere3D(RefCountedPtr<Material> mat, int subdivs, float scale)
 	scale = fabs(scale);
 	matrix4x4f trans = matrix4x4f::Identity();
 	trans.Scale(scale, scale, scale);
+<<<<<<< HEAD
 	m_surface.Reset(new Surface(TRIANGLES, new VertexArray(ATTRIB_POSITION | ATTRIB_NORMAL | ATTRIB_UV0), mat));
+=======
+	m_surface.reset(new Surface(TRIANGLES, new VertexArray(ATTRIB_POSITION | ATTRIB_NORMAL | ATTRIB_UV0), mat));
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 	//initial vertices
 	int i;
@@ -113,7 +157,11 @@ Sphere3D::Sphere3D(RefCountedPtr<Material> mat, int subdivs, float scale)
 
 void Sphere3D::Draw(Renderer *r)
 {
+<<<<<<< HEAD
 	r->DrawSurface(m_surface.Get());
+=======
+	r->DrawSurface(m_surface.get());
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 }
 
 int Sphere3D::AddVertex(const vector3f &v, const vector3f &n)
@@ -153,6 +201,28 @@ void Sphere3D::Subdivide(const matrix4x4f &trans, const vector3f &v1, const vect
 	Subdivide(trans, v12, v23, v31, i12, i23, i31, depth-1);
 }
 
+<<<<<<< HEAD
+=======
+// a textured quad with reversed winding
+TexturedQuad::TexturedQuad(Graphics::Renderer *r, Graphics::Texture *texture, const vector2f &pos, const vector2f &size) : m_texture(RefCountedPtr<Graphics::Texture>(texture)) 
+{
+	m_vertices.reset(new VertexArray(ATTRIB_POSITION | ATTRIB_UV0));
+	Graphics::MaterialDescriptor desc;
+	desc.textures = 1;
+	m_material.reset(r->CreateMaterial(desc));
+	m_material->texture0 = m_texture.Get();
+
+	// these might need to be reversed
+	const vector2f texPos = vector2f(0.0f);
+	const vector2f texSize = m_texture->GetDescriptor().texSize;
+
+	m_vertices->Add(vector3f(pos.x,        pos.y,        0.0f), vector2f(texPos.x,           texPos.y+texSize.y));
+	m_vertices->Add(vector3f(pos.x,        pos.y+size.y, 0.0f), vector2f(texPos.x,           texPos.y));
+	m_vertices->Add(vector3f(pos.x+size.x, pos.y,        0.0f), vector2f(texPos.x+texSize.x, texPos.y+texSize.y));
+	m_vertices->Add(vector3f(pos.x+size.x, pos.y+size.y, 0.0f), vector2f(texPos.x+texSize.x, texPos.y));
+}
+
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 }
 
 }

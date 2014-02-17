@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
+// Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "CollisionVisitor.h"
@@ -11,6 +15,7 @@
 #include "graphics/Surface.h"
 
 namespace SceneGraph {
+<<<<<<< HEAD
 
 static bool properData = false;
 
@@ -18,6 +23,16 @@ CollisionVisitor::CollisionVisitor()
 {
 	properData = false;
 	m_collMesh.Reset(new CollMesh());
+=======
+CollisionVisitor::CollisionVisitor()
+: m_properData(false)
+, m_totalTris(0)
+{
+	m_collMesh.Reset(new CollMesh());
+	m_vertices.reserve(300);
+	m_indices.reserve(300 * 3);
+	m_flags.reserve(300);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 }
 
 void CollisionVisitor::ApplyStaticGeometry(StaticGeometry &g)
@@ -26,7 +41,10 @@ void CollisionVisitor::ApplyStaticGeometry(StaticGeometry &g)
 		m_collMesh->GetAabb().Update(g.m_boundingBox.min);
 		m_collMesh->GetAabb().Update(g.m_boundingBox.max);
 	} else {
+<<<<<<< HEAD
 		//XXX should transform each corner instead?
+=======
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		const matrix4x4f &matrix = m_matrixStack.back();
 		vector3f min = matrix * vector3f(g.m_boundingBox.min);
 		vector3f max = matrix * vector3f(g.m_boundingBox.max);
@@ -49,6 +67,7 @@ void CollisionVisitor::ApplyCollisionGeometry(CollisionGeometry &cg)
 {
 	using std::vector;
 
+<<<<<<< HEAD
 	const matrix4x4f matrix = m_matrixStack.empty() ? matrix4x4f::Identity() : m_matrixStack.back();
 
 	//copy data (with index offset)
@@ -65,12 +84,73 @@ void CollisionVisitor::ApplyCollisionGeometry(CollisionGeometry &cg)
 	if (cg.GetTriFlag() == 0) properData = true;
 	for (unsigned int i = 0; i < cg.GetIndices().size() / 3; i++)
 		m_collMesh->m_flags.push_back(cg.GetTriFlag());
+=======
+	if (cg.IsDynamic()) return ApplyDynamicCollisionGeometry(cg);
+
+	const matrix4x4f matrix = m_matrixStack.empty() ? matrix4x4f::Identity() : m_matrixStack.back();
+
+	//copy data (with index offset)
+	int idxOffset = m_vertices.size();
+	for (vector<vector3f>::const_iterator it = cg.GetVertices().begin(); it != cg.GetVertices().end(); ++it) {
+		const vector3f pos = matrix * (*it);
+		m_vertices.push_back(pos);
+		m_collMesh->GetAabb().Update(pos.x, pos.y, pos.z);
+	}
+
+	for (vector<Uint16>::const_iterator it = cg.GetIndices().begin(); it != cg.GetIndices().end(); ++it)
+		m_indices.push_back(*it + idxOffset);
+
+	//at least some of the geoms should be default collision
+	if (cg.GetTriFlag() == 0)
+		m_properData = true;
+
+	for (unsigned int i = 0; i < cg.GetIndices().size() / 3; i++)
+		m_flags.push_back(cg.GetTriFlag());
+}
+
+void CollisionVisitor::ApplyDynamicCollisionGeometry(CollisionGeometry &cg)
+{
+	//don't transform geometry, one geomtree per cg, create tree right away
+
+	const int numVertices = cg.GetVertices().size();
+	const int numIndices = cg.GetIndices().size();
+	const int numTris = numIndices / 3;
+	vector3f *vertices = new vector3f[numVertices];
+	Uint16 *indices = new Uint16[numIndices];
+	unsigned int *triFlags = new unsigned int[numTris];
+
+	for (int i = 0; i < numVertices; i++)
+		vertices[i] = cg.GetVertices()[i];
+
+	for (int i = 0; i < numIndices; i++)
+		indices[i] = cg.GetIndices()[i];
+
+	for (int i = 0; i < numTris; i++)
+		triFlags[i] = cg.GetTriFlag();
+
+	//create geomtree
+	//takes ownership of data
+	GeomTree *gt = new GeomTree(
+		numVertices, numTris,
+		reinterpret_cast<float*>(vertices),
+		indices, triFlags);
+	cg.SetGeomTree(gt);
+
+	m_collMesh->AddDynGeomTree(gt);
+
+	m_totalTris += numTris;
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 }
 
 void CollisionVisitor::AabbToMesh(const Aabb &bb)
 {
+<<<<<<< HEAD
 	std::vector<vector3f> &vts = m_collMesh->m_vertices;
 	std::vector<int> &ind = m_collMesh->m_indices;
+=======
+	std::vector<vector3f> &vts = m_vertices;
+	std::vector<Uint16> &ind = m_indices;
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	const int offs = vts.size();
 
 	const vector3f min(bb.min.x, bb.min.y, bb.min.z);
@@ -124,13 +204,19 @@ void CollisionVisitor::AabbToMesh(const Aabb &bb)
 	ADDTRI(1, 3, 5);
 #undef ADDTRI
 
+<<<<<<< HEAD
 	for(unsigned int i = 0; i < ind.size()/3; i++) {
 		m_collMesh->m_flags.push_back(0);
 	}
+=======
+	for(unsigned int i = 0; i < ind.size()/3; i++)
+		m_flags.push_back(0);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 }
 
 RefCountedPtr<CollMesh> CollisionVisitor::CreateCollisionMesh()
 {
+<<<<<<< HEAD
 	if (!properData)
 		AabbToMesh(m_collMesh->GetAabb());
 
@@ -149,3 +235,48 @@ RefCountedPtr<CollMesh> CollisionVisitor::CreateCollisionMesh()
 }
 
 }
+=======
+	//convert from model AABB if no collisiongeoms found
+	if (!m_properData)
+		AabbToMesh(m_collMesh->GetAabb());
+
+	assert(m_collMesh->GetGeomTree() == 0);
+	assert(!m_vertices.empty() && !m_indices.empty());
+
+	//duplicate data again for geomtree...
+	const int numVertices = m_vertices.size();
+	const int numIndices = m_indices.size();
+	const int numTris = numIndices / 3;
+	vector3f *vertices = new vector3f[numVertices];
+	Uint16 *indices = new Uint16[numIndices];
+	unsigned int *triFlags = new unsigned int[numTris];
+
+	m_totalTris += numTris;
+
+	for (int i = 0; i < numVertices; i++)
+		vertices[i] = m_vertices[i];
+
+	for (int i = 0; i < numIndices; i++)
+		indices[i] = m_indices[i];
+
+	for (int i = 0; i < numTris; i++)
+		triFlags[i] = m_flags[i];
+
+	//create geomtree
+	//takes ownership of data
+	GeomTree *gt = new GeomTree(
+		numVertices, numTris,
+		reinterpret_cast<float*>(vertices),
+		indices, triFlags);
+	m_collMesh->SetGeomTree(gt);
+	m_collMesh->SetNumTriangles(m_totalTris);
+	m_boundingRadius = m_collMesh->GetAabb().GetRadius();
+
+	m_vertices.clear();
+	m_indices.clear();
+	m_flags.clear();
+
+	return m_collMesh;
+}
+}
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755

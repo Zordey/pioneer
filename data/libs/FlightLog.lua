@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 -- Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
+-- Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 -- Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 --
@@ -8,6 +12,13 @@
 -- player. Can be used by scripts to find out where the player has been
 -- recently.
 
+<<<<<<< HEAD
+=======
+local Game = import("Game")
+local Event = import("Event")
+local Format = import("Format")
+local Serializer = import("Serializer")
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 -- default values (private)
 local FlightLogSystemQueueLength = 1000
@@ -17,6 +28,10 @@ local FlightLogStationQueueLength = 1000
 local FlightLogSystem = {}
 local FlightLogStation = {}
 
+<<<<<<< HEAD
+=======
+local FlightLog
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 FlightLog = {
 
 --
@@ -228,3 +243,8 @@ Event.Register("onLeaveSystem", AddSystemDepartureToLog)
 Event.Register("onShipUndocked", AddStationToLog)
 Event.Register("onGameStart", onGameStart)
 Serializer:Register("FlightLog", serialize, unserialize)
+<<<<<<< HEAD
+=======
+
+return FlightLog
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755

@@ -1,31 +1,51 @@
+<<<<<<< HEAD
 // Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
+// Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "Graphics.h"
 #include "FileSystem.h"
 #include "Material.h"
 #include "RendererGL2.h"
+<<<<<<< HEAD
 #include "RendererLegacy.h"
+=======
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 #include "OS.h"
 
 namespace Graphics {
 
 static bool initted = false;
+<<<<<<< HEAD
 bool shadersAvailable = false;
 bool shadersEnabled = false;
 Material *vtxColorMaterial;
 Settings settings;
+=======
+Material *vtxColorMaterial;
+static int width, height;
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 static float g_fov = 85.f;
 static float g_fovFactor = 1.f;
 
 int GetScreenWidth()
 {
+<<<<<<< HEAD
 	return settings.width;
+=======
+	return width;
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 }
 
 int GetScreenHeight()
 {
+<<<<<<< HEAD
 	return settings.height;
+=======
+	return height;
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 }
 
 float GetFov()
@@ -58,6 +78,7 @@ Renderer* Init(Settings vs)
 		vs.height = modes.front().height;
 	}
 
+<<<<<<< HEAD
 	const SDL_VideoInfo *info = SDL_GetVideoInfo();
 
 	//printf("SDL_GetVideoInfo says %d bpp\n", info->vfmt->BitsPerPixel);
@@ -133,6 +154,11 @@ Renderer* Init(Settings vs)
 	SDL_GL_GetAttribute(SDL_GL_MULTISAMPLESAMPLES, &actualSamples);
 	if (vs.requestedSamples != actualSamples)
 		fprintf(stderr, "Requested AA mode: %dx, actual: %dx\n", vs.requestedSamples, actualSamples);
+=======
+	WindowSDL *window = new WindowSDL(vs, "Pioneer");
+	width = window->GetWidth();
+	height = window->GetHeight();
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 	glewInit();
 
@@ -141,6 +167,7 @@ Renderer* Init(Settings vs)
 
 	Renderer *renderer = 0;
 
+<<<<<<< HEAD
 	shadersAvailable = glewIsSupported("GL_VERSION_2_0");
 	shadersEnabled = vs.shaders && shadersAvailable;
 
@@ -148,6 +175,12 @@ Renderer* Init(Settings vs)
 		renderer = new RendererGL2(vs);
 	else
 		renderer = new RendererLegacy(vs);
+=======
+	if (!glewIsSupported("GL_VERSION_2_0") )
+		OS::Error("OpenGL Version 2.0 is not supported. Pioneer cannot run on your graphics card.");
+	
+	renderer = new RendererGL2(window, vs);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 	printf("Initialized %s\n", renderer->GetName());
 
@@ -158,8 +191,11 @@ Renderer* Init(Settings vs)
 	vtxColorMaterial = renderer->CreateMaterial(desc);
 	vtxColorMaterial->IncRefCount();
 
+<<<<<<< HEAD
 	Graphics::settings = vs;
 
+=======
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	return renderer;
 }
 
@@ -168,14 +204,20 @@ void Uninit()
 	delete vtxColorMaterial;
 }
 
+<<<<<<< HEAD
 bool AreShadersEnabled()
 {
 	return shadersEnabled;
+=======
+static bool operator==(const VideoMode &a, const VideoMode &b) {
+	return a.width==b.width && a.height==b.height;
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 }
 
 std::vector<VideoMode> GetAvailableVideoModes()
 {
 	std::vector<VideoMode> modes;
+<<<<<<< HEAD
 	//querying modes using the current pixel format
 	//note - this has always been sdl_fullscreen, hopefully it does not matter
 	SDL_Rect **sdlmodes = SDL_ListModes(0, SDL_HWSURFACE | SDL_FULLSCREEN);
@@ -191,6 +233,30 @@ std::vector<VideoMode> GetAvailableVideoModes()
 			modes.push_back(VideoMode(sdlmodes[i]->w, sdlmodes[i]->h));
 		}
 	}
+=======
+
+	const int num_displays = SDL_GetNumVideoDisplays();
+	for(int display_index = 0; display_index < num_displays; display_index++)
+	{
+		const int num_modes = SDL_GetNumDisplayModes(display_index);
+
+		SDL_Rect display_bounds;
+		SDL_GetDisplayBounds(display_index, &display_bounds);
+
+		for (int display_mode = 0; display_mode < num_modes; display_mode++)
+		{
+			SDL_DisplayMode mode;
+			SDL_GetDisplayMode(display_index, display_mode, &mode);
+			// insert only if unique resolution
+			if( modes.end()==std::find(modes.begin(), modes.end(), VideoMode(mode.w, mode.h)) ) {
+				modes.push_back(VideoMode(mode.w, mode.h));
+			}
+		}
+	}
+	if( num_displays==0 ) {
+		modes.push_back(VideoMode(800, 600));
+	}
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	return modes;
 }
 

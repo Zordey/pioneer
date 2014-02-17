@@ -1,11 +1,19 @@
+<<<<<<< HEAD
 material DSMiner_Decal
 tex_diff DSMinerDecalDiff.png
 tex_spec DSMinerDecalSpec.png
 tex_glow DSMinerDecalGlow.png
+=======
+material fuselage-material
+tex_diff dsminer_diff.png
+tex_spec dsminer_spec.png
+tex_glow dsminer_glow.png
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 diffuse 1.0 1.0 1.0
 specular 1.0 1.0 1.0
 shininess 80
 
+<<<<<<< HEAD
 material DSMiner_Hull
 tex_diff DSMinerHullDiff.png
 tex_spec DSMinerHullSpec.png
@@ -35,3 +43,17 @@ mesh DSMinerHullLOD2.obj
 
 anim gear_down 0 55
 anim on_landing 60 100
+=======
+
+lod 1000
+mesh dsminer_hi.dae
+mesh dsminer_shield.dae
+
+lod 100
+mesh dsminer_med.dae
+
+collision dsminer_col.dae
+
+
+anim gear_down 0 133
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755

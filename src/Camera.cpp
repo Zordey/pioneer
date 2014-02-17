@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
+// Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "Camera.h"
@@ -15,6 +19,11 @@
 #include "graphics/VertexArray.h"
 #include "graphics/Material.h"
 
+<<<<<<< HEAD
+=======
+#include <SDL_stdinc.h>
+
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 using namespace Graphics;
 
 Camera::Camera(float width, float height, float fovY, float znear, float zfar) :
@@ -42,6 +51,10 @@ Camera::~Camera()
 
 static void position_system_lights(Frame *camFrame, Frame *frame, std::vector<Camera::LightSource> &lights)
 {
+<<<<<<< HEAD
+=======
+	PROFILE_SCOPED()
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	if (lights.size() > 3) return;
 
 	SystemBody *body = frame->GetSystemBody();
@@ -51,9 +64,15 @@ static void position_system_lights(Frame *camFrame, Frame *frame, std::vector<Ca
 		const double dist = lpos.Length() / AU;
 		lpos *= 1.0/dist; // normalize
 
+<<<<<<< HEAD
 		const float *col = StarSystem::starRealColors[body->type];
 
 		const Color lightCol(col[0], col[1], col[2], 0.f);
+=======
+		const Uint8 *col = StarSystem::starRealColors[body->type];
+
+		const Color lightCol(col[0], col[1], col[2], 0);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		vector3f lightpos(lpos.x, lpos.y, lpos.z);
 		lights.push_back(Camera::LightSource(frame->GetBody(), Graphics::Light(Graphics::Light::LIGHT_DIRECTIONAL, lightpos, lightCol, lightCol)));
 	}
@@ -71,7 +90,11 @@ void Camera::Update()
 	m_camFrame = new Frame(m_frame, "camera", Frame::FLAG_ROTATING);
 
 	// move and orient it to the camera position
+<<<<<<< HEAD
 	m_camFrame->SetOrient(m_orient);
+=======
+	m_camFrame->SetOrient(m_orient, Pi::game ? Pi::game->GetTime() : 0.0);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	m_camFrame->SetPosition(m_pos);
 
 	// make sure old orient and interpolated orient (rendering orient) are not rubbish
@@ -97,13 +120,25 @@ void Camera::Update()
 	m_sortedBodies.sort();
 }
 
+<<<<<<< HEAD
 void Camera::Draw(Renderer *renderer, const Body *excludeBody)
 {
+=======
+void Camera::Draw(Graphics::Renderer *renderer, const Body *excludeBody, ShipCockpit* cockpit)
+{
+	PROFILE_SCOPED()
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	if (!m_camFrame) return;
 	if (!renderer) return;
 
 	m_renderer = renderer;
 
+<<<<<<< HEAD
+=======
+	m_renderer->SetDepthWrite(true);
+	m_renderer->SetDepthTest(true);
+
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	glPushAttrib(GL_ALL_ATTRIB_BITS & (~GL_POINT_BIT));
 
 	m_renderer->SetPerspectiveProjection(m_fovAng, m_width/m_height, m_zNear, m_zFar);
@@ -121,7 +156,11 @@ void Camera::Draw(Renderer *renderer, const Body *excludeBody)
 
 	if (m_lightSources.empty()) {
 		// no lights means we're somewhere weird (eg hyperspace). fake one
+<<<<<<< HEAD
 		const Color col(1.f);
+=======
+		const Color col(255);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		m_lightSources.push_back(LightSource(0, Graphics::Light(Graphics::Light::LIGHT_DIRECTIONAL, vector3f(0.f), col, col)));
 	}
 
@@ -143,7 +182,11 @@ void Camera::Draw(Renderer *renderer, const Body *excludeBody)
 				for(std::vector<LightSource>::const_iterator it = m_lightSources.begin();
 					it != m_lightSources.end(); ++it) {
 					const vector3f lightDir(it->GetLight().GetPosition().Normalized());
+<<<<<<< HEAD
 					angle += std::max(0.f, lightDir.Dot(-relpos.Normalized())) * it->GetLight().GetDiffuse().GetLuminance();
+=======
+					angle += std::max(0.f, lightDir.Dot(-relpos.Normalized())) * (it->GetLight().GetDiffuse().GetLuminance() / 255.0f);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 				}
 				//calculate background intensity with some hand-tweaked fuzz applied
 				bgIntensity = Clamp(1.f - std::min(1.f, powf(density, 0.25f)) * (0.3f + powf(angle, 0.25f)), 0.f, 1.f);
@@ -156,6 +199,10 @@ void Camera::Draw(Renderer *renderer, const Body *excludeBody)
 
 	{
 		std::vector<Graphics::Light> rendererLights;
+<<<<<<< HEAD
+=======
+		rendererLights.reserve(m_lightSources.size());
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		for (size_t i = 0; i < m_lightSources.size(); i++)
 			rendererLights.push_back(m_lightSources[i].GetLight());
 		renderer->SetLights(rendererLights.size(), &rendererLights[0]);
@@ -186,6 +233,19 @@ void Camera::Draw(Renderer *renderer, const Body *excludeBody)
 
 	Sfx::RenderAll(renderer, Pi::game->GetSpace()->GetRootFrame(), m_camFrame);
 
+<<<<<<< HEAD
+=======
+	// NB: Do any screen space rendering after here:
+	// Things like the cockpit and AR features like hudtrails, space dust etc.
+
+	// Render cockpit
+	// XXX only here because it needs a frame for lighting calc
+	// should really be in WorldView, immediately after camera draw
+	if(cockpit)
+		cockpit->RenderCockpit(renderer, this, m_camFrame);
+
+
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	m_frame->RemoveChild(m_camFrame);
 	delete m_camFrame;
 	m_camFrame = 0;
@@ -195,6 +255,10 @@ void Camera::Draw(Renderer *renderer, const Body *excludeBody)
 
 void Camera::DrawSpike(double rad, const vector3d &viewCoords, const matrix4x4d &viewTransform)
 {
+<<<<<<< HEAD
+=======
+	PROFILE_SCOPED()
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	// draw twinkly star-thing on faraway objects
 	// XXX this seems like a good case for drawing in 2D - use projected position, then the
 	// "face the camera dammit" bits can be skipped
@@ -220,13 +284,21 @@ void Camera::DrawSpike(double rad, const vector3d &viewCoords, const matrix4x4d 
 	// Not quite correct, since it always uses the first light
 	GLfloat col[4];
 	glGetLightfv(GL_LIGHT0, GL_DIFFUSE, col);
+<<<<<<< HEAD
 	col[3] = 1.f;
+=======
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 	static VertexArray va(ATTRIB_POSITION | ATTRIB_DIFFUSE);
 	va.Clear();
 
+<<<<<<< HEAD
 	const Color center(col[0], col[1], col[2], col[2]);
 	const Color edges(col[0], col[1], col[2], 0.f);
+=======
+	const Color center(col[0]*255, col[1]*255, col[2]*255, 255);
+	const Color edges(col[0]*255, col[1]*255, col[2]*255, 0);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 	//center
 	va.Add(vector3f(0.f), center);

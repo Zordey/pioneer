@@ -7,7 +7,10 @@
     <ClCompile Include="..\..\..\src\graphics\Material.cpp" />
     <ClCompile Include="..\..\..\src\graphics\Renderer.cpp" />
     <ClCompile Include="..\..\..\src\graphics\RendererGL2.cpp" />
+<<<<<<< HEAD
     <ClCompile Include="..\..\..\src\graphics\RendererLegacy.cpp" />
+=======
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
     <ClCompile Include="..\..\..\src\graphics\StaticMesh.cpp" />
     <ClCompile Include="..\..\..\src\graphics\TextureBuilder.cpp" />
     <ClCompile Include="..\..\..\src\graphics\TextureGL.cpp" />
@@ -19,7 +22,10 @@
       <Filter>win32</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\graphics\Light.cpp" />
+<<<<<<< HEAD
     <ClCompile Include="..\..\..\src\graphics\MaterialLegacy.cpp" />
+=======
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
     <ClCompile Include="..\..\..\src\graphics\gl2\Program.cpp">
       <Filter>gl2</Filter>
     </ClCompile>
@@ -41,6 +47,16 @@
     <ClCompile Include="..\..\..\src\graphics\gl2\GL2RenderTarget.cpp">
       <Filter>gl2</Filter>
     </ClCompile>
+<<<<<<< HEAD
+=======
+    <ClCompile Include="..\..\..\src\graphics\gl2\FresnelColourMaterial.cpp">
+      <Filter>gl2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\graphics\WindowSDL.cpp" />
+    <ClCompile Include="..\..\..\src\graphics\gl2\ShieldMaterial.cpp">
+      <Filter>gl2</Filter>
+    </ClCompile>
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\src\graphics\Drawables.h" />
@@ -50,7 +66,10 @@
     <ClInclude Include="..\..\..\src\graphics\Renderer.h" />
     <ClInclude Include="..\..\..\src\graphics\RendererGL2.h" />
     <ClInclude Include="..\..\..\src\graphics\RendererGLBuffers.h" />
+<<<<<<< HEAD
     <ClInclude Include="..\..\..\src\graphics\RendererLegacy.h" />
+=======
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
     <ClInclude Include="..\..\..\src\graphics\StaticMesh.h" />
     <ClInclude Include="..\..\..\src\graphics\Surface.h" />
     <ClInclude Include="..\..\..\src\graphics\Texture.h" />
@@ -61,7 +80,10 @@
       <Filter>win32</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\graphics\Light.h" />
+<<<<<<< HEAD
     <ClInclude Include="..\..\..\src\graphics\MaterialLegacy.h" />
+=======
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
     <ClInclude Include="..\..\..\src\graphics\gl2\Program.h">
       <Filter>gl2</Filter>
     </ClInclude>
@@ -87,6 +109,16 @@
     <ClInclude Include="..\..\..\src\graphics\gl2\GL2RenderTarget.h">
       <Filter>gl2</Filter>
     </ClInclude>
+<<<<<<< HEAD
+=======
+    <ClInclude Include="..\..\..\src\graphics\gl2\FresnelColourMaterial.h">
+      <Filter>gl2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\graphics\WindowSDL.h" />
+    <ClInclude Include="..\..\..\src\graphics\gl2\ShieldMaterial.h">
+      <Filter>gl2</Filter>
+    </ClInclude>
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
   </ItemGroup>
   <ItemGroup>
     <Filter Include="win32">

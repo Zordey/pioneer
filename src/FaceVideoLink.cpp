@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
+// Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "FaceVideoLink.h"
@@ -11,12 +15,17 @@
 #include "graphics/TextureBuilder.h"
 #include "FileSystem.h"
 #include "SDLWrappers.h"
+<<<<<<< HEAD
+=======
+#include "FaceGenManager.h"
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 using namespace Graphics;
 
 static const unsigned int FACE_WIDTH  = 295;
 static const unsigned int FACE_HEIGHT = 285;
 
+<<<<<<< HEAD
 // XXX these shouldn't really be hardcoded. it'd be much nicer to poke through
 // the facegen/ dir and figure out what we've got available. that or some
 // config file
@@ -49,6 +58,8 @@ static void _blit_image(const SDLSurfacePtr &s, const char *filename, int xoff, 
 	_blit_image(s.Get(), filename, xoff, yoff);
 }
 
+=======
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 FaceVideoLink::FaceVideoLink(float w, float h, Uint32 flags, Uint32 seed,
 	const std::string &name, const std::string &title) : VideoLink(w, h)
 {
@@ -57,6 +68,7 @@ FaceVideoLink::FaceVideoLink(float w, float h, Uint32 flags, Uint32 seed,
 
 	if (!seed) seed = time(0);
 
+<<<<<<< HEAD
 	RefCountedPtr<Random> rand(new Random(seed));
 
 	m_flags = flags;
@@ -135,6 +147,24 @@ FaceVideoLink::FaceVideoLink(float w, float h, Uint32 flags, Uint32 seed,
 	}
 
 	m_quad.Reset(new Gui::TexturedQuad(Graphics::TextureBuilder(faceim, Graphics::LINEAR_CLAMP, true, true).CreateTexture(Gui::Screen::GetRenderer())));
+=======
+	m_flags = flags;
+	m_seed = seed;
+
+	SDLSurfacePtr faceim = SDLSurfacePtr::WrapNew(SDL_CreateRGBSurface(SDL_SWSURFACE, FACE_WIDTH, FACE_HEIGHT, 24, 0xff, 0xff00, 0xff0000, 0));
+
+	Sint8 gender=0;
+	FaceGenManager::BlitFaceIm(faceim, gender, flags, seed);
+
+	RefCountedPtr<Random> randPtr(new Random(seed));
+	std::string charname = name;
+	if (charname.empty())
+		charname = Pi::luaNameGen->FullName((gender != 0), randPtr);
+
+	m_characterInfo = new CharacterInfoText(w * 0.8f, h * 0.15f, charname, title);
+
+	m_quad.reset(new Gui::TexturedQuad(Graphics::TextureBuilder(faceim, Graphics::LINEAR_CLAMP, true, true).CreateTexture(Gui::Screen::GetRenderer())));
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 }
 
 FaceVideoLink::~FaceVideoLink() {
@@ -163,12 +193,22 @@ void FaceVideoLink::Draw() {
 		return;
 	}
 
+<<<<<<< HEAD
 	m_quad->Draw(Gui::Screen::GetRenderer(), vector2f(0.0f), vector2f(size[0],size[1]));
 
 	glPushMatrix();
 	glTranslatef(0.f, size[1]- size[1] * 0.16f, 0.f);
 	m_characterInfo->Draw();
 	glPopMatrix();
+=======
+	Graphics::Renderer *r = Gui::Screen::GetRenderer();
+
+	m_quad->Draw(r, vector2f(0.0f), vector2f(size[0],size[1]));
+
+	Graphics::Renderer::MatrixTicket ticket(r, Graphics::MatrixMode::MODELVIEW);
+	r->Translate(0.f, size[1]- size[1] * 0.16f, 0.f);
+	m_characterInfo->Draw();
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 }
 
 void FaceVideoLink::DrawMessage() {
@@ -178,10 +218,17 @@ void FaceVideoLink::DrawMessage() {
 	float msgSize[2];
 	m_message->GetSize(msgSize);
 
+<<<<<<< HEAD
 	glPushMatrix();
 	glTranslatef(size[0]*0.5f-msgSize[0]*0.5f, size[1]-msgSize[1]*1.5f, 0);
 	m_message->Draw();
 	glPopMatrix();
+=======
+	Graphics::Renderer *r = Gui::Screen::GetRenderer();
+	Graphics::Renderer::MatrixTicket ticket(r, Graphics::MatrixMode::MODELVIEW);
+	r->Translate(size[0]*0.5f-msgSize[0]*0.5f, size[1]-msgSize[1]*1.5f, 0);
+	m_message->Draw();
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 }
 
 CharacterInfoText::CharacterInfoText(float w, float h,
@@ -195,8 +242,13 @@ CharacterInfoText::CharacterInfoText(float w, float h,
 	if (m_characterTitle.empty())
 		h = h/1.5f;
 	SetSize(w, h);
+<<<<<<< HEAD
 	m_background = new Gui::Gradient(w, h, Color(0.1f, 0.1f, 0.1f, 0.8f),
 		Color(0.f, 0.f, 0.1f, 0.f), Gui::Gradient::HORIZONTAL);
+=======
+	m_background = new Gui::Gradient(w, h, Color(26, 26, 26, 204),
+		Color(0, 0, 26, 0), Gui::Gradient::HORIZONTAL);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	Gui::Screen::PushFont("OverlayFont");
 	m_nameLabel = new Gui::Label(m_characterName);
 	m_titleLabel = new Gui::Label(m_characterTitle);
@@ -235,10 +287,19 @@ void CharacterInfoText::Draw()
 {
 	if (m_characterName.empty() && m_characterTitle.empty()) return;
 
+<<<<<<< HEAD
 	for (std::list<widget_pos>::iterator i = m_children.begin(); i != m_children.end(); ++i) {
 		glPushMatrix();
 		glTranslatef((*i).pos[0], (*i).pos[1], 0);
 		(*i).w->Draw();
 		glPopMatrix();
+=======
+	Graphics::Renderer *r = Gui::Screen::GetRenderer();
+
+	for (WidgetList::iterator i = m_children.begin(), itEnd = m_children.end(); i != itEnd; ++i) {
+		Graphics::Renderer::MatrixTicket ticket(r, Graphics::MatrixMode::MODELVIEW);
+		r->Translate((*i).pos[0], (*i).pos[1], 0);
+		(*i).w->Draw();
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	}
 }

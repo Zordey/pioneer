@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
+// Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 
@@ -41,7 +45,11 @@ void Box::GetSizeRequestedOrMinimum(float size[2], bool minimum)
 		float want[2];
 		want[0] = want[1] = 0;
 		// see how big we need to be
+<<<<<<< HEAD
 		for (std::list<widget_pos>::iterator i = m_children.begin(); i != m_children.end(); ++i) {
+=======
+		for (WidgetList::iterator i = m_children.begin(), itEnd = m_children.end(); i != itEnd; ++i) {
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 			if (!(*i).w->IsVisible()) continue;
 			num_kids++;
 			float rsize[2];
@@ -95,7 +103,11 @@ void Box::UpdateAllChildSizes()
 	float space = (m_orient == BOX_VERTICAL ? size[1] : size[0]);
 	int num_expand_children = 0;
 	// look at all children...
+<<<<<<< HEAD
 	for (std::list<widget_pos>::iterator i = m_children.begin(); i != m_children.end(); ++i) {
+=======
+	for (WidgetList::iterator i = m_children.begin(), itEnd = m_children.end(); i != itEnd; ++i) {
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		float msize[2], bsize[2];
 
 		if (m_orient == BOX_VERTICAL) {
@@ -137,7 +149,11 @@ void Box::UpdateAllChildSizes()
 	pos = 0;
 	if ((space > 0) && num_expand_children) {
 		/* give expand children the space space */
+<<<<<<< HEAD
 		for (std::list<widget_pos>::iterator i = m_children.begin(); i != m_children.end(); ++i) {
+=======
+		for (WidgetList::iterator i = m_children.begin(), itEnd = m_children.end(); i != itEnd; ++i) {
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 			bool expand = (*i).flags != 0;
 			float s[2];
 			(*i).w->GetSize(s);

@@ -1,8 +1,16 @@
+<<<<<<< HEAD
 // Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
+// Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "ColorMap.h"
 #include "graphics/Renderer.h"
+<<<<<<< HEAD
+=======
+#include <SDL_stdinc.h>
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 namespace SceneGraph {
 
@@ -18,7 +26,11 @@ Graphics::Texture *ColorMap::GetTexture()
 	return m_texture.Get();
 }
 
+<<<<<<< HEAD
 void ColorMap::AddColor(int width, const Color4ub &c, std::vector<unsigned char> &out)
+=======
+void ColorMap::AddColor(int width, const Color &c, std::vector<Uint8> &out)
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 {
 	for (int i=0; i < width; i++) {
 		out.push_back(c.r);
@@ -27,11 +39,19 @@ void ColorMap::AddColor(int width, const Color4ub &c, std::vector<unsigned char>
 	}
 }
 
+<<<<<<< HEAD
 void ColorMap::Generate(Graphics::Renderer *r, const Color4ub &a, const Color4ub &b, const Color4ub &c)
 {
 	std::vector<unsigned char> colors;
 	const int w = 4;
 	AddColor(w, Color4ub(255, 255, 255), colors);
+=======
+void ColorMap::Generate(Graphics::Renderer *r, const Color &a, const Color &b, const Color &c)
+{
+	std::vector<Uint8> colors;
+	const int w = 4;
+	AddColor(w, Color(255, 255, 255), colors);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	AddColor(w, a, colors);
 	AddColor(w, b, colors);
 	AddColor(w, c, colors);

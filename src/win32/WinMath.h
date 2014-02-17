@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
+// Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 // Visit http://www.johndcook.com/stand_alone_code.html for the source of this code and more like it.
@@ -11,7 +15,11 @@ double LogGamma(double);
 double Gamma(double);
 double LogOnePlusX(double x);
 
+<<<<<<< HEAD
 #ifdef _MSC_VER
+=======
+#if defined(_MSC_VER) && (_MSC_VER<=1700)
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // http://social.msdn.microsoft.com/Forums/en-US/Vsexpressvc/thread/25c923af-a824-40f8-8fd4-e5574bc147af/
 double asinh(double value);
 

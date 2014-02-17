@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
+// Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #ifndef UI_SKIN_H
@@ -10,6 +14,11 @@
 #include "graphics/Material.h"
 #include "Point.h"
 
+<<<<<<< HEAD
+=======
+#include <SDL_stdinc.h>
+
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 namespace UI {
 
 class Skin {
@@ -119,6 +128,21 @@ public:
 	}
 
 
+<<<<<<< HEAD
+=======
+	void DrawRectColor(const Color &col, const Point &pos, const Point &size) const;
+	void DrawRectNormal(const Point &pos, const Point &size) const {
+		DrawRectColor(Color(0,0,0,AlphaNormal_ub()), pos, size);
+	}
+	void DrawRectHover(const Point &pos, const Point &size) const {
+		DrawRectColor(Color(0,0,0,AlphaHover_ub()), pos, size);
+	}
+	void DrawRectSelect(const Point &pos, const Point &size) const {
+		DrawRectColor(Color(0,0,0,AlphaSelect_ub()), pos, size);
+	}
+
+
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	struct RectElement {
 		RectElement() {}
 		RectElement(unsigned int x, unsigned int y, unsigned int w, unsigned int h) : pos(x,y), size(w,h) {}
@@ -177,9 +201,19 @@ public:
 
 	unsigned int ButtonMinInnerSize() const { return m_buttonMinInnerSize; }
 
+<<<<<<< HEAD
 	float ListAlphaNormal() const { return m_listAlphaNormal; }
 	float ListAlphaSelect() const { return m_listAlphaSelect; }
 	float ListAlphaHover()  const { return m_listAlphaHover; }
+=======
+	float AlphaNormal() const { return m_alphaNormal; }
+	float AlphaSelect() const { return m_alphaSelect; }
+	float AlphaHover()  const { return m_alphaHover; }
+
+	Uint8 AlphaNormal_ub() const { return m_alphaNormal * 255; }
+	Uint8 AlphaSelect_ub() const { return m_alphaSelect * 255; }
+	Uint8 AlphaHover_ub()  const { return m_alphaHover * 255; }
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 private:
 	Graphics::Renderer *m_renderer;
@@ -187,7 +221,12 @@ private:
 	float m_scale;
 
 	RefCountedPtr<Graphics::Texture> m_texture;
+<<<<<<< HEAD
 	RefCountedPtr<Graphics::Material> m_material;
+=======
+	RefCountedPtr<Graphics::Material> m_textureMaterial;
+	RefCountedPtr<Graphics::Material> m_colorMaterial;
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 	void DrawRectElement(const RectElement &element, const Point &pos, const Point &size, Graphics::BlendMode blendMode = Graphics::BLEND_ALPHA) const;
 	void DrawBorderedRectElement(const BorderedRectElement &element, const Point &pos, const Point &size, Graphics::BlendMode blendMode = Graphics::BLEND_ALPHA) const;
@@ -238,9 +277,15 @@ private:
 
 	unsigned int m_buttonMinInnerSize;
 
+<<<<<<< HEAD
 	float m_listAlphaNormal;
 	float m_listAlphaSelect;
 	float m_listAlphaHover;
+=======
+	float m_alphaNormal;
+	float m_alphaSelect;
+	float m_alphaHover;
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 };
 
 }

@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
+// Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "Sector.h"
@@ -17,8 +21,16 @@ static const char *sys_names[SYS_NAME_FRAGS] =
 
 const float Sector::SIZE = 8.f;
 
+<<<<<<< HEAD
 void Sector::GetCustomSystems()
 {
+=======
+SectorCache Sector::cache;
+
+void Sector::GetCustomSystems()
+{
+	PROFILE_SCOPED()
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	const std::vector<CustomSystem*> &systems = CustomSystem::GetCustomSystemsForSector(sx, sy, sz);
 	if (systems.size() == 0) return;
 
@@ -43,6 +55,10 @@ static const int CUSTOM_ONLY_RADIUS	= 4;
 //////////////////////// Sector
 Sector::Sector(int x, int y, int z)
 {
+<<<<<<< HEAD
+=======
+	PROFILE_SCOPED()
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	Uint32 _init[4] = { Uint32(x), Uint32(y), Uint32(z), UNIVERSE_SEED };
 	Random rng(_init, 4);
 
@@ -232,13 +248,23 @@ Sector::Sector(int x, int y, int z)
 
 float Sector::DistanceBetween(const Sector *a, int sysIdxA, const Sector *b, int sysIdxB)
 {
+<<<<<<< HEAD
+=======
+	PROFILE_SCOPED()
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	vector3f dv = a->m_systems[sysIdxA].p - b->m_systems[sysIdxB].p;
 	dv += Sector::SIZE*vector3f(float(a->sx - b->sx), float(a->sy - b->sy), float(a->sz - b->sz));
 	return dv.Length();
 }
 
+<<<<<<< HEAD
 std::string Sector::GenName(System &sys, int si, Random &rng)
 {
+=======
+const std::string Sector::GenName(System &sys, int si, Random &rng)
+{
+	PROFILE_SCOPED()
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	std::string name;
 	const int dist = std::max(std::max(abs(sx),abs(sy)),abs(sz));
 
@@ -299,6 +325,10 @@ std::string Sector::GenName(System &sys, int si, Random &rng)
 }
 
 bool Sector::WithinBox(const int Xmin, const int Xmax, const int Ymin, const int Ymax, const int Zmin, const int Zmax) const {
+<<<<<<< HEAD
+=======
+	PROFILE_SCOPED()
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	if(sx >= Xmin && sx <= Xmax) {
 		if(sy >= Ymin && sy <= Ymax) {
 			if(sz >= Zmin && sz <= Zmax) {
@@ -311,6 +341,10 @@ bool Sector::WithinBox(const int Xmin, const int Xmax, const int Ymin, const int
 
 void Sector::AssignFactions()
 {
+<<<<<<< HEAD
+=======
+	PROFILE_SCOPED()
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	Uint32 index = 0;
 	for (std::vector<Sector::System>::iterator system = m_systems.begin(); system != m_systems.end(); ++system, ++index ) {
 		(*system).faction = Faction::GetNearestFaction(*this, index);
@@ -321,6 +355,10 @@ void Sector::AssignFactions()
 */
 bool Sector::Contains(const SystemPath sysPath) const
 {
+<<<<<<< HEAD
+=======
+	PROFILE_SCOPED()
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	if (sx != sysPath.sectorX) return false;
 	if (sy != sysPath.sectorY) return false;
 	if (sz != sysPath.sectorZ) return false;

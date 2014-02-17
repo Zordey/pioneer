@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
+// Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "Slider.h"
@@ -45,12 +49,21 @@ void Slider::UpdateButton()
 
 	const Point activeArea(GetActiveArea());
 
+<<<<<<< HEAD
+=======
+	const float normalisedValue = (m_value - m_rangeMin) / (m_rangeMax - m_rangeMin);
+
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	if (m_orient == SLIDER_HORIZONTAL) {
 		const Skin::EdgedRectElement &gutterRect = skin.SliderHorizontalGutter();
 		const Skin::RectElement &buttonRect = skin.SliderHorizontalButtonNormal();
 
 		m_buttonSize = Point(buttonRect.size.x, buttonRect.size.y);
+<<<<<<< HEAD
 		m_buttonPos  = Point(((activeArea.x-gutterRect.edgeWidth*2-buttonRect.size.x)*m_value)+gutterRect.edgeWidth, (activeArea.y-buttonRect.size.y)/2);
+=======
+		m_buttonPos  = Point(((activeArea.x-gutterRect.edgeWidth*2-buttonRect.size.x)*normalisedValue)+gutterRect.edgeWidth, (activeArea.y-buttonRect.size.y)/2);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	}
 
 	else {
@@ -58,7 +71,11 @@ void Slider::UpdateButton()
 		const Skin::RectElement &buttonRect = skin.SliderVerticalButtonNormal();
 
 		m_buttonSize = Point(buttonRect.size.x, buttonRect.size.y);
+<<<<<<< HEAD
 		m_buttonPos  = Point((activeArea.x-buttonRect.size.x)/2, ((activeArea.y-gutterRect.edgeWidth*2-buttonRect.size.y)*m_value)+gutterRect.edgeWidth);
+=======
+		m_buttonPos  = Point((activeArea.x-buttonRect.size.x)/2, ((activeArea.y-gutterRect.edgeWidth*2-buttonRect.size.y)*normalisedValue)+gutterRect.edgeWidth);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	}
 
 	m_mouseOverButton = IsMouseOver() && PointInsideButton(m_lastMousePosition);
@@ -96,11 +113,31 @@ bool Slider::PointInsideButton(const Point &p)
 
 void Slider::SetValue(float v)
 {
+<<<<<<< HEAD
 	m_value = Clamp(v, 0.0f, 1.0f);
+=======
+	m_value = Clamp(v, m_rangeMin, m_rangeMax);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	onValueChanged.emit(m_value);
 	UpdateButton();
 }
 
+<<<<<<< HEAD
+=======
+Slider *Slider::SetRange(float min, float max)
+{
+	assert(min < max);
+	if (!is_equal_exact(m_rangeMin, min) || !is_equal_exact(m_rangeMax, max)) {
+		m_rangeMin = min;
+		m_rangeMax = max;
+		m_value = Clamp(m_value, m_rangeMin, m_rangeMax);
+		onValueChanged.emit(m_value);
+		UpdateButton();
+	}
+	return this;
+}
+
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 void Slider::HandleMouseDown(const MouseButtonEvent &event)
 {
 	m_buttonDown = PointInsideButton(event.pos);

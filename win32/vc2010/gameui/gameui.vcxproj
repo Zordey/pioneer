@@ -81,6 +81,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+<<<<<<< HEAD
+=======
+    <ClInclude Include="..\..\..\src\gameui\BindingCapture.h" />
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
     <ClInclude Include="..\..\..\src\gameui\Face.h" />
     <ClInclude Include="..\..\..\src\gameui\GameUI.h" />
     <ClInclude Include="..\..\..\src\gameui\Lua.h" />
@@ -89,8 +93,15 @@
     <ClInclude Include="..\..\..\src\win32\pch.h" />
   </ItemGroup>
   <ItemGroup>
+<<<<<<< HEAD
     <ClCompile Include="..\..\..\src\gameui\Face.cpp" />
     <ClCompile Include="..\..\..\src\gameui\Lua.cpp" />
+=======
+    <ClCompile Include="..\..\..\src\gameui\BindingCapture.cpp" />
+    <ClCompile Include="..\..\..\src\gameui\Face.cpp" />
+    <ClCompile Include="..\..\..\src\gameui\Lua.cpp" />
+    <ClCompile Include="..\..\..\src\gameui\LuaBindingCapture.cpp" />
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
     <ClCompile Include="..\..\..\src\gameui\LuaFace.cpp" />
     <ClCompile Include="..\..\..\src\gameui\LuaModelSpinner.cpp" />
     <ClCompile Include="..\..\..\src\gameui\ModelSpinner.cpp" />

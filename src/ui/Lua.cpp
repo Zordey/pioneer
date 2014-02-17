@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
+// Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "Lua.h"
@@ -26,6 +30,10 @@ void Init()
 	LuaObject<UI::Icon>::RegisterClass();
 	LuaObject<UI::Image>::RegisterClass();
 	LuaObject<UI::Label>::RegisterClass();
+<<<<<<< HEAD
+=======
+	LuaObject<UI::Layer>::RegisterClass();
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	LuaObject<UI::List>::RegisterClass();
 	LuaObject<UI::Margin>::RegisterClass();
 	LuaObject<UI::MultiLineText>::RegisterClass();
@@ -46,6 +54,7 @@ UI::Widget *GetWidget(UI::Context *c, lua_State *l, int idx)
 	UI::Widget *w = LuaObject<UI::Widget>::GetFromLua(idx);
 	if (w) return w;
 
+<<<<<<< HEAD
 	if (lua_type(l, idx) == LUA_TSTRING)
 		return c->Label(lua_tostring(l, idx));
 
@@ -64,6 +73,28 @@ UI::Widget *GetWidget(UI::Context *c, lua_State *l, int idx)
 	LUA_DEBUG_END(l, 0);
 
 	return w;
+=======
+	if (lua_istable(l, idx)) {
+		LUA_DEBUG_START(l);
+
+		int table = lua_absindex(l, idx);
+		lua_pushlstring(l, "widget", 6);
+		lua_rawget(l, table);
+
+		if (lua_isuserdata(l, -1))
+			w = LuaObject<UI::Widget>::GetFromLua(-1);
+
+		lua_pop(l, 1);
+		LUA_DEBUG_END(l, 0);
+
+		return w;
+	}
+
+	if (lua_isstring(l, idx))
+		return c->Label(lua_tostring(l, idx));
+
+	return 0;
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 }
 
 UI::Widget *CheckWidget(UI::Context *c, lua_State *l, int idx)

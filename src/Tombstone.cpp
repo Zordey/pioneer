@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
+// Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "Tombstone.h"
@@ -10,13 +14,27 @@
 Tombstone::Tombstone(Graphics::Renderer *r, int width, int height)
 : Cutscene(r, width, height)
 {
+<<<<<<< HEAD
 	m_ambientColor = Color(0.05f, 0.05f, 0.1f, 1.f);
 
 	const Color lc(1.f, 1.f, 1.f, 0.f);
+=======
+	m_ambientColor = Color(13, 13, 26, 255);
+
+	const Color lc(255, 255, 255, 0);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	m_lights.push_back(Graphics::Light(Graphics::Light::LIGHT_DIRECTIONAL, vector3f(0.f, 0.8f, 1.0f), lc, lc));
 
 	m_model = Pi::FindModel("tombstone");
 	m_model->SetLabel(Lang::TOMBSTONE_EPITAPH);
+<<<<<<< HEAD
+=======
+	const Uint32 numMats = m_model->GetNumMaterials();
+	for( Uint32 m=0; m<numMats; m++ ) {
+		RefCountedPtr<Graphics::Material> mat = m_model->GetMaterialByIndex(m);
+		mat->specialParameter0 = nullptr;
+	}
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 }
 
 void Tombstone::Draw(float _time)

@@ -1,15 +1,36 @@
+<<<<<<< HEAD
 // Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
+// Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "TextEntry.h"
 #include "LuaObject.h"
 #include "LuaSignal.h"
+<<<<<<< HEAD
+=======
+#include "LuaPushPull.h"
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 namespace UI {
 
 class LuaTextEntry {
 public:
 
+<<<<<<< HEAD
+=======
+	static int l_set_text(lua_State *l)
+	{
+		TextEntry *te = LuaObject<UI::TextEntry>::CheckFromLua(1);
+		std::string new_text;
+		pi_lua_generic_pull(l, 2, new_text);
+		te->SetText(new_text);
+		lua_pushvalue(l, 1);
+		return 1;
+	}
+
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	static int l_attr_text(lua_State *l)
 	{
 		TextEntry *te = LuaObject<UI::TextEntry>::CheckFromLua(1);
@@ -42,7 +63,11 @@ template <> void LuaObject<UI::TextEntry>::RegisterClass()
 	static const char *l_parent = "UI.Widget";
 
 	static const luaL_Reg l_methods[] = {
+<<<<<<< HEAD
 
+=======
+		{ "SetText",  LuaTextEntry::l_set_text },
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		{ 0, 0 }
 	};
 

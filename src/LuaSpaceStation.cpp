@@ -1,9 +1,14 @@
+<<<<<<< HEAD
 // Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
+// Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "LuaObject.h"
 #include "LuaUtils.h"
 #include "SpaceStation.h"
+<<<<<<< HEAD
 #include "LuaChatForm.h"
 #include "LuaConstants.h"
 
@@ -259,6 +264,15 @@ static int l_spacestation_get_equipment_price(lua_State *l)
 	lua_pushnumber(l, cost * 0.01);
 	return 1;
 }
+=======
+#include "LuaConstants.h"
+
+/*
+ * Class: SpaceStation
+ *
+ * Class representing a space station. Inherits from <ModelBody>
+ */
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 /*
  * Method: GetGroundPosition
@@ -346,6 +360,7 @@ template <> const char *LuaObject<SpaceStation>::s_type = "SpaceStation";
 
 template <> void LuaObject<SpaceStation>::RegisterClass()
 {
+<<<<<<< HEAD
 	const char *l_parent = "Body";
 
 	static const luaL_Reg l_methods[] = {
@@ -354,6 +369,11 @@ template <> void LuaObject<SpaceStation>::RegisterClass()
 
 		{ "GetEquipmentPrice", l_spacestation_get_equipment_price },
 
+=======
+	const char *l_parent = "ModelBody";
+
+	static const luaL_Reg l_methods[] = {
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		{ "GetGroundPosition",  l_spacestation_get_ground_position },
 
 		{ 0, 0 }

@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
+// Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "CameraController.h"
@@ -15,6 +19,15 @@ CameraController::CameraController(Camera *camera, const Ship *ship) :
 {
 }
 
+<<<<<<< HEAD
+=======
+void CameraController::Reset()
+{
+	m_pos = vector3d(0.0);
+	m_orient = matrix3x3d::Identity();
+}
+
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 void CameraController::Update()
 {
 	m_camera->SetFrame(m_ship->GetFrame());
@@ -26,10 +39,68 @@ void CameraController::Update()
 	m_camera->SetPosition(m * m_pos + m_ship->GetInterpPosition());
 }
 
+<<<<<<< HEAD
 InternalCameraController::InternalCameraController(Camera *camera, const Ship *ship) :
 	CameraController(camera, ship)
 {
 	SetMode(MODE_FRONT);
+=======
+
+InternalCameraController::InternalCameraController(Camera *camera, const Ship *ship) :
+	CameraController(camera, ship),
+	m_mode(MODE_FRONT)
+{
+	Reset();
+}
+
+static bool FillCameraPosOrient(const SceneGraph::Model *m, const char *tag, vector3d &pos, matrix3x3d &orient, matrix4x4f &trans, const matrix3x3d &fallbackOrient)
+{
+	matrix3x3d fixOrient(matrix3x3d::Identity());
+
+	const SceneGraph::MatrixTransform *mt = m->FindTagByName(tag);
+	if (!mt)
+		fixOrient = fallbackOrient;
+	else
+		// camera points are have +Z pointing out of the ship, X left, so we
+		// have to rotate 180 about Y to get them to -Z forward, X right like
+		// the rest of the ship. this is not a bug, but rather a convenience to
+		// modellers. it makes sense to orient the camera point in the
+		// direction the camera will face
+		trans = mt->GetTransform() * matrix4x4f::RotateYMatrix(M_PI);
+
+	pos = vector3d(trans.GetTranslate());
+
+	// XXX sigh, this madness has to stop
+	const matrix3x3f tagOrient = trans.GetOrient();
+	matrix3x3d tagOrientd;
+	matrix3x3ftod(tagOrient,tagOrientd);
+	orient = fixOrient * tagOrientd;
+
+	return true;
+}
+
+void InternalCameraController::Reset()
+{
+	CameraController::Reset();
+
+	const SceneGraph::Model *m = GetShip()->GetModel();
+
+	matrix4x4f fallbackTransform = matrix4x4f::Translation(vector3f(0.0));
+	const SceneGraph::MatrixTransform *fallback = m->FindTagByName("tag_camera");
+	if (fallback)
+		fallbackTransform = fallback->GetTransform() * matrix4x4f::RotateYMatrix(M_PI);
+	else
+		fallbackTransform = matrix4x4f::Translation(vector3f(GetShip()->GetShipType()->cameraOffset)); // XXX deprecated
+
+	FillCameraPosOrient(m, "tag_camera_front",  m_frontPos,  m_frontOrient,  fallbackTransform, matrix3x3d::Identity());
+	FillCameraPosOrient(m, "tag_camera_rear",   m_rearPos,   m_rearOrient,   fallbackTransform, matrix3x3d::RotateY(M_PI));
+	FillCameraPosOrient(m, "tag_camera_left",   m_leftPos,   m_leftOrient,   fallbackTransform, matrix3x3d::RotateY((M_PI/2)*3));
+	FillCameraPosOrient(m, "tag_camera_right",  m_rightPos,  m_rightOrient,  fallbackTransform, matrix3x3d::RotateY(M_PI/2));
+	FillCameraPosOrient(m, "tag_camera_top",    m_topPos,    m_topOrient,    fallbackTransform, matrix3x3d::RotateX((M_PI/2)*3));
+	FillCameraPosOrient(m, "tag_camera_bottom", m_bottomPos, m_bottomOrient, fallbackTransform, matrix3x3d::RotateX(M_PI/2));
+
+	SetMode(m_mode);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 }
 
 void InternalCameraController::SetMode(Mode m)
@@ -38,6 +109,7 @@ void InternalCameraController::SetMode(Mode m)
 	switch (m_mode) {
 		case MODE_FRONT:
 			m_name = Lang::CAMERA_FRONT_VIEW;
+<<<<<<< HEAD
 			SetOrient(matrix3x3d::RotateY(M_PI*2));
 			break;
 		case MODE_REAR:
@@ -59,6 +131,35 @@ void InternalCameraController::SetMode(Mode m)
 		case MODE_BOTTOM:
 			m_name = Lang::CAMERA_BOTTOM_VIEW;
 			SetOrient(matrix3x3d::RotateX(M_PI/2));
+=======
+			SetPosition(m_frontPos);
+			SetOrient(m_frontOrient);
+			break;
+		case MODE_REAR:
+			m_name = Lang::CAMERA_REAR_VIEW;
+			SetPosition(m_rearPos);
+			SetOrient(m_rearOrient);
+			break;
+		case MODE_LEFT:
+			m_name = Lang::CAMERA_LEFT_VIEW;
+			SetPosition(m_leftPos);
+			SetOrient(m_leftOrient);
+			break;
+		case MODE_RIGHT:
+			m_name = Lang::CAMERA_RIGHT_VIEW;
+			SetPosition(m_rightPos);
+			SetOrient(m_rightOrient);
+			break;
+		case MODE_TOP:
+			m_name = Lang::CAMERA_TOP_VIEW;
+			SetPosition(m_topPos);
+			SetOrient(m_topOrient);
+			break;
+		case MODE_BOTTOM:
+			m_name = Lang::CAMERA_BOTTOM_VIEW;
+			SetPosition(m_bottomPos);
+			SetOrient(m_bottomOrient);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 			break;
 	}
 }
@@ -73,6 +174,7 @@ void InternalCameraController::Load(Serializer::Reader &rd)
 	SetMode(static_cast<Mode>(rd.Int32()));
 }
 
+<<<<<<< HEAD
 void InternalCameraController::Update()
 {
 	SetPosition(GetShip()->GetShipType()->cameraOffset);
@@ -80,6 +182,8 @@ void InternalCameraController::Update()
 	CameraController::Update();
 }
 
+=======
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 ExternalCameraController::ExternalCameraController(Camera *camera, const Ship *ship) :
 	MoveableCameraController(camera, ship),

@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
+// Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "libs.h"
@@ -32,7 +36,11 @@ Image::Image(const char *filename, float renderWidth, float renderHeight):
 void Image::InitTexture(const char* filename)
 {
 	Graphics::TextureBuilder b = Graphics::TextureBuilder::UI(filename);
+<<<<<<< HEAD
 	m_quad.Reset(new TexturedQuad(b.GetOrCreateTexture(Gui::Screen::GetRenderer(), "ui")));
+=======
+	m_quad.reset(new TexturedQuad(b.GetOrCreateTexture(Gui::Screen::GetRenderer(), "ui")));
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 }
 
 void Image::GetSizeRequested(float size[2])
@@ -49,6 +57,10 @@ void Image::SetRenderDimensions(const float wide, const float high)
 
 void Image::Draw()
 {
+<<<<<<< HEAD
+=======
+	PROFILE_SCOPED()
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	float allocSize[2];
 	GetSize(allocSize);
 
