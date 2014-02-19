@@ -1,3 +1,10 @@
+<<<<<<< HEAD
+-- Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+-- Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
+
+-- Get the translator function
+local t = Translate:GetTranslator()
+=======
 -- Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
 -- Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
@@ -21,7 +28,7 @@ local InfoFace = import("ui/InfoFace")
 
 -- Get the language resource
 local l = Lang.GetResource("module-taxi")
-
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 -- Get the UI class
 local ui = Engine.ui
 
@@ -35,6 +42,8 @@ local typical_reward = 75 * max_taxi_dist
 -- max number of passengers per trip
 local max_group = 10
 
+<<<<<<< HEAD
+=======
 local num_corporations = 12
 local num_pirate_taunts = 4
 local num_deny = 8
@@ -108,6 +117,7 @@ for i = 1,#flavours do
 	f.wherearewe = l["FLAVOUR_" .. i-1 .. "_WHEREAREWE"]
 end
 
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 local ads = {}
 local missions = {}
 local passengers = 0
@@ -133,6 +143,10 @@ local isQualifiedFor = function(reputation, ad)
 end
 
 local onChat = function (form, ref, option)
+<<<<<<< HEAD
+	local taxi_flavours = Translate:GetFlavours('Taxi')
+=======
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	local ad = ads[ref]
 
 	form:Clear()
@@ -155,7 +169,11 @@ local onChat = function (form, ref, option)
 	if option == 0 then
 		local sys   = ad.location:GetStarSystem()
 
+<<<<<<< HEAD
+		local introtext = string.interp(taxi_flavours[ad.flavour].introtext, {
+=======
 		local introtext = string.interp(flavours[ad.flavour].introtext, {
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 			name     = ad.client.name,
 			cash     = Format.Money(ad.reward),
 			system   = sys.name,
@@ -168,15 +186,24 @@ local onChat = function (form, ref, option)
 		form:SetMessage(introtext)
 
 	elseif option == 1 then
+<<<<<<< HEAD
+		local corporation = t('CORPORATIONS')[Engine.rand:Integer(1,#(t('CORPORATIONS')))]
+		local whysomuch = string.interp(taxi_flavours[ad.flavour].whysomuch, {
+=======
 		local corporation = l["CORPORATIONS_"..Engine.rand:Integer(1,num_corporations)-1]
 		local whysomuch = string.interp(flavours[ad.flavour].whysomuch, {
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 			corp     = corporation,
 		})
 
 		form:SetMessage(whysomuch)
 
 	elseif option == 2 then
+<<<<<<< HEAD
+		local howmany = string.interp(taxi_flavours[ad.flavour].howmany, {
+=======
 		local howmany = string.interp(flavours[ad.flavour].howmany, {
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 			group  = ad.group,
 		})
 
@@ -185,7 +212,12 @@ local onChat = function (form, ref, option)
 	elseif option == 3 then
 		local capacity = ShipDef[Game.player.shipId].equipSlotCapacity.CABIN
 		if capacity < ad.group or Game.player:GetEquipCount('CABIN', 'UNOCCUPIED_CABIN') < ad.group then
+<<<<<<< HEAD
+			form:SetMessage(t("You do not have enough cabin space on your ship."))
+			form:AddOption(t('HANG_UP'), -1)
+=======
 			form:SetMessage(l.YOU_DO_NOT_HAVE_ENOUGH_CABIN_SPACE_ON_YOUR_SHIP)
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 			return
 		end
 
@@ -209,6 +241,30 @@ local onChat = function (form, ref, option)
 
 		table.insert(missions,Mission.New(mission))
 
+<<<<<<< HEAD
+		form:SetMessage(t("Excellent."))
+		form:AddOption(t('HANG_UP'), -1)
+
+		return
+	elseif option == 4 then
+		if taxi_flavours[ad.flavour].single == 1 then
+			form:SetMessage(t("I must be there before ")..Format.Date(ad.due))
+		else
+			form:SetMessage(t("We want to be there before ")..Format.Date(ad.due))
+		end
+
+	elseif option == 5 then
+		form:SetMessage(taxi_flavours[ad.flavour].danger)
+	end
+
+	form:AddOption(t("Why so much money?"), 1)
+	form:AddOption(t("How many of you are there?"), 2)
+	form:AddOption(t("How soon you must be there?"), 4)
+	form:AddOption(t("Will I be in any danger?"), 5)
+	form:AddOption(t("Could you repeat the original request?"), 0)
+	form:AddOption(t("Ok, agreed."), 3)
+	form:AddOption(t('HANG_UP'), -1)
+=======
 		form:SetMessage(l.EXCELLENT)
 
 		return
@@ -229,6 +285,7 @@ local onChat = function (form, ref, option)
 	form:AddOption(l.WILL_I_BE_IN_ANY_DANGER, 5)
 	form:AddOption(l.COULD_YOU_REPEAT_THE_ORIGINAL_REQUEST, 0)
 	form:AddOption(l.OK_AGREED, 3)
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 end
 
 local onDelete = function (ref)
@@ -242,12 +299,22 @@ end
 local nearbysystems
 local makeAdvert = function (station)
 	local reward, due, location
+<<<<<<< HEAD
+	local taxi_flavours = Translate:GetFlavours('Taxi')
+	local client = Character.New()
+	local flavour = Engine.rand:Integer(1,#taxi_flavours)
+	local urgency = taxi_flavours[flavour].urgency
+	local risk = taxi_flavours[flavour].risk
+	local group = 1
+	if taxi_flavours[flavour].single == 0 then
+=======
 	local client = Character.New()
 	local flavour = Engine.rand:Integer(1,#flavours)
 	local urgency = flavours[flavour].urgency
 	local risk = flavours[flavour].risk
 	local group = 1
 	if not flavours[flavour].single then
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		group = Engine.rand:Integer(2,max_group)
 	end
 
@@ -275,7 +342,11 @@ local makeAdvert = function (station)
 		faceseed	= Engine.rand:Integer(),
 	}
 
+<<<<<<< HEAD
+	ad.desc = string.interp(taxi_flavours[flavour].adtext, {
+=======
 	ad.desc = string.interp(flavours[flavour].adtext, {
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		system	= location.name,
 		cash	= Format.Money(ad.reward),
 	})
@@ -297,6 +368,10 @@ local onCreateBB = function (station)
 end
 
 local onUpdateBB = function (station)
+<<<<<<< HEAD
+	local taxi_flavours = Translate:GetFlavours('Taxi')
+=======
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	for ref,ad in pairs(ads) do
 		if ad.due < Game.time + 5*60*60*24 then
 			ad.station:RemoveAdvert(ref)
@@ -309,13 +384,22 @@ end
 
 local onEnterSystem = function (player)
 	if (not player:IsPlayer()) then return end
+<<<<<<< HEAD
+	local taxi_flavours = Translate:GetFlavours('Taxi')
+=======
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 	local syspath = Game.system.path
 
 	for ref,mission in pairs(missions) do
+<<<<<<< HEAD
+		if not mission.status and mission.location:IsSameSystem(syspath) then
+			local risk = taxi_flavours[mission.flavour].risk
+=======
 		if mission.status == "ACTIVE" and mission.location:IsSameSystem(syspath) then
 
 			local risk = flavours[mission.flavour].risk
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 			local ships = 0
 
 			local riskmargin = Engine.rand:Number(-0.3,0.3) -- Add some random luck
@@ -327,7 +411,11 @@ local onEnterSystem = function (player)
 			if ships < 1 and risk > 0 and Engine.rand:Integer(math.ceil(1/risk)) == 1 then ships = 1 end
 
 			-- XXX hull mass is a bad way to determine suitability for role
+<<<<<<< HEAD
+			local shipdefs = build_array(filter(function (k,def) return def.tag == 'SHIP' and def.hullMass > 10 and def.hullMass <= 200 end, pairs(ShipDef)))
+=======
 			local shipdefs = utils.build_array(utils.filter(function (k,def) return def.tag == 'SHIP' and def.hullMass > 10 and def.hullMass <= 200 end, pairs(ShipDef)))
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 			if #shipdefs == 0 then return end
 
 			local ship
@@ -340,14 +428,21 @@ local onEnterSystem = function (player)
 					local default_drive = shipdef.defaultHyperdrive
 
 					local max_laser_size = shipdef.capacity - EquipDef[default_drive].mass
+<<<<<<< HEAD
+					local laserdefs = build_array(filter(
+=======
 					local laserdefs = utils.build_array(utils.filter(
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
                         function (k,def) return def.slot == 'LASER' and def.mass <= max_laser_size and string.sub(def.id,0,11) == 'PULSECANNON' end,
                         pairs(EquipDef)
                     ))
 					local laserdef = laserdefs[Engine.rand:Integer(1,#laserdefs)]
 
 					ship = Space.SpawnShipNear(shipdef.id, Game.player, 50, 100)
+<<<<<<< HEAD
+=======
 					ship:SetLabel(Ship.MakeRandomLabel())
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 					ship:AddEquip(default_drive)
 					ship:AddEquip(laserdef.id)
 					ship:AddEquip('SHIELD_GENERATOR', math.ceil(risk * 3))
@@ -362,14 +457,24 @@ local onEnterSystem = function (player)
 			end
 
 			if ship then
+<<<<<<< HEAD
+				local pirate_greeting = string.interp(t('PIRATE_TAUNTS')[Engine.rand:Integer(1,#(t('PIRATE_TAUNTS')))], { client = mission.client.name,})
+=======
 				local pirate_greeting = string.interp(l["PIRATE_TAUNTS_"..Engine.rand:Integer(1,num_pirate_taunts)-1], { client = mission.client.name,})
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 				Comms.ImportantMessage(pirate_greeting, ship.label)
 			end
 		end
 
+<<<<<<< HEAD
+		if not mission.status and Game.time > mission.due then
+			mission.status = 'FAILED'
+			Comms.ImportantMessage(taxi_flavours[mission.flavour].wherearewe, mission.client.name)
+=======
 		if mission.status == "ACTIVE" and Game.time > mission.due then
 			mission.status = 'FAILED'
 			Comms.ImportantMessage(flavours[mission.flavour].wherearewe, mission.client.name)
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		end
 	end
 end
@@ -385,12 +490,20 @@ local onShipDocked = function (player, station)
 
 	for ref,mission in pairs(missions) do
 		if mission.location == Game.system.path or Game.time > mission.due then
-			local oldReputation = Character.persistent.player.reputation
+<<<<<<< HEAD
+			local taxi_flavours = Translate:GetFlavours('Taxi')
+
+			if Game.time > mission.due then
+				Comms.ImportantMessage(taxi_flavours[mission.flavour].failuremsg, mission.client.name)
+			else
+				Comms.ImportantMessage(taxi_flavours[mission.flavour].successmsg, mission.client.name)
+=======
 			if Game.time > mission.due then
 				Comms.ImportantMessage(flavours[mission.flavour].failuremsg, mission.client.name)
 				Character.persistent.player.reputation = Character.persistent.player.reputation - 2
 			else
 				Comms.ImportantMessage(flavours[mission.flavour].successmsg, mission.client.name)
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 				player:AddMoney(mission.reward)
 				Character.persistent.player.reputation = Character.persistent.player.reputation + 2
 			end
@@ -413,7 +526,11 @@ local onShipUndocked = function (player, station)
 	for ref,mission in pairs(missions) do
 		remove_passengers(mission.group)
 
+<<<<<<< HEAD
+		Comms.ImportantMessage(t("Hey!?! You are going to pay for this!!!"), mission.client.name)
+=======
 		Comms.ImportantMessage(l.HEY_YOU_ARE_GOING_TO_PAY_FOR_THIS, mission.client.name)
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		mission:Remove()
 		missions[ref] = nil
 	end
@@ -458,9 +575,16 @@ local onGameEnd = function ()
 end
 
 local onClick = function (mission)
+<<<<<<< HEAD
+	local taxi_flavours = Translate:GetFlavours('Taxi')
+	local dist = Game.system and string.format("%.2f", Game.system:DistanceTo(mission.location)) or "???"
+	return ui:Grid(2,1)
+		:SetColumn(0,{ui:VBox(10):PackEnd({ui:MultiLineText((taxi_flavours[mission.flavour].introtext):interp({
+=======
 	local dist = Game.system and string.format("%.2f", Game.system:DistanceTo(mission.location)) or "???"
 	return ui:Grid(2,1)
 		:SetColumn(0,{ui:VBox(10):PackEnd({ui:MultiLineText((flavours[mission.flavour].introtext):interp({
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 														name   = mission.client.name,
 														system = mission.location:GetStarSystem().name,
 														sectorx = mission.location.sectorX,
@@ -473,7 +597,11 @@ local onClick = function (mission)
 										ui:Grid(2,1)
 											:SetColumn(0, {
 												ui:VBox():PackEnd({
+<<<<<<< HEAD
+													ui:Label(t("From:"))
+=======
 													ui:Label(l.FROM)
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 												})
 											})
 											:SetColumn(1, {
@@ -484,7 +612,11 @@ local onClick = function (mission)
 										ui:Grid(2,1)
 											:SetColumn(0, {
 												ui:VBox():PackEnd({
+<<<<<<< HEAD
+													ui:Label(t("To:"))
+=======
 													ui:Label(l.TO)
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 												})
 											})
 											:SetColumn(1, {
@@ -495,18 +627,30 @@ local onClick = function (mission)
 										ui:Grid(2,1)
 											:SetColumn(0, {
 												ui:VBox():PackEnd({
+<<<<<<< HEAD
+													ui:Label(t("Group details:"))
+=======
 													ui:Label(l.GROUP_DETAILS)
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 												})
 											})
 											:SetColumn(1, {
 												ui:VBox():PackEnd({
+<<<<<<< HEAD
+													ui:MultiLineText(string.interp(taxi_flavours[mission.flavour].howmany, {group = mission.group}))
+=======
 													ui:MultiLineText(string.interp(flavours[mission.flavour].howmany, {group = mission.group}))
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 												})
 											}),
 										ui:Grid(2,1)
 											:SetColumn(0, {
 												ui:VBox():PackEnd({
+<<<<<<< HEAD
+													ui:Label(t("Deadline:"))
+=======
 													ui:Label(l.DEADLINE)
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 												})
 											})
 											:SetColumn(1, {
@@ -517,29 +661,49 @@ local onClick = function (mission)
 										ui:Grid(2,1)
 											:SetColumn(0, {
 												ui:VBox():PackEnd({
+<<<<<<< HEAD
+													ui:Label(t("Danger:"))
+=======
 													ui:Label(l.DANGER)
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 												})
 											})
 											:SetColumn(1, {
 												ui:VBox():PackEnd({
+<<<<<<< HEAD
+													ui:MultiLineText(taxi_flavours[mission.flavour].danger)
+=======
 													ui:MultiLineText(flavours[mission.flavour].danger)
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 												})
 											}),
 										ui:Margin(5),
 										ui:Grid(2,1)
 											:SetColumn(0, {
 												ui:VBox():PackEnd({
+<<<<<<< HEAD
+													ui:Label(t("Distance:"))
+=======
 													ui:Label(l.DISTANCE)
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 												})
 											})
 											:SetColumn(1, {
 												ui:VBox():PackEnd({
+<<<<<<< HEAD
+													ui:Label(dist.." "..t("ly"))
+=======
 													ui:Label(dist.." "..l.LY)
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 												})
 											}),
 		})})
 		:SetColumn(1, {
+<<<<<<< HEAD
+			ui:VBox(10):PackEnd(UI.InfoFace.New(mission.client))
+=======
 			ui:VBox(10):PackEnd(InfoFace.New(mission.client))
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		})
 end
 
@@ -561,6 +725,10 @@ Event.Register("onGameStart", onGameStart)
 Event.Register("onGameEnd", onGameEnd)
 Event.Register("onReputationChanged", onReputationChanged)
 
+<<<<<<< HEAD
+Mission.RegisterType('Taxi','Taxi',onClick)
+=======
 Mission.RegisterType('Taxi',l.TAXI,onClick)
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 Serializer:Register("Taxi", serialize, unserialize)

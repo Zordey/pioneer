@@ -1,4 +1,8 @@
+<<<<<<< HEAD
+// Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
 // Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "Frustum.h"
@@ -10,9 +14,16 @@ namespace Graphics {
 static const float FOV_MAX = 170.0f;
 static const float FOV_MIN = 20.0f;
 
-// step for translating to frustum space
-static const double TRANSLATE_STEP = 0.25;
+<<<<<<< HEAD
+Frustum Frustum::FromGLState()
+{
+	Frustum f;
+	f.InitFromGLState();
+	return f;
+}
 
+=======
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 Frustum::Frustum() {}
 
 Frustum::Frustum(float width, float height, float fovAng, float znear, float zfar)
@@ -33,12 +44,15 @@ Frustum::Frustum(float width, float height, float fovAng, float znear, float zfa
 	m_translateThresholdSqr = zfar*zfar*TRANSLATE_STEP;
 }
 
+<<<<<<< HEAD
+=======
 Frustum::Frustum(const matrix4x4d &modelview, const matrix4x4d &projection) : m_projMatrix(projection), m_modelMatrix(modelview)
 {
 	const matrix4x4d m = m_projMatrix * m_modelMatrix;
 	InitFromMatrix(m);
 }
 
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 void Frustum::InitFromMatrix(const matrix4x4d &m)
 {
 	// Left clipping plane
@@ -82,6 +96,17 @@ void Frustum::InitFromMatrix(const matrix4x4d &m)
 	}
 }
 
+<<<<<<< HEAD
+void Frustum::InitFromGLState()
+{
+	glGetDoublev(GL_PROJECTION_MATRIX, m_projMatrix.Data());
+	glGetDoublev(GL_MODELVIEW_MATRIX, m_modelMatrix.Data());
+	matrix4x4d m = matrix4x4d(m_projMatrix) * matrix4x4d(m_modelMatrix);
+	InitFromMatrix(m);
+}
+
+=======
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 bool Frustum::TestPoint(const vector3d &p, double radius) const
 {
 	for (int i=0; i<6; i++)
@@ -92,7 +117,10 @@ bool Frustum::TestPoint(const vector3d &p, double radius) const
 
 bool Frustum::TestPointInfinite(const vector3d &p, double radius) const
 {
+<<<<<<< HEAD
+=======
 	PROFILE_SCOPED()
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	// check all planes except far plane
 	for (int i=0; i<5; i++)
 		if (m_planes[i].DistanceToPoint(p)+radius < 0)
@@ -102,6 +130,14 @@ bool Frustum::TestPointInfinite(const vector3d &p, double radius) const
 
 bool Frustum::ProjectPoint(const vector3d &in, vector3d &out) const
 {
+<<<<<<< HEAD
+	// XXX replace glut dependency
+	// fake viewport -- this is an identity transform when applied by gluProject
+	// see, e.g., http://cgit.freedesktop.org/mesa/mesa/tree/src/glu/sgi/libutil/project.c
+	// or the documentation for gluProject
+	const GLint viewport[4] = { 0, 0, 1, 1 };
+	return gluProject(in.x, in.y, in.z, m_modelMatrix.Data(), m_projMatrix.Data(), viewport, &out.x, &out.y, &out.z) == GL_TRUE;
+=======
 	// see the OpenGL documentation
 	// or http://www.songho.ca/opengl/gl_transform.html
 	// or http://cgit.freedesktop.org/mesa/glu/tree/src/libutil/project.c (gluProject implementation from Mesa)
@@ -130,6 +166,7 @@ bool Frustum::ProjectPoint(const vector3d &in, vector3d &out) const
 	out.z = (vclip[2] / w) * 0.5 + 0.5;
 
 	return true;
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 }
 
 double Frustum::TranslatePoint(const vector3d &in, vector3d &out) const

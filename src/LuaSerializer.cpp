@@ -1,4 +1,8 @@
+<<<<<<< HEAD
+// Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
 // Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "LuaSerializer.h"
@@ -77,9 +81,13 @@ void LuaSerializer::pickle(lua_State *l, int idx, std::string &out, const char *
 			const char *cl = lua_tostring(l, -1);
 			snprintf(buf, sizeof(buf), "o%s\n", cl);
 
+<<<<<<< HEAD
+			lua_getglobal(l, cl);
+=======
 			lua_getfield(l, LUA_REGISTRYINDEX, "PiSerializerClasses");
 
 			lua_getfield(l, -1, cl);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 			if (lua_isnil(l, -1))
 				luaL_error(l, "No Serialize method found for class '%s'\n", cl);
 
@@ -93,7 +101,11 @@ void LuaSerializer::pickle(lua_State *l, int idx, std::string &out, const char *
 			lua_remove(l, idx);
 			lua_insert(l, idx);
 
+<<<<<<< HEAD
+			lua_pop(l, 3);
+=======
 			lua_pop(l, 4);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 			if (lua_isnil(l, idx)) {
 				LUA_DEBUG_END(l, 0);
@@ -122,11 +134,18 @@ void LuaSerializer::pickle(lua_State *l, int idx, std::string &out, const char *
 
 		case LUA_TSTRING: {
 			lua_pushvalue(l, idx);
+<<<<<<< HEAD
+			const char *str = lua_tostring(l, -1);
+			snprintf(buf, sizeof(buf), "s" SIZET_FMT "\n", strlen(str));
+			out += buf;
+			out += str;
+=======
 			size_t len;
 			const char *str = lua_tolstring(l, -1, &len);
 			snprintf(buf, sizeof(buf), "s" SIZET_FMT "\n", len);
 			out += buf;
 			out.append(str, len);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 			lua_pop(l, 1);
 			break;
 		}
@@ -182,7 +201,11 @@ void LuaSerializer::pickle(lua_State *l, int idx, std::string &out, const char *
 			LuaObjectBase *lo = static_cast<LuaObjectBase*>(lua_touserdata(l, idx));
 			void *o = lo->GetObject();
 			if (!o)
+<<<<<<< HEAD
+				Error("Lua serializer '%s' tried to serialize an invalid object", key);
+=======
 				Error("Lua serializer '%s' tried to serialize an invalid '%s' object", key, lo->GetType());
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 			// XXX object wrappers should really have Serialize/Unserialize
 			// methods to deal with this
@@ -201,6 +224,9 @@ void LuaSerializer::pickle(lua_State *l, int idx, std::string &out, const char *
 				break;
 			}
 
+<<<<<<< HEAD
+			Error("Lua serializer '%s' tried to serialize unsupported userdata value", key);
+=======
 			if (lo->Isa("SceneGraph.ModelSkin")) {
 				SceneGraph::ModelSkin *skin = static_cast<SceneGraph::ModelSkin*>(o);
 				Serializer::Writer wr;
@@ -213,6 +239,7 @@ void LuaSerializer::pickle(lua_State *l, int idx, std::string &out, const char *
 			}
 
 			Error("Lua serializer '%s' tried to serialize unsupported '%s' userdata value", key, lo->GetType());
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 			break;
 		}
 
@@ -365,6 +392,8 @@ const char *LuaSerializer::unpickle(lua_State *l, const char *pos)
 				break;
 			}
 
+<<<<<<< HEAD
+=======
 			if (len == 9 && strncmp(pos, "ModelSkin", 9) == 0) {
 				pos = end;
 
@@ -385,6 +414,7 @@ const char *LuaSerializer::unpickle(lua_State *l, const char *pos)
 				break;
 			}
 
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 			throw SavedGameCorruptException();
 		}
 
@@ -399,8 +429,13 @@ const char *LuaSerializer::unpickle(lua_State *l, const char *pos)
 			// unpickle the object, and insert it beneath the method table value
 			pos = unpickle(l, end);
 
+<<<<<<< HEAD
+			// get _G[typename]
+			lua_rawgeti(l, LUA_REGISTRYINDEX, LUA_RIDX_GLOBALS);
+=======
 			// get PiSerializerClasses[typename]
 			lua_getfield(l, LUA_REGISTRYINDEX, "PiSerializerClasses");
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 			lua_pushlstring(l, cl, len);
 			lua_gettable(l, -2);
 			lua_remove(l, -2);
@@ -542,6 +577,14 @@ int LuaSerializer::l_register(lua_State *l)
 		lua_setfield(l, LUA_REGISTRYINDEX, "PiSerializerCallbacks");
 	}
 
+<<<<<<< HEAD
+	lua_getfield(l, -1, key.c_str());
+	if(!(lua_isnil(l, -1)))
+		luaL_error(l, "Lua serializer functions for '%s' are already registered\n", key.c_str());
+	lua_pop(l, 1);
+
+=======
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	lua_newtable(l);
 
 	lua_pushinteger(l, 1);
@@ -562,6 +605,8 @@ int LuaSerializer::l_register(lua_State *l)
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
 int LuaSerializer::l_register_class(lua_State *l)
 {
 	LUA_DEBUG_START(l);
@@ -595,10 +640,19 @@ int LuaSerializer::l_register_class(lua_State *l)
 	return 0;
 }
 
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 template <> const char *LuaObject<LuaSerializer>::s_type = "Serializer";
 
 template <> void LuaObject<LuaSerializer>::RegisterClass()
 {
+<<<<<<< HEAD
+	static const luaL_Reg l_methods[] = {
+		{ "Register", LuaSerializer::l_register },
+		{ 0, 0 }
+	};
+
+	LuaObjectBase::CreateClass(s_type, 0, l_methods, 0, 0);
+=======
 	lua_State *l = Lua::manager->GetLuaState();
 
 	LUA_DEBUG_START(l);
@@ -615,4 +669,5 @@ template <> void LuaObject<LuaSerializer>::RegisterClass()
 	lua_pop(l, 1);
 
 	LUA_DEBUG_END(l, 0);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 }

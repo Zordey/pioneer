@@ -1,4 +1,8 @@
+<<<<<<< HEAD
+// Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
 // Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #ifndef UI_SLIDER_H
@@ -17,13 +21,12 @@ public:
 	float GetValue() const { return m_value; }
 	void SetValue(float v);
 
+<<<<<<< HEAD
+=======
 	void GetRange(float &out_min, float &out_max) { out_min = m_rangeMin; out_max = m_rangeMax; }
 	Slider *SetRange(float min, float max);
 
-	Slider *SetStep(float step) { m_step = step; return this; }
-	void StepUp() { SetValue(m_value - m_step); }
-	void StepDown() { SetValue(m_value + m_step); }
-
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	sigc::signal<void,float> onValueChanged;
 
 protected:
@@ -32,10 +35,14 @@ protected:
 		SLIDER_VERTICAL
 	};
 
+<<<<<<< HEAD
+	Slider(Context *context, SliderOrientation orient) : Widget(context), m_orient(orient), m_value(0.0f), m_buttonDown(false), m_mouseOverButton(false) {}
+=======
 	Slider(Context *context, SliderOrientation orient) :
 		Widget(context), m_orient(orient),
 		m_rangeMin(0.0f), m_rangeMax(1.0f), m_step(0.1f), m_value(0.0f),
 		m_buttonDown(false), m_mouseOverButton(false) {}
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 	virtual void HandleMouseDown(const MouseButtonEvent &event);
 	virtual void HandleMouseUp(const MouseButtonEvent &event);
@@ -47,9 +54,11 @@ private:
 	bool PointInsideButton(const Point &p);
 
 	SliderOrientation m_orient;
+<<<<<<< HEAD
+=======
 	float m_rangeMin;
 	float m_rangeMax;
-	float m_step;
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	float m_value;
 	Point m_gutterPos, m_gutterSize;
 	Point m_buttonPos, m_buttonSize;

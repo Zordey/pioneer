@@ -1,4 +1,8 @@
+<<<<<<< HEAD
+// Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
 // Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #ifndef _SPACESTATION_H
@@ -6,6 +10,10 @@
 
 #include "libs.h"
 #include "Camera.h"
+<<<<<<< HEAD
+#include "MarketAgent.h"
+=======
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 #include "ModelBody.h"
 #include "NavLights.h"
 #include "Quaternion.h"
@@ -17,6 +25,36 @@
 
 class CityOnPlanet;
 class CollMeshSet;
+<<<<<<< HEAD
+class FormController;
+class Planet;
+class Ship;
+class SpaceStation;
+class StationAdvertForm;
+class SystemBody;
+struct BBAdvert;
+struct Mission;
+namespace Graphics { class Renderer; }
+namespace SceneGraph { class Animation; }
+
+typedef StationAdvertForm* (*AdvertFormBuilder)(FormController *controller, SpaceStation *station, const BBAdvert &ad);
+
+struct BBAdvert {
+	int               ref;
+	std::string       description;
+	AdvertFormBuilder builder;
+};
+
+struct ShipOnSale {
+	ShipOnSale(const ShipType::Id &_id, const std::string &_regId, const SceneGraph::ModelSkin &_skin) :
+		id(_id), regId(_regId), skin(_skin) {}
+	ShipType::Id          id;
+	std::string           regId;
+	SceneGraph::ModelSkin skin;
+};
+
+class SpaceStation: public ModelBody, public MarketAgent {
+=======
 class Planet;
 class Ship;
 class SpaceStation;
@@ -25,6 +63,7 @@ namespace Graphics { class Renderer; }
 namespace SceneGraph { class Animation; }
 
 class SpaceStation: public ModelBody {
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 public:
 	OBJDEF(SpaceStation, ModelBody, SPACESTATION);
 	static void Init();
@@ -40,7 +79,20 @@ public:
 	virtual void StaticUpdate(const float timeStep);
 	virtual void TimeStepUpdate(const float timeStep);
 
+<<<<<<< HEAD
+	void AddEquipmentStock(Equip::Type t, int num) { m_equipmentStock[t] += num; }
+	/* MarketAgent stuff */
+	int GetStock(Equip::Type t) const { return m_equipmentStock[t]; }
+	Sint64 GetPrice(Equip::Type t) const;
+	bool CanBuy(Equip::Type t, bool verbose) const;
+	bool CanSell(Equip::Type t, bool verbose) const;
+	bool DoesSell(Equip::Type t) const;
 	virtual const SystemBody *GetSystemBody() const { return m_sbody; }
+	void ReplaceShipOnSale(int idx, const ShipOnSale &with);
+	const std::vector<ShipOnSale> &GetShipsOnSale() const { return m_shipsOnSale; }
+=======
+	virtual const SystemBody *GetSystemBody() const { return m_sbody; }
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	virtual void PostLoadFixup(Space *space);
 	virtual void NotifyRemoved(const Body* const removedBody);
 
@@ -50,6 +102,13 @@ public:
 	// Returns true on success, false if permission denied
 	bool LaunchShip(Ship *ship, int port);
 	void SetDocked(Ship *ship, int port);
+<<<<<<< HEAD
+
+	bool GetDockingClearance(Ship *s, std::string &outMsg);
+	int GetDockingPortCount() const { return m_type->numDockingPorts; }
+	int GetFreeDockingPort() const; // returns -1 if none free
+	int GetMyDockingPort(const Ship *s) const;
+=======
 	void SwapDockedShipsPort(const int oldPort, const int newPort);
 
 	bool GetDockingClearance(Ship *s, std::string &outMsg);
@@ -57,12 +116,29 @@ public:
 	int GetFreeDockingPort(const Ship *s) const; // returns -1 if none free
 	int GetMyDockingPort(const Ship *s) const;
 	int NumShipsDocked() const;
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 	const SpaceStationType *GetStationType() const { return m_type; }
 	bool IsGroundStation() const;
 
+<<<<<<< HEAD
+	sigc::signal<void> onShipsForSaleChanged;
+	sigc::signal<void, BBAdvert&> onBulletinBoardAdvertDeleted;
+	sigc::signal<void> onBulletinBoardChanged;
+	sigc::signal<void> onBulletinBoardDeleted;
+
 	bool AllocateStaticSlot(int& slot);
 
+	void CreateBB();
+	int AddBBAdvert(std::string description, AdvertFormBuilder builder);
+	const BBAdvert *GetBBAdvert(int ref);
+	bool RemoveBBAdvert(int ref);
+	const std::list<const BBAdvert*> GetBBAdverts();
+
+=======
+	bool AllocateStaticSlot(int& slot);
+
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	// use docking bay position, if player has been granted permission
 	virtual vector3d GetTargetIndicatorPosition(const Frame *relTo) const;
 
@@ -105,6 +181,20 @@ private:
 	typedef std::vector<shipDocking_t>::const_iterator	constShipDockingIter;
 	typedef std::vector<shipDocking_t>::iterator		shipDockingIter;
 	std::vector<shipDocking_t> m_shipDocking;
+<<<<<<< HEAD
+
+	SpaceStationType::TBayGroups mBayGroups;
+
+	double m_oldAngDisplacement;
+
+	void InitStation();
+	void UpdateShipyard();
+	const SpaceStationType *m_type;
+	const SystemBody *m_sbody;
+	int m_equipmentStock[Equip::TYPE_MAX];
+	std::vector<ShipOnSale> m_shipsOnSale;
+	double m_lastUpdatedShipyard;
+=======
 
 	SpaceStationType::TBayGroups mBayGroups;
 
@@ -113,17 +203,28 @@ private:
 	void InitStation();
 	const SpaceStationType *m_type;
 	const SystemBody *m_sbody;
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	CityOnPlanet *m_adjacentCity;
 	double m_distFromPlanet;
 	int m_numPoliceDocked;
 	enum { NUM_STATIC_SLOTS = 4 };
 	bool m_staticSlot[NUM_STATIC_SLOTS];
 
+<<<<<<< HEAD
+	std::vector<BBAdvert> m_bbAdverts;
+	bool m_bbCreated, m_bbShuffled;
+
+=======
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	SceneGraph::Animation *m_doorAnimation;
 	double m_doorAnimationStep;
 	double m_doorAnimationState;
 
+<<<<<<< HEAD
+	ScopedPtr<NavLights> m_navLights;
+=======
 	std::unique_ptr<NavLights> m_navLights;
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 };
 
 #endif /* _SPACESTATION_H */

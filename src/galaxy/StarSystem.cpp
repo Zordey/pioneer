@@ -1,9 +1,16 @@
+<<<<<<< HEAD
+// Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
 // Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "StarSystem.h"
 #include "Sector.h"
+<<<<<<< HEAD
+=======
 #include "SectorCache.h"
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 #include "Factions.h"
 
 #include "Serializer.h"
@@ -17,7 +24,10 @@
 #include "Orbit.h"
 #include "Lang.h"
 #include "StringF.h"
+<<<<<<< HEAD
+=======
 #include <SDL_stdinc.h>
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 StarSystemCache::SystemCacheMap StarSystemCache::s_cachedSystems;
 
@@ -42,6 +52,87 @@ static const fixed SUN_MASS_TO_EARTH_MASS = fixed(332998,1);
 static const fixed FIXED_PI = fixed(103993,33102);
 
 // indexed by enum type turd
+<<<<<<< HEAD
+float StarSystem::starColors[][3] = {
+	{ 0, 0, 0 }, // gravpoint
+	{ 0.5f, 0.0f, 0.0f }, // brown dwarf
+	{ 0.4f, 0.4f, 0.8f }, // white dwarf
+	{ 1.0f, 0.2f, 0.0f }, // M
+	{ 1.0f, 0.6f, 0.1f }, // K
+	{ 1.0f, 1.0f, 0.4f }, // G
+	{ 1.0f, 1.0f, 0.8f }, // F
+	{ 1.0f, 1.0f, 1.0f }, // A
+	{ 0.7f, 0.7f, 1.0f }, // B
+	{ 1.0f, 0.7f, 1.0f }, // O
+	{ 1.0f, 0.2f, 0.0f }, // M Giant
+	{ 1.0f, 0.6f, 0.1f }, // K Giant
+	{ 1.0f, 1.0f, 0.4f }, // G Giant
+	{ 1.0f, 1.0f, 0.8f }, // F Giant
+	{ 1.0f, 1.0f, 1.0f }, // A Giant
+	{ 0.7f, 0.7f, 1.0f }, // B Giant
+	{ 1.0f, 0.7f, 1.0f }, // O Giant
+	{ 1.0f, 0.2f, 0.0f }, // M Super Giant
+	{ 1.0f, 0.6f, 0.1f }, // K Super Giant
+	{ 1.0f, 1.0f, 0.4f }, // G Super Giant
+	{ 1.0f, 1.0f, 0.8f }, // F Super Giant
+	{ 1.0f, 1.0f, 1.0f }, // A Super Giant
+	{ 0.7f, 0.7f, 1.0f }, // B Super Giant
+	{ 1.0f, 0.7f, 1.0f }, // O Super Giant
+	{ 1.0f, 0.2f, 0.0f }, // M Hyper Giant
+	{ 1.0f, 0.6f, 0.1f }, // K Hyper Giant
+	{ 1.0f, 1.0f, 0.4f }, // G Hyper Giant
+	{ 1.0f, 1.0f, 0.8f }, // F Hyper Giant
+	{ 1.0f, 1.0f, 1.0f }, // A Hyper Giant
+	{ 0.7f, 0.7f, 1.0f }, // B Hyper Giant
+	{ 1.0f, 0.7f, 1.0f }, // O Hyper Giant
+	{ 1.0f, 0.2f, 0.0f }, // Red/M Wolf Rayet Star
+	{ 0.7f, 0.7f, 1.0f }, // Blue/B Wolf Rayet Star
+	{ 1.0f, 0.7f, 1.0f }, // Purple-Blue/O Wolf Rayet Star
+	{ 0.3f, 0.7f, 0.3f }, // Stellar Blackhole
+	{ 0.2f, 0.9f, 0.2f }, // Intermediate mass Black-hole
+	{ 0.0f, 1.0f, 0.0f }, // Super massive black hole
+};
+
+// indexed by enum type turd
+float StarSystem::starRealColors[][3] = {
+	{ 0, 0, 0 }, // gravpoint
+	{ 0.5f, 0.0f, 0.0f }, // brown dwarf
+	{ 1.0f, 1.0f, 1.0f }, // white dwarf
+	{ 1.0f, 0.5f, 0.2f }, // M
+	{ 1.0f, 1.0f, 0.4f }, // K
+	{ 1.0f, 1.0f, 0.95f }, // G
+	{ 1.0f, 1.0f, 1.0f }, // F
+	{ 1.0f, 1.0f, 1.0f }, // A
+	{ 0.8f, 0.8f, 1.0f }, // B
+	{ 1.0f, 0.8f, 1.0f },  // O
+	{ 1.0f, 0.5f, 0.2f }, // M Giant
+	{ 1.0f, 1.0f, 0.4f }, // K Giant
+	{ 1.0f, 1.0f, 0.95f }, // G Giant
+	{ 1.0f, 1.0f, 1.0f }, // F Giant
+	{ 1.0f, 1.0f, 1.0f }, // A Giant
+	{ 0.8f, 0.8f, 1.0f }, // B Giant
+	{ 1.0f, 0.8f, 1.0f },  // O Giant
+	{ 1.0f, 0.5f, 0.2f }, // M Super Giant
+	{ 1.0f, 1.0f, 0.4f }, // K Super Giant
+	{ 1.0f, 1.0f, 0.95f }, // G Super Giant
+	{ 1.0f, 1.0f, 1.0f }, // F Super Giant
+	{ 1.0f, 1.0f, 1.0f }, // A Super Giant
+	{ 0.8f, 0.8f, 1.0f }, // B Super Giant
+	{ 1.0f, 0.8f, 1.0f },  // O Super Giant
+	{ 1.0f, 0.5f, 0.2f }, // M Hyper Giant
+	{ 1.0f, 1.0f, 0.4f }, // K Hyper Giant
+	{ 1.0f, 1.0f, 0.95f }, // G Hyper Giant
+	{ 1.0f, 1.0f, 1.0f }, // F Hyper Giant
+	{ 1.0f, 1.0f, 1.0f }, // A Hyper Giant
+	{ 0.8f, 0.8f, 1.0f }, // B Hyper Giant
+	{ 1.0f, 0.8f, 1.0f },  // O Hyper Giant
+	{ 1.0f, 0.6f, 0.6f }, // M WF
+	{ 0.8f, 0.8f, 1.0f }, // B WF
+	{ 1.0f, 0.8f, 1.0f },  // O WF
+	{ 1.0f, 1.0f, 1.0f },  // small Black hole
+	{ 0.06f, 0.0f, 0.08f }, // med BH
+	{ 0.04f, 0.0f, 0.06f }, // massive BH
+=======
 Uint8 StarSystem::starColors[][3] = {
 	{ 0, 0, 0 }, // gravpoint
 	{ 128, 0, 0 }, // brown dwarf
@@ -121,6 +212,7 @@ Uint8 StarSystem::starRealColors[][3] = {
 	{ 255, 255, 255 },  // small Black hole
 	{ 16, 0, 20 }, // med BH
 	{ 10, 0, 16 }, // massive BH
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 };
 
 double StarSystem::starLuminosities[] = {
@@ -466,7 +558,10 @@ static const struct StarTypeInfo {
 
 SystemBody::BodySuperType SystemBody::GetSuperType() const
 {
+<<<<<<< HEAD
+=======
 	PROFILE_SCOPED()
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	switch (type) {
 		case TYPE_BROWN_DWARF:
 		case TYPE_WHITE_DWARF:
@@ -523,7 +618,10 @@ SystemBody::BodySuperType SystemBody::GetSuperType() const
 
 std::string SystemBody::GetAstroDescription() const
 {
+<<<<<<< HEAD
+=======
 	PROFILE_SCOPED()
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	switch (type) {
 	case TYPE_BROWN_DWARF: return Lang::BROWN_DWARF;
 	case TYPE_WHITE_DWARF: return Lang::WHITE_DWARF;
@@ -659,7 +757,10 @@ std::string SystemBody::GetAstroDescription() const
 
 const char *SystemBody::GetIcon() const
 {
+<<<<<<< HEAD
+=======
 	PROFILE_SCOPED()
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	switch (type) {
 	case TYPE_BROWN_DWARF: return "icons/object_brown_dwarf.png";
 	case TYPE_WHITE_DWARF: return "icons/object_white_dwarf.png";
@@ -791,7 +892,10 @@ const char *SystemBody::GetIcon() const
  */
 static void position_settlement_on_planet(SystemBody *b)
 {
+<<<<<<< HEAD
+=======
 	PROFILE_SCOPED()
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	Random r(b->seed);
 	// used for orientation on planet surface
 	double r2 = r.Double(); 	// function parameter evaluation order is implementation-dependent
@@ -807,7 +911,10 @@ static void position_settlement_on_planet(SystemBody *b)
 
 double SystemBody::GetMaxChildOrbitalDistance() const
 {
+<<<<<<< HEAD
+=======
 	PROFILE_SCOPED()
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	double max = 0;
 	for (unsigned int i=0; i<children.size(); i++) {
 		if (children[i]->orbMax.ToDouble() > max) {
@@ -849,7 +956,10 @@ static double CalcSurfaceTemp(double star_radius, double star_temp, double objec
  */
 static fixed calcEnergyPerUnitAreaAtDist(fixed star_radius, int star_temp, fixed object_dist)
 {
+<<<<<<< HEAD
+=======
 	PROFILE_SCOPED()
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	fixed temp = star_temp * fixed(1,10000);
 	const fixed total_solar_emission =
 		temp*temp*temp*temp*star_radius*star_radius;
@@ -859,7 +969,10 @@ static fixed calcEnergyPerUnitAreaAtDist(fixed star_radius, int star_temp, fixed
 
 static int CalcSurfaceTemp(const SystemBody *primary, fixed distToPrimary, fixed albedo, fixed greenhouse)
 {
+<<<<<<< HEAD
+=======
 	PROFILE_SCOPED()
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	fixed energy_per_meter2;
 	if (primary->type == SystemBody::TYPE_GRAVPOINT) {
 		// binary. take energies of both stars
@@ -876,7 +989,10 @@ static int CalcSurfaceTemp(const SystemBody *primary, fixed distToPrimary, fixed
 
 double SystemBody::CalcSurfaceGravity() const
 {
+<<<<<<< HEAD
+=======
 	PROFILE_SCOPED()
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	double r = GetRadius();
 	if (r > 0.0) {
 		return G * GetMass() / pow(r, 2);
@@ -887,7 +1003,10 @@ double SystemBody::CalcSurfaceGravity() const
 
 SystemBody *StarSystem::GetBodyByPath(const SystemPath &path) const
 {
+<<<<<<< HEAD
+=======
 	PROFILE_SCOPED()
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	assert(m_path.IsSameSystem(path));
 	assert(path.IsBodyPath());
 	assert(path.bodyIndex < m_bodies.size());
@@ -902,7 +1021,10 @@ SystemPath StarSystem::GetPathOf(const SystemBody *sbody) const
 
 void StarSystem::CustomGetKidsOf(SystemBody *parent, const std::vector<CustomSystemBody*> &children, int *outHumanInfestedness, Random &rand)
 {
+<<<<<<< HEAD
+=======
 	PROFILE_SCOPED()
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	// replaces gravpoint mass by sum of masses of its children
 	// the code goes here to cover also planetary gravpoints (gravpoints that are not rootBody)
 	if (parent->type == SystemBody::TYPE_GRAVPOINT) {
@@ -1015,7 +1137,10 @@ void StarSystem::CustomGetKidsOf(SystemBody *parent, const std::vector<CustomSys
 
 void StarSystem::GenerateFromCustom(const CustomSystem *customSys, Random &rand)
 {
+<<<<<<< HEAD
+=======
 	PROFILE_SCOPED()
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	const CustomSystemBody *csbody = customSys->sBody;
 
 	rootBody.Reset(NewBody());
@@ -1053,7 +1178,10 @@ void StarSystem::GenerateFromCustom(const CustomSystem *customSys, Random &rand)
 
 void StarSystem::MakeStarOfType(SystemBody *sbody, SystemBody::BodyType type, Random &rand)
 {
+<<<<<<< HEAD
+=======
 	PROFILE_SCOPED()
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	sbody->type = type;
 	sbody->seed = rand.Int32();
 	sbody->radius = fixed(rand.Int32(starTypeInfo[type].radius[0],
@@ -1105,14 +1233,20 @@ void StarSystem::MakeStarOfType(SystemBody *sbody, SystemBody::BodyType type, Ra
 
 void StarSystem::MakeRandomStar(SystemBody *sbody, Random &rand)
 {
+<<<<<<< HEAD
+=======
 	PROFILE_SCOPED()
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	SystemBody::BodyType type = SystemBody::BodyType(rand.Int32(SystemBody::TYPE_STAR_MIN, SystemBody::TYPE_STAR_MAX));
 	MakeStarOfType(sbody, type, rand);
 }
 
 void StarSystem::MakeStarOfTypeLighterThan(SystemBody *sbody, SystemBody::BodyType type, fixed maxMass, Random &rand)
 {
+<<<<<<< HEAD
+=======
 	PROFILE_SCOPED()
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	int tries = 16;
 	do {
 		MakeStarOfType(sbody, type, rand);
@@ -1121,7 +1255,10 @@ void StarSystem::MakeStarOfTypeLighterThan(SystemBody *sbody, SystemBody::BodyTy
 
 void StarSystem::MakeBinaryPair(SystemBody *a, SystemBody *b, fixed minDist, Random &rand)
 {
+<<<<<<< HEAD
+=======
 	PROFILE_SCOPED()
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	fixed m = a->mass + b->mass;
 	fixed a0 = b->mass / m;
 	fixed a1 = a->mass / m;
@@ -1168,7 +1305,10 @@ void StarSystem::MakeBinaryPair(SystemBody *a, SystemBody *b, fixed minDist, Ran
 
 SystemBody::SystemBody()
 {
+<<<<<<< HEAD
+=======
 	PROFILE_SCOPED()
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	heightMapFilename = 0;
 	heightMapFractal = 0;
 	aspectRatio = fixed(1,1);
@@ -1186,19 +1326,28 @@ SystemBody::SystemBody()
 
 bool SystemBody::HasAtmosphere() const
 {
+<<<<<<< HEAD
+=======
 	PROFILE_SCOPED()
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	return (m_volatileGas > fixed(1,100));
 }
 
 bool SystemBody::IsScoopable() const
 {
+<<<<<<< HEAD
+=======
 	PROFILE_SCOPED()
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	return (GetSuperType() == SUPERTYPE_GAS_GIANT);
 }
 
 void SystemBody::PickAtmosphere()
 {
+<<<<<<< HEAD
+=======
 	PROFILE_SCOPED()
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	/* Alpha value isn't real alpha. in the shader fog depth is determined
 	 * by density*alpha, so that we can have very dense atmospheres
 	 * without having them a big stinking solid color obscuring everything
@@ -1209,11 +1358,19 @@ void SystemBody::PickAtmosphere()
 	switch (type) {
 		case SystemBody::TYPE_PLANET_GAS_GIANT:
 
+<<<<<<< HEAD
+			m_atmosColor = Color(1.0f, 1.0f, 1.0f, 0.01f);
+			m_atmosDensity = 14.0;
+			break;
+		case SystemBody::TYPE_PLANET_ASTEROID:
+			m_atmosColor = Color(0.0f, 0.0f, 0.0f, 0.0f);
+=======
 			m_atmosColor = Color(255, 255, 255, 3);
 			m_atmosDensity = 14.0;
 			break;
 		case SystemBody::TYPE_PLANET_ASTEROID:
 			m_atmosColor = Color(0);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 			m_atmosDensity = 0.0;
 			break;
 		default:
@@ -1267,9 +1424,15 @@ void SystemBody::PickAtmosphere()
 					g = 1.0f;
 					b = 1.0f;
 				}
+<<<<<<< HEAD
+				m_atmosColor = Color(r, g, b, 1.0f);
+			} else {
+				m_atmosColor = Color(0.0, 0.0, 0.0, 0.0f);
+=======
 				m_atmosColor = Color(r*255, g*255, b*255, 255);
 			} else {
 				m_atmosColor = Color(0);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 			}
 			m_atmosDensity = m_volatileGas.ToDouble();
 			//Output("| Atmosphere :\n|      red   : [%f] \n|      green : [%f] \n|      blue  : [%f] \n", r, g, b);
@@ -1292,10 +1455,16 @@ static const unsigned char RANDOM_RING_COLORS[][4] = {
 
 void SystemBody::PickRings(bool forceRings)
 {
+<<<<<<< HEAD
+	m_rings.minRadius = fixed(0);
+	m_rings.maxRadius = fixed(0);
+	m_rings.baseColor = Color4ub(255,255,255,255);
+=======
 	PROFILE_SCOPED()
 	m_rings.minRadius = fixed(0);
 	m_rings.maxRadius = fixed(0);
 	m_rings.baseColor = Color(255,255,255,255);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 	if (type == SystemBody::TYPE_PLANET_GAS_GIANT) {
 		Random ringRng(seed + 965467);
@@ -1339,7 +1508,10 @@ void SystemBody::PickRings(bool forceRings)
 // Calculate parameters used in the atmospheric model for shaders
 SystemBody::AtmosphereParameters SystemBody::CalcAtmosphereParams() const
 {
+<<<<<<< HEAD
+=======
 	PROFILE_SCOPED()
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	AtmosphereParameters params;
 
 	double atmosDensity;
@@ -1381,11 +1553,27 @@ SystemBody::AtmosphereParameters SystemBody::CalcAtmosphereParams() const
 	if (T < 1)
 		T = 165;
 
+<<<<<<< HEAD
+	// XXX just use earth's composition for now
+	const double M = 0.02897f; // in kg/mol
+
+	float atmosScaleHeight = static_cast<float>(GAS_CONSTANT_R*T/(M*g));
+
+	// XXX temporary hack to fix small scale heights for gas giant atmospheres which are
+	// a result of using Earth atmosphere properties, as well as due to using
+	// a made up density value at the gas giant terrain 'surface'.
+	// This uses a minimum scale height as a fraction of gas giant radius based on
+	// Earth's scale height relative to its radius.
+	if (type == TYPE_PLANET_GAS_GIANT)
+		atmosScaleHeight = std::max(atmosScaleHeight, static_cast<float>((0.02*8000.0/EARTH_RADIUS)*GetRadius()));
+
+=======
 	// We have two kinds of atmosphere: Earth-like and gas giant (hydrogen/helium)
 	const double M = type == TYPE_PLANET_GAS_GIANT ? 0.0023139903 : 0.02897f; // in kg/mol
 
 	float atmosScaleHeight = static_cast<float>(GAS_CONSTANT_R*T/(M*g));
 
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	// min of 2.0 corresponds to a scale height of 1/20 of the planet's radius,
 	params.atmosInvScaleHeight = std::max(20.0f, static_cast<float>(GetRadius() / atmosScaleHeight));
 	// integrate atmospheric density between surface and this radius. this is 10x the scale
@@ -1405,12 +1593,19 @@ SystemBody::AtmosphereParameters SystemBody::CalcAtmosphereParams() const
  */
 StarSystem::StarSystem(const SystemPath &path) : m_path(path)
 {
+<<<<<<< HEAD
+	assert(path.IsSystemPath());
+	memset(m_tradeLevel, 0, sizeof(m_tradeLevel));
+
+	Sector s = Sector(m_path.sectorX, m_path.sectorY, m_path.sectorZ);
+=======
 	PROFILE_SCOPED()
 	assert(path.IsSystemPath());
 	memset(m_tradeLevel, 0, sizeof(m_tradeLevel));
 
-	RefCountedPtr<const Sector> s = Sector::cache.GetCached(m_path);
-	assert(m_path.systemIndex >= 0 && m_path.systemIndex < s->m_systems.size());
+	const Sector &s = *Sector::cache.GetCached(m_path);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
+	assert(m_path.systemIndex >= 0 && m_path.systemIndex < s.m_systems.size());
 
 	m_seed    = s->m_systems[m_path.systemIndex].seed;
 	m_name    = s->m_systems[m_path.systemIndex].name;
@@ -1624,7 +1819,10 @@ void StarSystem::Dump()
  */
 fixed SystemBody::CalcHillRadius() const
 {
+<<<<<<< HEAD
+=======
 	PROFILE_SCOPED()
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	if (GetSuperType() <= SUPERTYPE_STAR) {
 		return fixed(0);
 	} else {
@@ -1646,7 +1844,10 @@ fixed SystemBody::CalcHillRadius() const
 
 static fixed mass_from_disk_area(fixed a, fixed b, fixed max)
 {
+<<<<<<< HEAD
+=======
 	PROFILE_SCOPED()
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	// so, density of the disk with distance from star goes like so: 1 - x/discMax
 	//
 	// ---
@@ -1672,7 +1873,10 @@ static fixed mass_from_disk_area(fixed a, fixed b, fixed max)
 
 static fixed get_disc_density(SystemBody *primary, fixed discMin, fixed discMax, fixed percentOfPrimaryMass)
 {
+<<<<<<< HEAD
+=======
 	PROFILE_SCOPED()
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	discMax = std::max(discMax, discMin);
 	fixed total = mass_from_disk_area(discMin, discMax, discMax);
 	return primary->GetMassInEarths() * percentOfPrimaryMass / total;
@@ -1680,7 +1884,10 @@ static fixed get_disc_density(SystemBody *primary, fixed discMin, fixed discMax,
 
 void StarSystem::MakePlanetsAround(SystemBody *primary, Random &rand)
 {
+<<<<<<< HEAD
+=======
 	PROFILE_SCOPED()
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	fixed discMin = fixed(0);
 	fixed discMax = fixed(5000,1);
 	fixed discDensity;
@@ -1818,7 +2025,10 @@ void StarSystem::MakePlanetsAround(SystemBody *primary, Random &rand)
  */
 const SystemBody *SystemBody::FindStarAndTrueOrbitalRange(fixed &orbMin_, fixed &orbMax_)
 {
+<<<<<<< HEAD
+=======
 	PROFILE_SCOPED()
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	const SystemBody *planet = this;
 	const SystemBody *star = this->parent;
 
@@ -1837,7 +2047,10 @@ const SystemBody *SystemBody::FindStarAndTrueOrbitalRange(fixed &orbMin_, fixed 
 
 void SystemBody::PickPlanetType(Random &rand)
 {
+<<<<<<< HEAD
+=======
 	PROFILE_SCOPED()
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	fixed albedo = fixed(0);
 	fixed greenhouse = fixed(0);
 
@@ -1952,7 +2165,11 @@ void SystemBody::PickPlanetType(Random &rand)
 		// H2O boils
 		if (averageTemp > 373) greenhouse += amount_volatiles * fixed(1,3);
 
+<<<<<<< HEAD
+		if(greenhouse > 0.7f) { // never reach 1, but 1/(1-greenhouse) still grows
+=======
 		if(greenhouse > fixed(7,10)) { // never reach 1, but 1/(1-greenhouse) still grows
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 			greenhouse *= greenhouse;
 			greenhouse *= greenhouse;
 			greenhouse = greenhouse / (greenhouse + fixed(32,311));
@@ -1997,7 +2214,10 @@ void SystemBody::PickPlanetType(Random &rand)
 
 void StarSystem::MakeShortDescription(Random &rand)
 {
+<<<<<<< HEAD
+=======
 	PROFILE_SCOPED()
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	m_econType = 0;
 	if ((m_industrial > m_metallicity) && (m_industrial > m_agricultural)) {
 		m_econType = ECON_INDUSTRY;
@@ -2046,7 +2266,10 @@ void StarSystem::MakeShortDescription(Random &rand)
 
 void StarSystem::Populate(bool addSpaceStations)
 {
+<<<<<<< HEAD
+=======
 	PROFILE_SCOPED()
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	Uint32 _init[5] = { m_path.systemIndex, Uint32(m_path.sectorX), Uint32(m_path.sectorY), Uint32(m_path.sectorZ), UNIVERSE_SEED };
 	Random rand;
 	rand.seed(_init, 5);
@@ -2098,7 +2321,10 @@ void StarSystem::Populate(bool addSpaceStations)
  */
 void SystemBody::PopulateStage1(StarSystem *system, fixed &outTotalPop)
 {
+<<<<<<< HEAD
+=======
 	PROFILE_SCOPED()
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	for (unsigned int i=0; i<children.size(); i++) {
 		children[i]->PopulateStage1(system, outTotalPop);
 	}
@@ -2229,7 +2455,10 @@ void SystemBody::PopulateStage1(StarSystem *system, fixed &outTotalPop)
 }
 
 static bool check_unique_station_name(const std::string & name, const StarSystem * system) {
+<<<<<<< HEAD
+=======
 	PROFILE_SCOPED()
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	bool ret = true;
 	for (unsigned int i = 0 ; i < system->m_spaceStations.size() ; ++i)
 		if (system->m_spaceStations[i]->name == name) {
@@ -2240,7 +2469,10 @@ static bool check_unique_station_name(const std::string & name, const StarSystem
 }
 
 static std::string gen_unique_station_name(SystemBody *sp, const StarSystem *system, RefCountedPtr<Random> &namerand) {
+<<<<<<< HEAD
+=======
 	PROFILE_SCOPED()
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	std::string name;
 	do {
 		name = Pi::luaNameGen->BodyName(sp, namerand);
@@ -2250,7 +2482,10 @@ static std::string gen_unique_station_name(SystemBody *sp, const StarSystem *sys
 
 void SystemBody::PopulateAddStations(StarSystem *system)
 {
+<<<<<<< HEAD
+=======
 	PROFILE_SCOPED()
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	for (unsigned int i=0; i<children.size(); i++) {
 		children[i]->PopulateAddStations(system);
 	}
@@ -2350,7 +2585,10 @@ void SystemBody::PopulateAddStations(StarSystem *system)
 
 static void clear_parent_and_child_pointers(SystemBody *body)
 {
+<<<<<<< HEAD
+=======
 	PROFILE_SCOPED()
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	for (std::vector<SystemBody*>::iterator i = body->children.begin(); i != body->children.end(); ++i)
 		clear_parent_and_child_pointers(*i);
 	body->parent = 0;
@@ -2359,7 +2597,10 @@ static void clear_parent_and_child_pointers(SystemBody *body)
 
 StarSystem::~StarSystem()
 {
+<<<<<<< HEAD
+=======
 	PROFILE_SCOPED()
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	// clear parent and children pointers. someone (Lua) might still have a
 	// reference to things that are about to be deleted
 	clear_parent_and_child_pointers(rootBody.Get());
@@ -2388,6 +2629,56 @@ RefCountedPtr<StarSystem> StarSystem::Unserialize(Serializer::Reader &rd)
 		return StarSystemCache::GetCached(SystemPath(sec_x, sec_y, sec_z, sys_idx));
 	} else {
 		return RefCountedPtr<StarSystem>(0);
+	}
+}
+
+typedef std::map<SystemPath,StarSystem*> SystemCacheMap;
+static SystemCacheMap s_cachedSystems;
+
+RefCountedPtr<StarSystem> StarSystem::GetCached(const SystemPath &path)
+{
+<<<<<<< HEAD
+=======
+	PROFILE_SCOPED()
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
+	SystemPath sysPath(path.SystemOnly());
+
+	StarSystem *s = 0;
+	std::pair<SystemCacheMap::iterator, bool>
+		ret = s_cachedSystems.insert(SystemCacheMap::value_type(sysPath, static_cast<StarSystem*>(0)));
+	if (ret.second) {
+		s = new StarSystem(sysPath);
+		ret.first->second = s;
+		s->IncRefCount(); // the cache owns one reference
+	} else {
+		s = ret.first->second;
+	}
+	return RefCountedPtr<StarSystem>(s);
+}
+
+void StarSystem::ShrinkCache()
+{
+<<<<<<< HEAD
+=======
+	PROFILE_SCOPED()
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
+	std::map<SystemPath,StarSystem*>::iterator i = s_cachedSystems.begin();
+	while (i != s_cachedSystems.end()) {
+		StarSystem *s = (*i).second;
+		assert(s->GetRefCount() >= 1); // sanity check
+		// if the cache is the only owner, then delete it
+		if (s->GetRefCount() == 1) {
+			delete s;
+			s_cachedSystems.erase(i++);
+<<<<<<< HEAD
+		}
+		else
+			i++;
+=======
+		} else {
+			i++;
+		}
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	}
 }
 
@@ -2533,7 +2824,11 @@ void StarSystem::ExportToLua(const char *filename) {
 
 	fprintf(f, "system:bodies(%s)\n\n", ExportBodyToLua(f, rootBody.Get()).c_str());
 
-	RefCountedPtr<const Sector> sec = Sector::cache.GetCached(GetPath());
+<<<<<<< HEAD
+	Sector sec(GetPath().sectorX, GetPath().sectorY, GetPath().sectorZ);
+=======
+	const Sector &sec = *Sector::cache.GetCached(GetPath());
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	SystemPath pa = GetPath();
 
 	fprintf(f, "system:add_to_sector(%d,%d,%d,v(%.4f,%.4f,%.4f))\n",

@@ -1,4 +1,8 @@
+<<<<<<< HEAD
+// Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
 // Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #ifndef UI_CONTEXT_H
@@ -11,7 +15,11 @@
 #include "Skin.h"
 
 #include "Widget.h"
+<<<<<<< HEAD
+#include "FloatContainer.h"
+=======
 #include "Layer.h"
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 #include "Margin.h"
 #include "Align.h"
@@ -53,6 +61,26 @@ namespace UI {
 // different to other containers internally to allow it to be a "live" widget
 // without a parent container of its own.
 //
+<<<<<<< HEAD
+// It has the simplest layout manager possible - it will only accept a single
+// container widget
+//
+// The context holds resources that are shared by all widgets. Examples of
+// such resources are fonts, default styles, textures and so on. New widgets
+// are created from a context, and can access their context by calling their
+// GetContext() method.
+//
+// It also holds an event dispatcher for distributing events to its widgets.
+//
+// The context also manages floating widgets. Floating widgets are drawn last
+// over the top of everything else. Events given to a floating widget or its
+// children will not propogate to a non-floating widget.
+
+class Context : public Single {
+public:
+	Context(LuaManager *lua, Graphics::Renderer *renderer, int width, int height, const std::string &lang);
+	virtual ~Context();
+=======
 // While it is a container, the context cannot accept arbitrary widgets.
 // Instead it can hold one more Layers. Each Layer is a complete widget
 // "stack", independent of other layers. Layers are rendered from oldest to
@@ -68,6 +96,7 @@ namespace UI {
 class Context : public Container {
 public:
 	Context(LuaManager *lua, Graphics::Renderer *renderer, int width, int height, const std::string &lang);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 	// general purpose containers
 	UI::HBox *HBox(float spacing = 0.0f) { return new UI::HBox(this, spacing); }
@@ -106,6 +135,15 @@ public:
 
 	UI::TextEntry *TextEntry(const std::string &text = "") { return new UI::TextEntry(this, text); }
 
+<<<<<<< HEAD
+	// add a floating widget
+	Context *AddFloatingWidget(Widget *w, const Point &pos, const Point &size) { m_float->AddWidget(w, pos, size); return this; }
+	Context *RemoveFloatingWidget(Widget *w) { m_float->RemoveWidget(w); return this; }
+
+	// considers floating widgets also
+	virtual Widget *GetWidgetAt(const Point &pos);
+
+=======
 	// layers feel like a stack
 	Layer *NewLayer();
 	void DropLayer();
@@ -120,6 +158,7 @@ public:
 
 	Point GetMousePos() const { return m_eventDispatcher.GetMousePos(); }
 
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	// event dispatch delegates
 	bool Dispatch(const Event &event) { return m_eventDispatcher.Dispatch(event); }
 	bool DispatchSDLEvent(const SDL_Event &event) { return m_eventDispatcher.DispatchSDLEvent(event); }
@@ -161,7 +200,11 @@ private:
 
 	bool m_needsLayout;
 
+<<<<<<< HEAD
+	RefCountedPtr<FloatContainer> m_float;
+=======
 	std::vector<Layer*> m_layers;
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 	EventDispatcher m_eventDispatcher;
 	Skin m_skin;

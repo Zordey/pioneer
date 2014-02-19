@@ -1,4 +1,8 @@
+<<<<<<< HEAD
+// Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
 // Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #ifndef _SURFACE_H
@@ -23,7 +27,11 @@ public:
 	virtual ~Surface() {}
 
 	PrimitiveType GetPrimtiveType() const { return m_primitiveType; }
+<<<<<<< HEAD
+	VertexArray *GetVertices() const { return m_vertices.Get(); }
+=======
 	VertexArray *GetVertices() const { return m_vertices.get(); }
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	RefCountedPtr<Material> GetMaterial() const { return m_material; }
 	void SetMaterial(RefCountedPtr<Material> m) { m_material = m; }
 
@@ -36,7 +44,11 @@ public:
 
 private:
 	PrimitiveType m_primitiveType;
+<<<<<<< HEAD
+	ScopedPtr<VertexArray> m_vertices;
+=======
 	std::unique_ptr<VertexArray> m_vertices;
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	RefCountedPtr<Material> m_material;
 
 	std::vector<unsigned short> m_indices;

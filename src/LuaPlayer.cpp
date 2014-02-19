@@ -1,4 +1,8 @@
+<<<<<<< HEAD
+// Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
 // Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "LuaObject.h"
@@ -9,7 +13,10 @@
 #include "Pi.h"
 #include "Game.h"
 #include "SectorView.h"
+<<<<<<< HEAD
+=======
 #include "EnumStrings.h"
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 /*
  * Class: Player
@@ -24,6 +31,95 @@ static int l_player_is_player(lua_State *l)
 }
 
 /*
+<<<<<<< HEAD
+ * Method: GetMoney
+ *
+ * Get the player's current money
+ *
+ * > money = player:GetMoney()
+ *
+ * Return:
+ *
+ *   money - the player's money, in dollars
+ *
+ * Availability:
+ *
+ *   alpha 10
+ *
+ * Status:
+ *
+ *   experimental
+ */
+static int l_player_get_money(lua_State *l)
+{
+	Player *p = LuaObject<Player>::CheckFromLua(1);
+	lua_pushnumber(l, p->GetMoney()*0.01);
+	return 1;
+}
+
+/*
+ * Method: SetMoney
+ *
+ * Set the player's money
+ *
+ * > player:SetMoney(money)
+ *
+ * Parameters:
+ *
+ *   money - the new amount of money, in dollars
+ *
+ * Availability:
+ *
+ *   alpha 10
+ *
+ * Status:
+ *
+ *   experimental
+ */
+static int l_player_set_money(lua_State *l)
+{
+	Player *p = LuaObject<Player>::CheckFromLua(1);
+	float m = luaL_checknumber(l, 2);
+	p->SetMoney(Sint64(m*100.0));
+	return 0;
+}
+
+/*
+ * Method: AddMoney
+ *
+ * Add an amount to the player's money
+ *
+ * > money = player:AddMoney(change)
+ *
+ * Parameters:
+ *
+ *   change - the amount of money to add to the player's money, in dollars
+ *
+ * Return:
+ *
+ *   money - the player's new money, in dollars
+ *
+ * Availability:
+ *
+ *   alpha 10
+ *
+ * Status:
+ *
+ *   experimental
+ */
+static int l_player_add_money(lua_State *l)
+{
+	Player *p = LuaObject<Player>::CheckFromLua(1);
+	float a = luaL_checknumber(l, 2);
+	Sint64 m = p->GetMoney() + Sint64(a*100.0);
+	p->SetMoney(m);
+	lua_pushnumber(l, m*0.01);
+	return 1;
+}
+
+/*
+=======
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
  * Method: AddCrime
  *
  * Add a crime to the player's criminal record
@@ -53,6 +149,8 @@ static int l_player_add_crime(lua_State *l)
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
 // XXX temporary until crime is moved out to Lua properly
 static int l_player_get_crime(lua_State *l)
 {
@@ -83,6 +181,7 @@ static int l_player_clear_crime_fine(lua_State *l)
 	return 0;
 }
 
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 /*
  * Method: GetNavTarget
  *
@@ -277,9 +376,17 @@ template <> void LuaObject<Player>::RegisterClass()
 	static const luaL_Reg l_methods[] = {
 		{ "IsPlayer", l_player_is_player },
 
+<<<<<<< HEAD
+		{ "GetMoney", l_player_get_money },
+		{ "SetMoney", l_player_set_money },
+		{ "AddMoney", l_player_add_money },
+
+		{ "AddCrime",      l_player_add_crime },
+=======
 		{ "AddCrime",       l_player_add_crime },
 		{ "GetCrime",       l_player_get_crime },
 		{ "ClearCrimeFine", l_player_clear_crime_fine },
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 		{ "GetNavTarget",    l_get_nav_target    },
 		{ "SetNavTarget",    l_set_nav_target    },

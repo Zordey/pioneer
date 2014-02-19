@@ -1,4 +1,8 @@
+<<<<<<< HEAD
+// Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
 // Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "List.h"
@@ -17,6 +21,12 @@ public:
 		return 1;
 	}
 
+<<<<<<< HEAD
+	static int l_attr_selected_option(lua_State *l) {
+		UI::List *list = LuaObject<UI::List>::CheckFromLua(1);
+		const std::string &selectedOption(list->GetSelectedOption());
+		lua_pushlstring(l, selectedOption.c_str(), selectedOption.size());
+=======
 	static int l_set_selected_option(lua_State *l) {
 		UI::List *list = LuaObject<UI::List>::CheckFromLua(1);
 		size_t len;
@@ -58,6 +68,7 @@ public:
 		} else {
 			lua_pushinteger(l, list->GetSelectedIndex() + 1);
 		}
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		return 1;
 	}
 
@@ -80,14 +91,21 @@ template <> void LuaObject<UI::List>::RegisterClass()
 	static const char *l_parent = "UI.Container";
 
 	static const luaL_Reg l_methods[] = {
+<<<<<<< HEAD
+		{ "AddOption", LuaList::l_add_option },
+=======
 		{ "AddOption",         LuaList::l_add_option          },
 		{ "SetSelectedOption", LuaList::l_set_selected_option },
 		{ "SetSelectedIndex",  LuaList::l_set_selected_index  },
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		{ 0, 0 }
 	};
 
 	static const luaL_Reg l_attrs[] = {
+<<<<<<< HEAD
+=======
 		{ "selectedIndex",    LuaList::l_attr_selected_index     },
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		{ "selectedOption",   LuaList::l_attr_selected_option    },
 		{ "onOptionSelected", LuaList::l_attr_on_option_selected },
 		{ 0, 0 }

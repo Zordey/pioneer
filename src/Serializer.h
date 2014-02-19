@@ -1,4 +1,8 @@
+<<<<<<< HEAD
+// Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
 // Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #ifndef _SERIALIZE_H
@@ -66,8 +70,10 @@ namespace Serializer {
 		float Float ();
 		double Double ();
 		std::string String();
+<<<<<<< HEAD
+=======
 		ByteRange Blob();
-		vector3f Vector3f();
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		vector3d Vector3d();
 		Quaternionf RdQuaternionf();
 		Color Color4UB();
@@ -75,7 +81,11 @@ namespace Serializer {
 			if (section_label_expected != String()) {
 				throw SavedGameCorruptException();
 			}
+<<<<<<< HEAD
+			Reader section = Reader(String());
+=======
 			Reader section = Reader(Blob());
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 			section.SetStreamVersion(StreamVersion());
 			return section;
 		}
@@ -88,8 +98,13 @@ namespace Serializer {
 		void SetStreamVersion(int x) { m_streamVersion = x; }
 
 	private:
+<<<<<<< HEAD
+		std::string m_data;
+		size_t m_pos;
+=======
 		ByteRange m_data;
 		const char *m_at;
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		int m_streamVersion;
 	};
 

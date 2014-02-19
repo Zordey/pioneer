@@ -1,4 +1,8 @@
+<<<<<<< HEAD
+// Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
 // Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "LuaObject.h"
@@ -21,7 +25,11 @@
 /*
  * Class: Ship
  *
+<<<<<<< HEAD
+ * Class representing a ship. Inherits from <Body>.
+=======
  * Class representing a ship. Inherits from <ModelBody>.
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
  */
 
 /*
@@ -59,6 +67,76 @@ static int l_ship_is_player(lua_State *l)
     return 1;
 }
 
+<<<<<<< HEAD
+/*
+ * Method: GetStats
+ *
+ * Returns statistics for the ship
+ *
+ * > stats = ship:GetStats()
+ *
+ * Returns:
+ *
+ *   stats - a table with the following fields
+ *
+ *     maxCapacity - maximum space for cargo and equipment (t)
+ *     usedCapacity - amount of space used (t)
+ *     usedCargo - amount of cargo space used (t)
+ *     freeCapacity - total space remaining (t)
+ *     totalMass - total mass of the ship (cargo, equipment & hull) (t)
+ *     hullMassLeft - remaining hull mass. when this reaches 0, the ship is destroyed (t)
+ *     shieldMass - total mass equivalent of all shields (t)
+ *     shieldMassLeft - remaining shield mass. when this reaches 0, the shields are depleted and the hull is exposed (t)
+ *     hyperspaceRange - distance of furthest possible jump based on current contents (ly)
+ *     maxHyperspaceRange - distance furthest possible jump under ideal conditions (ly)
+ *     maxFuelTankMass - mass of internal (thruster) fuel tank, when full (t)
+ *     fuelMassLeft - current mass of the internal fuel tank (t)
+ *     fuelUse - thruster fuel use, scaled for the strongest thrusters at full thrust (percentage points per second, e.g. 0.0003)
+ *
+ * Example:
+ *
+ * > local stats = ship:GetStats()
+ * > if stats.shieldMass == stats.shieldMassLeft then
+ * >     print("shields at full strength")
+ * > end
+ *
+ * Availability:
+ *
+ *  alpha 10
+ *
+ * Status:
+ *
+ *  experimental
+ */
+static int l_ship_get_stats(lua_State *l)
+{
+	LUA_DEBUG_START(l);
+
+	Ship *s = LuaObject<Ship>::CheckFromLua(1);
+	const shipstats_t &stats = s->GetStats();
+
+	lua_newtable(l);
+	pi_lua_settable(l, "maxCapacity",        stats.max_capacity);
+	pi_lua_settable(l, "usedCapacity",       stats.used_capacity);
+	pi_lua_settable(l, "usedCargo",          stats.used_cargo);
+	pi_lua_settable(l, "freeCapacity",       stats.free_capacity);
+	pi_lua_settable(l, "totalMass",          stats.total_mass);
+	pi_lua_settable(l, "hullMassLeft",       stats.hull_mass_left);
+	pi_lua_settable(l, "hyperspaceRange",    stats.hyperspace_range);
+	pi_lua_settable(l, "maxHyperspaceRange", stats.hyperspace_range_max);
+	pi_lua_settable(l, "shieldMass",         stats.shield_mass);
+	pi_lua_settable(l, "shieldMassLeft",     stats.shield_mass_left);
+	pi_lua_settable(l, "maxFuelTankMass",    stats.fuel_tank_mass);
+	pi_lua_settable(l, "fuelUse",            stats.fuel_use);
+	pi_lua_settable(l, "fuelMassLeft",       stats.fuel_tank_mass_left);
+
+	LUA_DEBUG_END(l, 1);
+
+	return 1;
+}
+
+=======
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 /* Method: SetShipType
  *
  * Replaces the ship with a new ship of the specified type.
@@ -945,6 +1023,8 @@ static int l_ship_hyperspace_to(lua_State *l)
 }
 
 /*
+<<<<<<< HEAD
+=======
  * Method: GetInvulnerable
  *
  * Find out whether a ship can take damage or not.
@@ -995,6 +1075,7 @@ static int l_ship_set_invulnerable(lua_State *l)
 }
 
 /*
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
  * Group: AI methods
  *
  * The AI methods are the script's equivalent of the autopilot. They are
@@ -1259,11 +1340,19 @@ template <> const char *LuaObject<Ship>::s_type = "Ship";
 
 template <> void LuaObject<Ship>::RegisterClass()
 {
+<<<<<<< HEAD
+	static const char *l_parent = "Body";
+=======
 	static const char *l_parent = "ModelBody";
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 	static const luaL_Reg l_methods[] = {
 		{ "IsPlayer", l_ship_is_player },
 
+<<<<<<< HEAD
+		{ "GetStats", l_ship_get_stats },
+=======
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		{ "SetShipType", l_ship_set_type },
 		{ "SetHullPercent", l_ship_set_hull_percent },
 		{ "SetFuelPercent", l_ship_set_fuel_percent },
@@ -1304,9 +1393,12 @@ template <> void LuaObject<Ship>::RegisterClass()
 		{ "InitiateHyperjumpTo",    l_ship_initiate_hyperjump_to     },
 		{ "AbortHyperjump",    l_ship_abort_hyperjump     },
 
+<<<<<<< HEAD
+=======
 		{ "GetInvulnerable", l_ship_get_invulnerable },
 		{ "SetInvulnerable", l_ship_set_invulnerable },
 
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		{ 0, 0 }
 	};
 
@@ -1369,6 +1461,10 @@ template <> void LuaObject<Ship>::RegisterClass()
  * Status:
  *
  *   experimental
+<<<<<<< HEAD
+ */
+
+=======
  *
  *
  * Attribute: fuelMassLeft
@@ -1507,3 +1603,4 @@ template <> void LuaObject<Ship>::RegisterClass()
  *   experimental
  *
  */
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755

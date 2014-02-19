@@ -1,8 +1,16 @@
+<<<<<<< HEAD
+// Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
 // Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "OS.h"
 #include "FileSystem.h"
+<<<<<<< HEAD
+#include "SDLWrappers.h"
+=======
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 #include <SDL.h>
 #include <sys/time.h>
 #include <fenv.h>
@@ -23,9 +31,39 @@ void NotifyLoadEnd()
 {
 }
 
+void Error(const char *format, ...)
+{
+	char buf[1024];
+	va_list ap;
+	va_start(ap, format);
+	vsnprintf(buf, sizeof(buf), format, ap);
+	va_end(ap);
+	fprintf(stderr, "Error: %s\n", buf);
+	abort();
+}
+
+void Warning(const char *format, ...)
+{
+	char buf[1024];
+	va_list ap;
+	va_start(ap, format);
+	vsnprintf(buf, sizeof(buf), format, ap);
+	va_end(ap);
+	fprintf(stderr, "Warning: %s\n", buf);
+}
+
+<<<<<<< HEAD
+void LoadWindowIcon()
+{
+	SDLSurfacePtr surface = LoadSurfaceFromFile("icons/badge.png");
+	if (surface) {
+		SDL_WM_SetIcon(surface.Get(), 0);
+	}
+=======
 const char *GetIconFilename()
 {
 	return "icons/badge.png";
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 }
 
 void RedirectStdio()

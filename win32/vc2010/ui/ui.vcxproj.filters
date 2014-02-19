@@ -13,6 +13,10 @@
     <ClCompile Include="..\..\..\src\ui\DropDown.cpp" />
     <ClCompile Include="..\..\..\src\ui\Event.cpp" />
     <ClCompile Include="..\..\..\src\ui\EventDispatcher.cpp" />
+<<<<<<< HEAD
+    <ClCompile Include="..\..\..\src\ui\FloatContainer.cpp" />
+=======
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
     <ClCompile Include="..\..\..\src\ui\Grid.cpp" />
     <ClCompile Include="..\..\..\src\ui\Image.cpp" />
     <ClCompile Include="..\..\..\src\ui\Label.cpp" />
@@ -62,10 +66,13 @@
     <ClCompile Include="..\..\..\src\ui\LuaGauge.cpp" />
     <ClCompile Include="..\..\..\src\ui\NumberLabel.cpp" />
     <ClCompile Include="..\..\..\src\ui\LuaNumberLabel.cpp" />
+<<<<<<< HEAD
+=======
     <ClCompile Include="..\..\..\src\ui\LuaTable.cpp" />
     <ClCompile Include="..\..\..\src\ui\Table.cpp" />
     <ClCompile Include="..\..\..\src\ui\LuaLayer.cpp" />
     <ClCompile Include="..\..\..\src\ui\Layer.cpp" />
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\src\ui\Align.h" />
@@ -80,6 +87,10 @@
     <ClInclude Include="..\..\..\src\ui\DropDown.h" />
     <ClInclude Include="..\..\..\src\ui\Event.h" />
     <ClInclude Include="..\..\..\src\ui\EventDispatcher.h" />
+<<<<<<< HEAD
+    <ClInclude Include="..\..\..\src\ui\FloatContainer.h" />
+=======
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
     <ClInclude Include="..\..\..\src\ui\Grid.h" />
     <ClInclude Include="..\..\..\src\ui\Image.h" />
     <ClInclude Include="..\..\..\src\ui\Label.h" />
@@ -106,8 +117,11 @@
     <ClInclude Include="..\..\..\src\ui\Icon.h" />
     <ClInclude Include="..\..\..\src\ui\Gauge.h" />
     <ClInclude Include="..\..\..\src\ui\NumberLabel.h" />
+<<<<<<< HEAD
+=======
     <ClInclude Include="..\..\..\src\ui\Table.h" />
     <ClInclude Include="..\..\..\src\ui\Layer.h" />
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
   </ItemGroup>
   <ItemGroup>
     <Filter Include="win32">

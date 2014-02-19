@@ -1,4 +1,8 @@
+<<<<<<< HEAD
+// Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
 // Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #ifndef _SCENEGRAPH_GROUP_H
@@ -27,7 +31,12 @@ public:
 	virtual void Accept(NodeVisitor &v);
 	virtual void Traverse(NodeVisitor &v);
 	virtual void Render(const matrix4x4f &trans, const RenderData *rd);
+<<<<<<< HEAD
 	virtual Node* FindNode(const std::string &);
+=======
+	virtual Node* FindNode(const std::string &); 
+	virtual Node* GatherTransforms(const std::string &, const matrix4x4f &, matrix4x4f &);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 protected:
 	virtual ~Group();

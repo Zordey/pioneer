@@ -1,4 +1,8 @@
+<<<<<<< HEAD
+// Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
 // Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #ifndef _SPACE_H
@@ -46,7 +50,11 @@ public:
 
 	RefCountedPtr<StarSystem> GetStarSystem() const { return m_starSystem; }
 
+<<<<<<< HEAD
+	Frame *GetRootFrame() const { return m_rootFrame.Get(); }
+=======
 	Frame *GetRootFrame() const { return m_rootFrame.get(); }
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 	void AddBody(Body *);
 	void RemoveBody(Body *);
@@ -80,8 +88,11 @@ public:
 
 
 private:
-	void GenSectorCache(const SystemPath* here);
+<<<<<<< HEAD
+	void GenBody(SystemBody *b, Frame *f);
+=======
 	void GenBody(double at_time, SystemBody *b, Frame *f);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	// make sure SystemBody* is in Pi::currentSystem
 	Frame *GetFrameWithSystemBody(const SystemBody *b) const;
 
@@ -89,7 +100,11 @@ private:
 
 	void CollideFrame(Frame *f);
 
+<<<<<<< HEAD
+	ScopedPtr<Frame> m_rootFrame;
+=======
 	std::unique_ptr<Frame> m_rootFrame;
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 	RefCountedPtr<SectorCache::Slave> m_sectorCache;
 

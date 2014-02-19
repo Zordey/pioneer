@@ -1,4 +1,8 @@
+<<<<<<< HEAD
+// Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
 // Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #ifndef UI_WIDGET_H
@@ -84,7 +88,10 @@ namespace UI {
 
 class Context;
 class Container;
+<<<<<<< HEAD
+=======
 class Layer;
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 class Widget : public RefCounted {
 protected:
@@ -138,9 +145,19 @@ public:
 
 	// determine if a point is inside a widgets active area
 	bool Contains(const Point &point) const {
+<<<<<<< HEAD
+		return (point.x >= m_activeOffset.x && point.y >= m_activeOffset.y && point.x < m_activeOffset.x+m_activeArea.x && point.y < m_activeOffset.y+m_activeArea.y);
+	}
+
+	// deterine if an absolute point is inside a widget's active area
+	bool ContainsAbsolute(const Point &point) const {
+		Point pos = GetAbsolutePosition() + m_activeOffset;
+		return (point.x >= pos.x && point.y >= pos.y && point.x < pos.x+m_activeArea.x && point.y < pos.y+m_activeArea.y);
+=======
 		const Point min_corner = (m_activeOffset - m_drawOffset);
 		const Point max_corner = (min_corner + m_activeArea);
 		return (point.x >= min_corner.x && point.y >= min_corner.y && point.x < max_corner.x && point.y < max_corner.y);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	}
 
 	// calculate layout contribution based on preferred size and flags
@@ -151,6 +168,12 @@ public:
 	// fast way to determine if the widget is a container
 	virtual bool IsContainer() const { return false; }
 
+<<<<<<< HEAD
+	// are we floating
+	bool IsFloating() const { return m_floating; }
+
+=======
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	// selectable widgets may receive keyboard focus
 	virtual bool IsSelectable() const { return false; }
 
@@ -159,8 +182,11 @@ public:
 	virtual void Enable();
 	bool IsDisabled() const { return m_disabled; }
 
+<<<<<<< HEAD
+=======
 	bool IsMouseOver() const { return m_mouseOver; }
 
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	// register a key that, when pressed and not handled by any other widget,
 	// will cause a click event to be sent to this widget
 	void AddShortcut(const KeySym &keysym) { m_shortcuts.insert(keysym); }
@@ -210,6 +236,10 @@ public:
 	// bind an object property to a widget bind point
 	void Bind(const std::string &bindName, PropertiedObject *object, const std::string &propertyName);
 
+<<<<<<< HEAD
+
+=======
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	// this sigc accumulator calls all the handlers for an event. if any of
 	// them return true, it returns true (indicating the event was handled),
 	// otherwise it returns false
@@ -229,8 +259,13 @@ public:
 	sigc::signal<bool,const KeyboardEvent &>::accumulated<EventHandlerResultAccumulator> onKeyDown;
 	sigc::signal<bool,const KeyboardEvent &>::accumulated<EventHandlerResultAccumulator> onKeyUp;
 
+<<<<<<< HEAD
+	// synthesised for non-control keys. repeats when key is held down
+	sigc::signal<bool,const KeyboardEvent &>::accumulated<EventHandlerResultAccumulator> onKeyPress;
+=======
 	// text input, full unicode codepoint
 	sigc::signal<bool,const TextInputEvent &>::accumulated<EventHandlerResultAccumulator> onTextInput;
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 	// mouse button presses
 	sigc::signal<bool,const MouseButtonEvent &>::accumulated<EventHandlerResultAccumulator> onMouseDown;
@@ -242,12 +277,15 @@ public:
 	// mouse wheel moving
 	sigc::signal<bool,const MouseWheelEvent &>::accumulated<EventHandlerResultAccumulator> onMouseWheel;
 
+<<<<<<< HEAD
+=======
 	// joystick events
 	sigc::signal<bool,const JoystickAxisMotionEvent &>::accumulated<EventHandlerResultAccumulator> onJoystickAxisMove;
 	sigc::signal<bool,const JoystickHatMotionEvent &>::accumulated<EventHandlerResultAccumulator> onJoystickHatMove;
 	sigc::signal<bool,const JoystickButtonEvent &>::accumulated<EventHandlerResultAccumulator> onJoystickButtonDown;
 	sigc::signal<bool,const JoystickButtonEvent &>::accumulated<EventHandlerResultAccumulator> onJoystickButtonUp;
 
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	// mouse entering or exiting widget area
 	sigc::signal<bool>::accumulated<EventHandlerResultAccumulator> onMouseOver;
 	sigc::signal<bool>::accumulated<EventHandlerResultAccumulator> onMouseOut;
@@ -274,6 +312,13 @@ protected:
 
 	// mouse active. if a widget is mouse-active, it receives all mouse events
 	// regardless of mouse position
+<<<<<<< HEAD
+	bool IsMouseActive() const { return m_mouseActive; }
+
+	bool IsMouseOver() const { return m_mouseOver; }
+
+	bool IsSelected() const { return m_selected; }
+=======
 	bool IsMouseActive() const;
 
 	bool IsSelected() const;
@@ -283,6 +328,7 @@ protected:
 	// indicates whether the widget is part of the visible tree of widgets
 	// (ie, its chain of parents links to a Context)
 	bool IsVisible() const { return m_visible; }
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 	void SetDisabled(bool disabled) { m_disabled = disabled; }
 
@@ -299,10 +345,13 @@ protected:
 	virtual void HandleMouseUp(const MouseButtonEvent &event) {}
 	virtual void HandleMouseMove(const MouseMotionEvent &event) {}
 	virtual void HandleMouseWheel(const MouseWheelEvent &event) {}
+<<<<<<< HEAD
+=======
 	virtual void HandleJoystickAxisMove(const JoystickAxisMotionEvent &event) {}
 	virtual void HandleJoystickHatMove(const JoystickHatMotionEvent &event) {}
 	virtual void HandleJoystickButtonDown(const JoystickButtonEvent &event) {}
 	virtual void HandleJoystickButtonUp(const JoystickButtonEvent &event) {}
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 	virtual void HandleClick() {}
 
@@ -316,8 +365,14 @@ protected:
 	virtual void HandleMouseActivate() {}
 	virtual void HandleMouseDeactivate() {}
 
+<<<<<<< HEAD
+	// synthesized event. like KeyDown except you get multiple events if the
+	// key is held down
+	virtual void HandleKeyPress(const KeyboardEvent &event) {}
+=======
 	// text input event, a full unicode codepoint
 	virtual void HandleTextInput(const TextInputEvent &event) {}
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 	// internal synthesized events fired when a widget is selected or
 	// deselected. on mousedown, a widget becomes the selected widget unless
@@ -326,9 +381,12 @@ protected:
 	virtual void HandleSelect() {}
 	virtual void HandleDeselect() {}
 
+<<<<<<< HEAD
+=======
 	virtual void HandleVisible() {}
 	virtual void HandleInvisible() {}
 
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	void RegisterBindPoint(const std::string &bindName, sigc::slot<void,PropertyMap &,const std::string &> method);
 
 private:
@@ -345,20 +403,26 @@ private:
 	// what this means in practic is that Handle* will be called for every
 	// widget from here to the root, whereas signals will only be fired as
 	// long as the signals continue to return false (unhandled).
-	bool TriggerKeyDown(const KeyboardEvent &event, bool handled = false);
-	bool TriggerKeyUp(const KeyboardEvent &event, bool handled = false);
-	bool TriggerTextInput(const TextInputEvent &event, bool handled = false);
-	bool TriggerMouseDown(const MouseButtonEvent &event, bool handled = false);
-	bool TriggerMouseUp(const MouseButtonEvent &event, bool handled = false);
-	bool TriggerMouseMove(const MouseMotionEvent &event, bool handled = false);
-	bool TriggerMouseWheel(const MouseWheelEvent &event, bool handled = false);
+	bool TriggerKeyDown(const KeyboardEvent &event, bool emit = true);
+	bool TriggerKeyUp(const KeyboardEvent &event, bool emit = true);
+<<<<<<< HEAD
+=======
+	bool TriggerTextInput(const TextInputEvent &event, bool emit = true);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
+	bool TriggerMouseDown(const MouseButtonEvent &event, bool emit = true);
+	bool TriggerMouseUp(const MouseButtonEvent &event, bool emit = true);
+	bool TriggerMouseMove(const MouseMotionEvent &event, bool emit = true);
+	bool TriggerMouseWheel(const MouseWheelEvent &event, bool emit = true);
 
-	bool TriggerJoystickButtonDown(const JoystickButtonEvent &event, bool handled = false);
-	bool TriggerJoystickButtonUp(const JoystickButtonEvent &event, bool handled = false);
-	bool TriggerJoystickAxisMove(const JoystickAxisMotionEvent &event, bool handled = false);
-	bool TriggerJoystickHatMove(const JoystickHatMotionEvent &event, bool handled = false);
+<<<<<<< HEAD
+=======
+	bool TriggerJoystickButtonDown(const JoystickButtonEvent &event, bool emit = true);
+	bool TriggerJoystickButtonUp(const JoystickButtonEvent &event, bool emit = true);
+	bool TriggerJoystickAxisMove(const JoystickAxisMotionEvent &event, bool emit = true);
+	bool TriggerJoystickHatMove(const JoystickHatMotionEvent &event, bool emit = true);
 
-	bool TriggerClick(bool handled = false);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
+	bool TriggerClick(bool emit = true);
 
 	// stop is used during disable/enable to stop delivery at the given widget
 	bool TriggerMouseOver(const Point &pos, bool handled = false, Widget *stop = 0);
@@ -367,6 +431,11 @@ private:
 	void TriggerMouseActivate();
 	void TriggerMouseDeactivate();
 
+<<<<<<< HEAD
+	bool TriggerKeyPress(const KeyboardEvent &event, bool emit = true);
+
+=======
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	void TriggerSelect();
 	void TriggerDeselect();
 
@@ -380,7 +449,10 @@ private:
 	void Attach(Container *container);
 	void Detach();
 	void SetDimensions(const Point &position, const Point &size);
+<<<<<<< HEAD
+=======
 	virtual void NotifyVisible(bool visible);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 	// called by Container::CollectShortcuts
 	const std::set<KeySym> &GetShortcuts() const { return m_shortcuts; }
@@ -391,6 +463,15 @@ private:
 	friend class Context;
 	void SetSize(const Point &size) { m_size = size; SetActiveArea(size); }
 
+<<<<<<< HEAD
+
+	// FloatContainer needs to change floating state
+	friend class FloatContainer;
+	void SetFloating(bool floating) { m_floating = floating; }
+
+
+=======
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	Context *m_context;
 	Container *m_container;
 
@@ -406,10 +487,20 @@ private:
 
 	Font m_font;
 
+<<<<<<< HEAD
+	bool m_floating;
+
+	bool m_disabled;
+
+	bool m_mouseOver;
+	bool m_mouseActive;
+	bool m_selected;
+=======
 	bool m_disabled;
 
 	bool m_mouseOver;
 	bool m_visible;
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 	std::set<KeySym> m_shortcuts;
 

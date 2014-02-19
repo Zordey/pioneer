@@ -1,4 +1,8 @@
+<<<<<<< HEAD
+// Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
 // Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #ifndef _RENDERER_GL2_H
@@ -12,6 +16,12 @@
  *  - get rid of built-in glMaterial, glMatrix use
  */
 #include "Renderer.h"
+<<<<<<< HEAD
+#include "RendererLegacy.h"
+
+namespace Graphics {
+
+=======
 #include <stack>
 #include <unordered_map>
 
@@ -20,6 +30,7 @@ namespace Graphics {
 class Texture;
 struct Settings;
 
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 namespace GL2 {
 	class GeoSphereSkyMaterial;
 	class GeoSphereSurfaceMaterial;
@@ -30,6 +41,30 @@ namespace GL2 {
 	class RenderState;
 	class RenderTarget;
 	class RingMaterial;
+<<<<<<< HEAD
+}
+
+class RendererGL2 : public RendererLegacy
+{
+public:
+	RendererGL2(const Graphics::Settings &vs);
+	virtual ~RendererGL2();
+
+	virtual const char* GetName() const { return "GL2 renderer"; }
+
+	virtual bool BeginFrame();
+
+	virtual bool SetRenderTarget(RenderTarget*);
+
+	virtual bool SetPerspectiveProjection(float fov, float aspect, float near, float far);
+
+	virtual bool SetAmbientColor(const Color &c);
+
+	virtual bool DrawLines(int vertCount, const vector3f *vertices, const Color *colors, LineType type=LINE_SINGLE);
+	virtual bool DrawLines(int vertCount, const vector3f *vertices, const Color &color, LineType type=LINE_SINGLE);
+
+	virtual Material *CreateMaterial(const MaterialDescriptor &descriptor);
+=======
 	class FresnelColourMaterial;
 	class ShieldMaterial;
 }
@@ -78,13 +113,16 @@ public:
 	virtual bool DrawPointSprites(int count, const vector3f *positions, RenderState *rs, Material *material, float size) override;
 	virtual bool DrawStaticMesh(StaticMesh*, RenderState*) override;
 
-	virtual Material *CreateMaterial(const MaterialDescriptor &descriptor) override;
-	virtual Texture *CreateTexture(const TextureDescriptor &descriptor) override;
-	virtual RenderState *CreateRenderState(const RenderStateDesc &) override;
-	virtual RenderTarget *CreateRenderTarget(const RenderTargetDesc &) override;
+	virtual Material *CreateMaterial(const MaterialDescriptor &descriptor);
+	virtual Texture *CreateTexture(const TextureDescriptor &descriptor);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
+	virtual RenderTarget *CreateRenderTarget(const RenderTargetDesc &);
 
 	virtual bool ReloadShaders();
 
+<<<<<<< HEAD
+private:
+=======
 	virtual bool PrintDebugInfo(std::ostream &out);
 
 	virtual const matrix4x4f& GetCurrentModelView() const { return m_modelViewStack.top(); }
@@ -122,6 +160,7 @@ protected:
 	matrix4x4f& GetCurrentTransform() { return m_currentTransform; }
 	matrix4x4f m_currentTransform;
 
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	GL2::Program* GetOrCreateProgram(GL2::Material*);
 	friend class GL2::Material;
 	friend class GL2::GeoSphereSurfaceMaterial;
@@ -129,6 +168,11 @@ protected:
 	friend class GL2::MultiMaterial;
 	friend class GL2::LitMultiMaterial;
 	friend class GL2::RingMaterial;
+<<<<<<< HEAD
+	std::vector<std::pair<MaterialDescriptor, GL2::Program*> > m_programs;
+	float m_invLogZfarPlus1;
+	GL2::RenderTarget *m_activeRenderTarget;
+=======
 	friend class GL2::FresnelColourMaterial;
 	friend class GL2::ShieldMaterial;
 	std::vector<std::pair<MaterialDescriptor, GL2::Program*> > m_programs;
@@ -146,6 +190,7 @@ protected:
 		Sint32 x, y, w, h;
 	};
 	std::stack<Viewport> m_viewportStack;
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 };
 
 }

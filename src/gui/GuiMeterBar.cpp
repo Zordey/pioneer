@@ -1,4 +1,8 @@
+<<<<<<< HEAD
+// Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
 // Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "Gui.h"
@@ -20,9 +24,29 @@ MeterBar::MeterBar(float width, const char *label, const ::Color &graphCol)
 
 void MeterBar::Draw()
 {
+<<<<<<< HEAD
+=======
 	PROFILE_SCOPED()
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	float size[2];
 	GetSize(size);
+
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+<<<<<<< HEAD
+	glColor4f(1.0f,1.0f,1.0f,.125f);
+	Gui::Theme::DrawRoundEdgedRect(size, 5.0);
+
+	glPushMatrix();
+	glColor4fv(m_barColor);
+	glTranslatef(METERBAR_PADDING, METERBAR_PADDING, 0.0f);
+	size[0] = m_barValue * (size[0] - 2.0f*METERBAR_PADDING);
+	size[1] = METERBAR_BAR_HEIGHT;
+	Gui::Theme::DrawRoundEdgedRect(size, 3.0f);
+	glPopMatrix();
+=======
+	glColor4ub(255,255,255,32);
+	Gui::Theme::DrawRoundEdgedRect(size, 5.0);
 
 	Graphics::Renderer *r = Gui::Screen::GetRenderer();
 
@@ -33,7 +57,11 @@ void MeterBar::Draw()
 	r->Translate(METERBAR_PADDING, METERBAR_PADDING, 0.0f);
 	size[0] = m_barValue * (size[0] - 2.0f*METERBAR_PADDING);
 	size[1] = METERBAR_BAR_HEIGHT;
-	Gui::Theme::DrawRoundEdgedRect(size, 3.0f, m_barColor, Screen::alphaBlendState);
+	Gui::Theme::DrawRoundEdgedRect(size, 3.0f);
+
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
+	glBlendFunc(GL_ONE, GL_ZERO);
+	glDisable(GL_BLEND);
 
 	Gui::Fixed::Draw();
 }

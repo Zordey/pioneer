@@ -1,4 +1,8 @@
+<<<<<<< HEAD
+// Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
 // Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "Terrain.h"
@@ -54,10 +58,16 @@ double TerrainHeightFractal<TerrainHeightMapped>::GetHeight(const vector3d &p) c
 	// p0,1 p1,1 p2,1 p3,1
 	// p0,0 p1,0 p2,0 p3,0
 	double map[4][4];
+<<<<<<< HEAD
+	for (int x=-1; x<3; x++) {
+		for (int y=-1; y<3; y++) {
+			map[x+1][y+1] = m_heightMap[Clamp(iy+y, 0, m_heightMapSizeY-1)*m_heightMapSizeX + Clamp(ix+x, 0, m_heightMapSizeX-1)];
+=======
 	const double *pHMap = m_heightMap.get();
 	for (int x=-1; x<3; x++) {
 		for (int y=-1; y<3; y++) {
 			map[x+1][y+1] = pHMap[Clamp(iy+y, 0, m_heightMapSizeY-1)*m_heightMapSizeX + Clamp(ix+x, 0, m_heightMapSizeX-1)];
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		}
 	}
 

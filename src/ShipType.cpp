@@ -1,4 +1,8 @@
+<<<<<<< HEAD
+// Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
 // Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "ShipType.h"
@@ -27,6 +31,23 @@ std::string ShipType::MISSILE_GUIDED		= "missile_guided";
 std::string ShipType::MISSILE_NAVAL			= "missile_naval";
 std::string ShipType::MISSILE_SMART			= "missile_smart";
 std::string ShipType::MISSILE_UNGUIDED		= "missile_unguided";
+<<<<<<< HEAD
+
+// returns velocity of engine exhausts in m/s
+static double GetEffectiveExhaustVelocity(double fuelTankMass, double thrusterFuelUse, double forwardThrust) {
+	double denominator = fuelTankMass * thrusterFuelUse * 10;
+	return fabs(denominator > 0 ? forwardThrust/denominator : 1e9);
+}
+
+static bool ShipIsUnbuyable(const ShipType::Id &id)
+{
+	const ShipType &t = ShipType::types[id];
+	return (t.baseprice == 0);
+}
+
+static std::string s_currentShipFile;
+
+=======
 
 float ShipType::GetFuelUseRate() const
 {
@@ -48,6 +69,7 @@ static bool ShipIsUnbuyable(const ShipType::Id &id)
 
 static std::string s_currentShipFile;
 
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 int _define_ship(lua_State *L, ShipType::Tag tag, std::vector<ShipType::Id> *list)
 {
 	if (s_currentShipFile.empty())
@@ -59,6 +81,10 @@ int _define_ship(lua_State *L, ShipType::Tag tag, std::vector<ShipType::Id> *lis
 
 	LUA_DEBUG_START(L);
 	LuaTable t(L, -1);
+<<<<<<< HEAD
+	s.name = t.Get("name", "");
+	s.modelName = t.Get("model", "");
+=======
 
 	s.name = t.Get("name", "");
 	s.shipClass = t.Get("ship_class", "unknown");
@@ -66,6 +92,7 @@ int _define_ship(lua_State *L, ShipType::Tag tag, std::vector<ShipType::Id> *lis
 	s.modelName = t.Get("model", "");
 
 	s.cockpitName = t.Get("cockpit", "");
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	s.linThrust[ShipType::THRUSTER_REVERSE] = t.Get("reverse_thrust", 0.0f);
 	s.linThrust[ShipType::THRUSTER_FORWARD] = t.Get("forward_thrust", 0.0f);
 	s.linThrust[ShipType::THRUSTER_UP] = t.Get("up_thrust", 0.0f);
@@ -80,6 +107,9 @@ int _define_ship(lua_State *L, ShipType::Tag tag, std::vector<ShipType::Id> *lis
 	// angthrust fudge (XXX: why?)
 	s.angThrust = s.angThrust / 2;
 
+<<<<<<< HEAD
+	s.cameraOffset = t.Get("camera_offset", vector3d(0.0));
+=======
 	lua_pushstring(L, "camera_offset");
 	lua_gettable(L, -2);
 	if (!lua_isnil(L, -1))
@@ -87,6 +117,7 @@ int _define_ship(lua_State *L, ShipType::Tag tag, std::vector<ShipType::Id> *lis
 	lua_pop(L, 1);
 	s.cameraOffset = t.Get("camera_offset", vector3d(0.0));
 
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	for (int i=0; i<Equip::SLOT_MAX; i++) s.equipSlotCapacity[i] = 0;
 	s.equipSlotCapacity[Equip::SLOT_CARGO] = t.Get("max_cargo", 0);
 	s.equipSlotCapacity[Equip::SLOT_ENGINE] = t.Get("max_engine", 1);
@@ -123,7 +154,27 @@ int _define_ship(lua_State *L, ShipType::Tag tag, std::vector<ShipType::Id> *lis
 		s.effectiveExhaustVelocity = GetEffectiveExhaustVelocity(s.fuelTankMass, thruster_fuel_use, s.linThrust[ShipType::THRUSTER_FORWARD]);
 	} else {
 		if(thruster_fuel_use >= 0)
-			Output("Warning: Both thruster_fuel_use and effective_exhaust_velocity defined for %s, using effective_exhaust_velocity.\n", s.modelName.c_str());
+			printf("Warning: Both thruster_fuel_use and effective_exhaust_velocity defined for %s, using effective_exhaust_velocity.\n", s.modelName.c_str());
+<<<<<<< HEAD
+	}
+
+	s.baseprice = t.Get("price", 0);
+	s.baseprice *= 100; // in hundredths of credits
+
+	s.minCrew = t.Get("min_crew", 1);
+	s.maxCrew = t.Get("max_crew", 1);
+
+	s.equipSlotCapacity[Equip::SLOT_ENGINE] = Clamp(s.equipSlotCapacity[Equip::SLOT_ENGINE], 0, 1);
+
+	{
+		int hyperclass;
+		hyperclass = t.Get("hyperdrive_class", 1);
+		if (!hyperclass) {
+			s.hyperdrive = Equip::NONE;
+		} else {
+			s.hyperdrive = Equip::Type(Equip::DRIVE_CLASS1+hyperclass-1);
+		}
+=======
 	}
 
 	s.baseprice = t.Get("price", 0);
@@ -149,12 +200,16 @@ int _define_ship(lua_State *L, ShipType::Tag tag, std::vector<ShipType::Id> *lis
 		s.gunMount[i].dir = vector3f(0,0,1);
 		s.gunMount[i].sep = 5;
 		s.gunMount[i].orient = ShipType::DUAL_LASERS_HORIZONTAL;
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	}
 
 	lua_pushstring(L, "gun_mounts");
 	lua_gettable(L, -2);
 	if (lua_istable(L, -1)) {
-		Output("ship definition for '%s' has deprecated 'gun_mounts' field\n", s.id.c_str());
+<<<<<<< HEAD
+=======
+		fprintf(stderr, "ship definition for '%s' has deprecated 'gun_mounts' field\n", s.id.c_str());
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		for (unsigned int i=0; i<lua_rawlen(L,-1); i++) {
 			lua_pushinteger(L, i+1);
 			lua_gettable(L, -2);
@@ -260,7 +315,11 @@ void ShipType::Init()
 	for (fs::FileEnumerator files(fs::gameDataFiles, "ships", fs::FileEnumerator::Recurse);
 			!files.Finished(); files.Next()) {
 		const fs::FileInfo &info = files.Current();
+<<<<<<< HEAD
+		if (ends_with(info.GetPath(), ".lua")) {
+=======
 		if (ends_with_ci(info.GetPath(), ".lua")) {
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 			const std::string name = info.GetName();
 			s_currentShipFile = name.substr(0, name.size()-4);
 			pi_lua_dofile(l, info.GetPath());

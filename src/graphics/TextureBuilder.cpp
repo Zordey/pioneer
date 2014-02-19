@@ -1,4 +1,8 @@
+<<<<<<< HEAD
+// Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
 // Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "TextureBuilder.h"
@@ -6,10 +10,16 @@
 #include "utils.h"
 #include <SDL_image.h>
 #include <SDL_rwops.h>
+<<<<<<< HEAD
+
+#include <algorithm>
+
+=======
 #include <algorithm>
 
 // XXX SDL2 can all this be replaced with SDL_GL_BindTexture?
 
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 namespace Graphics {
 
 TextureBuilder::TextureBuilder(const SDLSurfacePtr &surface, TextureSampleMode sampleMode, bool generateMipmaps, bool potExtend, bool forceRGBA, bool compressTextures) :
@@ -32,6 +42,14 @@ TextureBuilder::~TextureBuilder()
 #error "SDL surface pixel formats are endian-specific"
 #endif
 static SDL_PixelFormat pixelFormatRGBA = {
+<<<<<<< HEAD
+	0,                                  // palette
+	32,                                 // bits per pixel
+	4,                                  // bytes per pixel
+	0, 0, 0, 0,                         // RGBA loss
+	24, 16, 8, 0,                       // RGBA shift
+	0xff, 0xff00, 0xff0000, 0xff000000, // RGBA mask
+=======
 	0,                                  // format#
 	0,                                  // palette
 	32,                                 // bits per pixel
@@ -40,11 +58,20 @@ static SDL_PixelFormat pixelFormatRGBA = {
 	0xff, 0xff00, 0xff0000, 0xff000000, // RGBA mask
 	0, 0, 0, 0,                         // RGBA loss
 	24, 16, 8, 0,                       // RGBA shift
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	0,                                  // colour key
 	0                                   // alpha
 };
 
 static SDL_PixelFormat pixelFormatRGB = {
+<<<<<<< HEAD
+	0,                                  // palette
+	24,                                 // bits per pixel
+	3,                                  // bytes per pixel
+	0, 0, 0, 0,                         // RGBA loss
+	16, 8, 0, 0,                        // RGBA shift
+	0xff, 0xff00, 0xff0000, 0,          // RGBA mask
+=======
 	0,                                  // format#
 	0,                                  // palette
 	24,                                 // bits per pixel
@@ -53,6 +80,7 @@ static SDL_PixelFormat pixelFormatRGB = {
 	0xff, 0xff00, 0xff0000, 0,          // RGBA mask
 	0, 0, 0, 0,                         // RGBA loss
 	16, 8, 0, 0,                        // RGBA shift
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	0,                                  // colour key
 	0                                   // alpha
 };
@@ -91,7 +119,11 @@ void TextureBuilder::PrepareSurface()
 	if (!m_surface && !m_filename.empty()) {
 		std::string filename = m_filename;
 		std::transform(filename.begin(), filename.end(), filename.begin(), ::tolower);
+<<<<<<< HEAD
+		if (ends_with(filename, ".dds")) {
+=======
 		if (ends_with_ci(filename, ".dds")) {
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 			LoadDDS();
 		} else {
 			LoadSurface();
@@ -128,25 +160,18 @@ void TextureBuilder::PrepareSurface()
 			actualWidth = ceil_pow2(m_surface->w);
 			actualHeight = ceil_pow2(m_surface->h);
 			if (actualWidth != virtualWidth || actualHeight != virtualHeight) {
-				if(m_textureType == TEXTURE_2D) {
-					SDL_Surface *s = SDL_CreateRGBSurface(SDL_SWSURFACE, actualWidth, actualHeight, targetPixelFormat->BitsPerPixel,
-						targetPixelFormat->Rmask, targetPixelFormat->Gmask, targetPixelFormat->Bmask, targetPixelFormat->Amask);
-					SDL_SetSurfaceBlendMode(m_surface.Get(), SDL_BLENDMODE_NONE);
-					SDL_BlitSurface(m_surface.Get(), 0, s, 0);
+				SDL_Surface *s = SDL_CreateRGBSurface(SDL_SWSURFACE, actualWidth, actualHeight, targetPixelFormat->BitsPerPixel,
+					targetPixelFormat->Rmask, targetPixelFormat->Gmask, targetPixelFormat->Bmask, targetPixelFormat->Amask);
+<<<<<<< HEAD
 
-					m_surface = SDLSurfacePtr::WrapNew(s);
-				} else if(m_textureType == TEXTURE_CUBE_MAP) {
-					assert(m_cubemap.size() == 6);
-					for(unsigned int i = 0; i < 6; ++i) {
-						SDL_Surface *s = SDL_CreateRGBSurface(SDL_SWSURFACE, actualWidth, actualHeight, targetPixelFormat->BitsPerPixel,
-							targetPixelFormat->Rmask, targetPixelFormat->Gmask, targetPixelFormat->Bmask, targetPixelFormat->Amask);
-						SDL_SetSurfaceBlendMode(m_cubemap[i].Get(), SDL_BLENDMODE_NONE);
-						SDL_BlitSurface(m_cubemap[i].Get(), 0, s, 0);
-						m_cubemap[i] = SDLSurfacePtr::WrapNew(s);
-					}
-				} else {
-					assert(0);
-				}
+				SDL_SetAlpha(m_surface.Get(), 0, 0);
+				SDL_SetAlpha(s, 0, 0);
+=======
+				SDL_SetSurfaceBlendMode(m_surface.Get(), SDL_BLENDMODE_NONE);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
+				SDL_BlitSurface(m_surface.Get(), 0, s, 0);
+
+				m_surface = SDLSurfacePtr::WrapNew(s);
 			}
 		}
 		else if (! m_filename.empty()) {

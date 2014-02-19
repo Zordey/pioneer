@@ -1,4 +1,8 @@
+<<<<<<< HEAD
+// Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
 // Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "Player.h"
@@ -12,6 +16,10 @@
 #include "ShipCpanel.h"
 #include "Sound.h"
 #include "SpaceStation.h"
+<<<<<<< HEAD
+#include "SpaceStationView.h"
+=======
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 #include "WorldView.h"
 #include "StringF.h"
 
@@ -22,18 +30,32 @@ static Sound::Event s_soundHyperdrive;
 Player::Player(ShipType::Id shipId): Ship(shipId)
 {
 	SetController(new PlayerShipController());
+<<<<<<< HEAD
+=======
 	InitCockpit();
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 }
 
 void Player::Save(Serializer::Writer &wr, Space *space)
 {
 	Ship::Save(wr, space);
+<<<<<<< HEAD
+	MarketAgent::Save(wr);
+=======
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 }
 
 void Player::Load(Serializer::Reader &rd, Space *space)
 {
 	Pi::player = this;
 	Ship::Load(rd, space);
+<<<<<<< HEAD
+	MarketAgent::Load(rd);
+}
+
+//XXX perhaps remove this, the sound is very annoying
+bool Player::OnDamage(Object *attacker, float kgDamage)
+=======
 	InitCockpit();
 }
 
@@ -65,6 +87,7 @@ void Player::InitCockpit()
 
 //XXX perhaps remove this, the sound is very annoying
 bool Player::OnDamage(Object *attacker, float kgDamage, const CollisionContact& contactData)
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 {
 	bool r = Ship::OnDamage(attacker, kgDamage, contactData);
 	if (!IsDead() && (GetPercentHull() < 25.0f)) {
@@ -124,6 +147,126 @@ void Player::SetAlertState(Ship::AlertState as)
 	}
 
 	Pi::cpan->SetAlertState(as);
+<<<<<<< HEAD
+
+	Ship::SetAlertState(as);
+}
+
+void Player::NotifyRemoved(const Body* const removedBody)
+{
+	if (GetNavTarget() == removedBody)
+		SetNavTarget(0);
+
+	else if (GetCombatTarget() == removedBody) {
+		SetCombatTarget(0);
+
+		if (!GetNavTarget() && removedBody->IsType(Object::SHIP))
+			SetNavTarget(static_cast<const Ship*>(removedBody)->GetHyperspaceCloud());
+	}
+
+	Ship::NotifyRemoved(removedBody);
+}
+
+/* MarketAgent shite */
+//XXX move to Player character .cpp
+void Player::Bought(Equip::Type t)
+{
+	m_equipment.Add(t);
+	UpdateEquipStats();
+}
+
+void Player::Sold(Equip::Type t)
+{
+	m_equipment.Remove(t, 1);
+	UpdateEquipStats();
+}
+
+bool Player::CanBuy(Equip::Type t, bool verbose) const
+{
+	Equip::Slot slot = Equip::types[int(t)].slot;
+	bool freespace = (m_equipment.FreeSpace(slot)!=0);
+	bool freecapacity = (GetStats().free_capacity >= Equip::types[int(t)].mass);
+	if (verbose) {
+		if (!freespace) {
+			Pi::Message(Lang::NO_FREE_SPACE_FOR_ITEM);
+		}
+		else if (!freecapacity) {
+			Pi::Message(Lang::SHIP_IS_FULLY_LADEN);
+		}
+	}
+	return (freespace && freecapacity);
+}
+
+bool Player::CanSell(Equip::Type t, bool verbose) const
+{
+	Equip::Slot slot = Equip::types[int(t)].slot;
+	bool cansell = (m_equipment.Count(slot, t) > 0);
+	if (verbose) {
+		if (!cansell) {
+			Pi::Message(stringf(Lang::YOU_DO_NOT_HAVE_ANY_X, formatarg("item", Equip::types[int(t)].name)));
+		}
+	}
+	return cansell;
+}
+
+Sint64 Player::GetPrice(Equip::Type t) const
+{
+	if (Ship::GetDockedWith()) {
+		return Ship::GetDockedWith()->GetPrice(t);
+	} else {
+		assert(0);
+		return 0;
+	}
+}
+
+//XXX ui stuff
+void Player::OnEnterHyperspace()
+{
+	s_soundHyperdrive.Play("Hyperdrive_Jump");
+	SetNavTarget(0);
+	SetCombatTarget(0);
+
+	Pi::worldView->HideTargetActions(); // hide the comms menu
+	m_controller->SetFlightControlState(CONTROL_MANUAL); //could set CONTROL_HYPERDRIVE
+	ClearThrusterState();
+	Pi::game->WantHyperspace();
+}
+
+void Player::OnEnterSystem()
+{
+	m_controller->SetFlightControlState(CONTROL_MANUAL);
+	//XXX don't call sectorview from here, use signals instead
+	Pi::sectorView->ResetHyperspaceTarget();
+}
+
+//temporary targeting stuff
+PlayerShipController *Player::GetPlayerController() const
+{
+	return static_cast<PlayerShipController*>(GetController());
+}
+
+Body *Player::GetCombatTarget() const
+{
+	return static_cast<PlayerShipController*>(m_controller)->GetCombatTarget();
+}
+
+Body *Player::GetNavTarget() const
+{
+	return static_cast<PlayerShipController*>(m_controller)->GetNavTarget();
+}
+
+Body *Player::GetSetSpeedTarget() const
+{
+	return static_cast<PlayerShipController*>(m_controller)->GetSetSpeedTarget();
+}
+
+void Player::SetCombatTarget(Body* const target, bool setSpeedTo)
+{
+	static_cast<PlayerShipController*>(m_controller)->SetCombatTarget(target, setSpeedTo);
+	Pi::onPlayerChangeTarget.emit();
+}
+
+=======
 
 	Ship::SetAlertState(as);
 }
@@ -190,6 +333,7 @@ void Player::SetCombatTarget(Body* const target, bool setSpeedTo)
 	Pi::onPlayerChangeTarget.emit();
 }
 
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 void Player::SetNavTarget(Body* const target, bool setSpeedTo)
 {
 	static_cast<PlayerShipController*>(m_controller)->SetNavTarget(target, setSpeedTo);
@@ -227,6 +371,8 @@ void Player::ResetHyperspaceCountdown()
 	s_soundHyperdrive.Play("Hyperdrive_Abort");
 	Ship::ResetHyperspaceCountdown();
 }
+<<<<<<< HEAD
+=======
 
 void Player::OnCockpitActivated()
 {
@@ -243,3 +389,4 @@ void Player::StaticUpdate(const float timeStep)
 	if (m_cockpit)
 		m_cockpit->Update(timeStep);
 }
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755

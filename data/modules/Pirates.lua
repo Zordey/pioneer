@@ -1,3 +1,12 @@
+<<<<<<< HEAD
+-- Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+-- Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
+
+local onEnterSystem = function (player)
+	if not player:IsPlayer() then return end
+
+	local shipdefs = build_array(filter(function (k,def) return def.tag == 'SHIP' and def.hullMass <= 150 end, pairs(ShipDef)))
+=======
 -- Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
 -- Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
@@ -14,6 +23,7 @@ local onEnterSystem = function (player)
 	if not player:IsPlayer() then return end
 
 	local shipdefs = utils.build_array(utils.filter(function (k,def) return def.tag == 'SHIP' and def.hullMass <= 150 end, pairs(ShipDef)))
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	if #shipdefs == 0 then return end
 
 	local lawlessness = Game.system.lawlessness
@@ -33,6 +43,17 @@ local onEnterSystem = function (player)
 		-- XXX this should use external factors (eg lawlessness) and not be
 		-- dependent on the player in any way
 		local max_laser_size = shipdef.capacity - EquipDef[default_drive].mass
+<<<<<<< HEAD
+		local laserdefs = build_array(filter(function (k, def) return def.slot == 'LASER' and def.mass <= max_laser_size and string.sub(def.id,0,11) == 'PULSECANNON' end, pairs(EquipDef)))
+		local laserdef = laserdefs[Engine.rand:Integer(1,#laserdefs)]
+
+		local ship = Space.SpawnShip(shipdef.id, 8, 12)
+		ship:AddEquip(default_drive)
+		ship:AddEquip(laserdef.id)
+
+		local playerStats = player:GetStats()
+		local playerCargoCapacity = playerStats.maxCapacity
+=======
 		local laserdefs = utils.build_array(utils.filter(function (k, def) return def.slot == 'LASER' and def.mass <= max_laser_size and string.sub(def.id,0,11) == 'PULSECANNON' end, pairs(EquipDef)))
 		local laserdef = laserdefs[Engine.rand:Integer(1,#laserdefs)]
 
@@ -42,6 +63,7 @@ local onEnterSystem = function (player)
 		ship:AddEquip(laserdef.id)
 
 		local playerCargoCapacity = ShipDef[player.shipId].capacity
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		local probabilityPirateIsInterested = playerCargoCapacity/100.0
 		if Engine.rand:Number(1) < probabilityPirateIsInterested then
 			ship:AIKill(Game.player)

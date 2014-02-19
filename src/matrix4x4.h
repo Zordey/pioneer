@@ -1,4 +1,8 @@
+<<<<<<< HEAD
+// Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
 // Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #ifndef _MATRIX4X4_H
@@ -116,6 +120,8 @@ class matrix4x4 {
 		m[ 3] =  0; m[ 7] =  0; m[11] = -1; m[15] = 0;
 		return m;
 	}
+<<<<<<< HEAD
+=======
 	///////////////////////////////////////////////////////////////////////////////
 	// set a orthographic frustum with 6 params similar to glOrtho()
 	// (left, right, bottom, top, near, far)
@@ -140,6 +146,7 @@ class matrix4x4 {
 		return m;
 	}
 
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	//glRotate equivalent (except radians instead of degrees)
 	void Rotate (T ang, T x, T y, T z) {
 		*this = (*this) * RotateMatrix (ang, x, y, z);

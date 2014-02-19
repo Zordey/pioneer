@@ -1,4 +1,8 @@
+<<<<<<< HEAD
+// Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
 // Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "LuaObject.h"
@@ -13,7 +17,10 @@
 #include "Planet.h"
 #include "SpaceStation.h"
 #include "galaxy/Sector.h"
+<<<<<<< HEAD
+=======
 #include "galaxy/SectorCache.h"
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 #include "Factions.h"
 #include "FileSystem.h"
 
@@ -54,7 +61,10 @@
  */
 static int l_starsystem_get_station_paths(lua_State *l)
 {
+<<<<<<< HEAD
+=======
 	PROFILE_SCOPED()
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	LUA_DEBUG_START(l);
 
 	StarSystem *s = LuaObject<StarSystem>::CheckFromLua(1);
@@ -94,7 +104,10 @@ static int l_starsystem_get_station_paths(lua_State *l)
  */
 static int l_starsystem_get_body_paths(lua_State *l)
 {
+<<<<<<< HEAD
+=======
 	PROFILE_SCOPED()
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	LUA_DEBUG_START(l);
 
 	StarSystem *s = LuaObject<StarSystem>::CheckFromLua(1);
@@ -139,7 +152,10 @@ static int l_starsystem_get_body_paths(lua_State *l)
  */
 static int l_starsystem_get_commodity_base_price_alterations(lua_State *l)
 {
+<<<<<<< HEAD
+=======
 	PROFILE_SCOPED()
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	LUA_DEBUG_START(l);
 
 	StarSystem *s = LuaObject<StarSystem>::CheckFromLua(1);
@@ -182,7 +198,10 @@ static int l_starsystem_get_commodity_base_price_alterations(lua_State *l)
  */
 static int l_starsystem_is_commodity_legal(lua_State *l)
 {
+<<<<<<< HEAD
+=======
 	PROFILE_SCOPED()
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	StarSystem *s = LuaObject<StarSystem>::CheckFromLua(1);
 	Equip::Type e = static_cast<Equip::Type>(LuaConstants::GetConstantFromArg(l, "EquipType", 2));
 	lua_pushboolean(l, Polit::IsCommodityLegal(s, e));
@@ -221,11 +240,18 @@ static int l_starsystem_is_commodity_legal(lua_State *l)
  */
 static int l_starsystem_get_nearby_systems(lua_State *l)
 {
+<<<<<<< HEAD
+	LUA_DEBUG_START(l);
+
+	StarSystem *s = LuaObject<StarSystem>::CheckFromLua(1);
+	double dist_ly = luaL_checknumber(l, 2);
+=======
 	PROFILE_SCOPED()
 	LUA_DEBUG_START(l);
 
 	const StarSystem *s = LuaObject<StarSystem>::CheckFromLua(1);
 	const double dist_ly = luaL_checknumber(l, 2);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 	bool filter = false;
 	if (lua_gettop(l) >= 3) {
@@ -235,6 +261,17 @@ static int l_starsystem_get_nearby_systems(lua_State *l)
 
 	lua_newtable(l);
 
+<<<<<<< HEAD
+	SystemPath here = s->GetPath();
+
+	int here_x = here.sectorX;
+	int here_y = here.sectorY;
+	int here_z = here.sectorZ;
+	Uint32 here_idx = here.systemIndex;
+	Sector here_sec(here_x, here_y, here_z);
+
+	int diff_sec = int(ceil(dist_ly/Sector::SIZE));
+=======
 	const SystemPath here = s->GetPath();
 
 	const int here_x = here.sectorX;
@@ -244,17 +281,28 @@ static int l_starsystem_get_nearby_systems(lua_State *l)
 	RefCountedPtr<const Sector> here_sec = Sector::cache.GetCached(here);
 
 	const int diff_sec = int(ceil(dist_ly/Sector::SIZE));
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 	for (int x = here_x-diff_sec; x <= here_x+diff_sec; x++) {
 		for (int y = here_y-diff_sec; y <= here_y+diff_sec; y++) {
 			for (int z = here_z-diff_sec; z <= here_z+diff_sec; z++) {
-				RefCountedPtr<const Sector> sec = Sector::cache.GetCached(SystemPath(x, y, z));
+<<<<<<< HEAD
+				Sector sec(x, y, z);
+
+				for (unsigned int idx = 0; idx < sec.m_systems.size(); idx++) {
+					if (x == here_x && y == here_y && z == here_z && idx == here_idx)
+						continue;
+
+					if (Sector::DistanceBetween(&here_sec, here_idx, &sec, idx) > dist_ly)
+=======
+				const Sector* sec = Sector::cache.GetCached(SystemPath(x, y, z));
 
 				for (unsigned int idx = 0; idx < sec->m_systems.size(); idx++) {
 					if (x == here_x && y == here_y && z == here_z && idx == here_idx)
 						continue;
 
 					if (Sector::DistanceBetween(here_sec, here_idx, sec, idx) > dist_ly)
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 						continue;
 
 					RefCountedPtr<StarSystem> sys = StarSystemCache::GetCached(SystemPath(x, y, z, idx));
@@ -307,7 +355,10 @@ static int l_starsystem_get_nearby_systems(lua_State *l)
  */
 static int l_starsystem_distance_to(lua_State *l)
 {
+<<<<<<< HEAD
+=======
 	PROFILE_SCOPED()
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	LUA_DEBUG_START(l);
 
 	StarSystem *s = LuaObject<StarSystem>::CheckFromLua(1);
@@ -319,10 +370,17 @@ static int l_starsystem_distance_to(lua_State *l)
 		loc2 = &(s2->GetPath());
 	}
 
-	RefCountedPtr<const Sector> sec1 = Sector::cache.GetCached(*loc1);
-	RefCountedPtr<const Sector> sec2 = Sector::cache.GetCached(*loc2);
+<<<<<<< HEAD
+	Sector sec1(loc1->sectorX, loc1->sectorY, loc1->sectorZ);
+	Sector sec2(loc2->sectorX, loc2->sectorY, loc2->sectorZ);
+
+	double dist = Sector::DistanceBetween(&sec1, loc1->systemIndex, &sec2, loc2->systemIndex);
+=======
+	const Sector* sec1 = Sector::cache.GetCached(*loc1);
+	const Sector* sec2 = Sector::cache.GetCached(*loc2);
 
 	double dist = Sector::DistanceBetween(sec1, loc1->systemIndex, sec2, loc2->systemIndex);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 	lua_pushnumber(l, dist);
 
@@ -345,7 +403,10 @@ static int l_starsystem_distance_to(lua_State *l)
  */
 static int l_starsystem_export_to_lua(lua_State *l)
 {
+<<<<<<< HEAD
+=======
 	PROFILE_SCOPED()
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	LUA_DEBUG_START(l);
 
 	StarSystem *s = LuaObject<StarSystem>::CheckFromLua(1);
@@ -361,7 +422,11 @@ static int l_starsystem_export_to_lua(lua_State *l)
 		const std::string finalPath = FileSystem::NormalisePath(
 				FileSystem::JoinPathBelow(FileSystem::GetUserDir(), filename));
 		s->ExportToLua(finalPath.c_str());
+<<<<<<< HEAD
+	} catch (std::invalid_argument &e) {
+=======
 	} catch (std::invalid_argument &) {
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		return luaL_error(l, "could not export system -- name forms an invalid path");
 	}
 
@@ -385,7 +450,10 @@ static int l_starsystem_export_to_lua(lua_State *l)
  */
 static int l_starsystem_attr_name(lua_State *l)
 {
+<<<<<<< HEAD
+=======
 	PROFILE_SCOPED()
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	StarSystem *s = LuaObject<StarSystem>::CheckFromLua(1);
 	lua_pushstring(l, s->GetName().c_str());
 	return 1;
@@ -406,7 +474,10 @@ static int l_starsystem_attr_name(lua_State *l)
  */
 static int l_starsystem_attr_path(lua_State *l)
 {
+<<<<<<< HEAD
+=======
 	PROFILE_SCOPED()
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	StarSystem *s = LuaObject<StarSystem>::CheckFromLua(1);
 	SystemPath path = s->GetPath();
 	LuaObject<SystemPath>::PushToLua(&path);
@@ -428,7 +499,10 @@ static int l_starsystem_attr_path(lua_State *l)
  */
 static int l_starsystem_attr_lawlessness(lua_State *l)
 {
+<<<<<<< HEAD
+=======
 	PROFILE_SCOPED()
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	StarSystem *s = LuaObject<StarSystem>::CheckFromLua(1);
 	lua_pushnumber(l, s->GetSysPolit().lawlessness.ToDouble());
 	return 1;
@@ -449,7 +523,10 @@ static int l_starsystem_attr_lawlessness(lua_State *l)
  */
 static int l_starsystem_attr_population(lua_State *l)
 {
+<<<<<<< HEAD
+=======
 	PROFILE_SCOPED()
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	StarSystem *s = LuaObject<StarSystem>::CheckFromLua(1);
 	lua_pushnumber(l, s->GetTotalPop().ToDouble());
 	return 1;
@@ -458,7 +535,11 @@ static int l_starsystem_attr_population(lua_State *l)
 /*
  * Attribute: faction
  *
+<<<<<<< HEAD
+ * The faction that controls this system
+=======
  * The <Faction> that controls this system
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
  *
  * Availability:
  *
@@ -470,7 +551,10 @@ static int l_starsystem_attr_population(lua_State *l)
  */
 static int l_starsystem_attr_faction(lua_State *l)
 {
+<<<<<<< HEAD
+=======
 	PROFILE_SCOPED()
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	StarSystem *s = LuaObject<StarSystem>::CheckFromLua(1);
 	if (s->GetFaction()->IsValid()) {
 		LuaObject<Faction>::PushToLua(s->GetFaction());
@@ -496,7 +580,10 @@ static int l_starsystem_attr_faction(lua_State *l)
 
 static int l_starsystem_attr_explored(lua_State *l)
 {
+<<<<<<< HEAD
+=======
 	PROFILE_SCOPED()
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	StarSystem *s = LuaObject<StarSystem>::CheckFromLua(1);
 	lua_pushboolean(l, !s->GetUnexplored());
 	return 1;

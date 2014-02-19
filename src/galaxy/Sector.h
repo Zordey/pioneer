@@ -1,4 +1,8 @@
+<<<<<<< HEAD
+// Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
 // Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #ifndef _SECTOR_H
@@ -8,8 +12,10 @@
 #include "galaxy/SystemPath.h"
 #include "galaxy/StarSystem.h"
 #include "galaxy/CustomSystem.h"
+<<<<<<< HEAD
+=======
 #include "SectorCache.h"
-#include "RefCounted.h"
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 #include <string>
 #include <vector>
 
@@ -26,8 +32,11 @@ public:
 	static float DistanceBetween(RefCountedPtr<const Sector> a, int sysIdxA, RefCountedPtr<const Sector> b, int sysIdxB);
 	static void Init();
 
+<<<<<<< HEAD
+=======
 	static SectorCache cache;
 
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	// Sector is within a bounding rectangle - used for SectorView m_sectorCache pruning.
 	bool WithinBox(const int Xmin, const int Xmax, const int Ymin, const int Ymax, const int Zmin, const int Zmax) const;
 	bool Contains(const SystemPath sysPath) const;
@@ -68,13 +77,12 @@ private:
 	Sector& operator=(const Sector&); // non-assignable
 
 	int sx, sy, sz;
-	bool m_factionsAssigned;
-
-	Sector(const SystemPath& path); // Only SectorCache(Job) are allowed to create sectors
-	void GetCustomSystems(Random& rng);
+	void GetCustomSystems();
+<<<<<<< HEAD
+	std::string GenName(System &sys, int si, Random &rand);
+=======
 	const std::string GenName(System &sys, int si, Random &rand);
-	// sets appropriate factions for all systems in the sector
-	void AssignFactions();
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 };
 
 #endif /* _SECTOR_H */

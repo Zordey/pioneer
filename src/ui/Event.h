@@ -1,4 +1,8 @@
+<<<<<<< HEAD
+// Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
 // Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #ifndef UI_EVENT_H
@@ -18,16 +22,24 @@ class KeyboardEvent;
 class MouseButtonEvent;
 class MouseMotionEvent;
 class MouseWheelEvent;
+<<<<<<< HEAD
+=======
 class TextInputEvent;
 class JoystickAxisMotionEvent;
 class JoystickHatMotionEvent;
 class JoystickButtonEvent;
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 // base event. can't be instantiated directly
 class Event {
 public:
 	enum Type { // <enum scope='UI::Event' name=UIEventType public>
 		KEYBOARD,
+<<<<<<< HEAD
+		MOUSE_BUTTON,
+		MOUSE_MOTION,
+		MOUSE_WHEEL
+=======
 		TEXT_INPUT,
 		MOUSE_BUTTON,
 		MOUSE_MOTION,
@@ -35,6 +47,7 @@ public:
 		JOYSTICK_AXIS_MOTION,
 		JOYSTICK_HAT_MOTION,
 		JOYSTICK_BUTTON
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	};
 	const Type type;
 
@@ -44,11 +57,20 @@ protected:
 };
 
 struct KeySym {
+<<<<<<< HEAD
+	KeySym(const SDLKey &_sym, const SDLMod &_mod, const Uint16 _unicode) : sym(_sym), mod(safe_mods(_mod)), unicode(_unicode) {}
+	KeySym(const SDLKey &_sym, const SDLMod &_mod) : sym(_sym), mod(safe_mods(_mod)), unicode(0) {}
+	KeySym(const SDLKey &_sym) : sym(_sym), mod(KMOD_NONE), unicode(0) {}
+	SDLKey sym;
+	SDLMod mod;
+	Uint16 unicode;
+=======
 	KeySym(const SDL_Keycode &_sym, const SDL_Keymod _mod, const Uint32 _unicode) : sym(_sym), mod(safe_mods(_mod)) {}
 	KeySym(const SDL_Keycode &_sym, const SDL_Keymod &_mod) : sym(_sym), mod(safe_mods(_mod)) {}
 	KeySym(const SDL_Keycode &_sym) : sym(_sym), mod(KMOD_NONE) {}
 	SDL_Keycode sym;
 	SDL_Keymod mod;
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 	static KeySym FromString(const std::string &spec);
 
@@ -62,8 +84,13 @@ struct KeySym {
 
 private:
 	// mask off stuff like caps/numlock
+<<<<<<< HEAD
+	static SDLMod safe_mods(const SDLMod m) {
+		return SDLMod(Uint32(m) & (KMOD_CTRL | KMOD_SHIFT | KMOD_ALT | KMOD_META));
+=======
 	static SDL_Keymod safe_mods(const SDL_Keymod m) {
 		return SDL_Keymod(Uint32(m) & (KMOD_CTRL | KMOD_SHIFT | KMOD_ALT | KMOD_GUI));
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	}
 };
 
@@ -73,6 +100,13 @@ public:
 	enum Action { // <enum scope='UI::KeyboardEvent' name=UIKeyboardAction prefix=KEY_ public>
 		KEY_DOWN,
 		KEY_UP,
+<<<<<<< HEAD
+		KEY_PRESS
+	};
+	KeyboardEvent(Action _action, const KeySym &_keysym) : Event(Event::KEYBOARD), action(_action), keysym(_keysym) {}
+	const Action action;
+	const KeySym keysym;
+=======
 	};
 	KeyboardEvent(Action _action, const KeySym &_keysym, bool _repeat) : Event(Event::KEYBOARD), action(_action), keysym(_keysym), repeat(_repeat) {}
 	const Action action;
@@ -86,6 +120,7 @@ class TextInputEvent : public Event {
 public:
 	TextInputEvent(Uint32 _unicode) : Event(Event::TEXT_INPUT), unicode(_unicode) {}
 	const Uint32 unicode;
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 	void ToLuaTable(lua_State *l) const;
 };
@@ -136,6 +171,8 @@ public:
 	void ToLuaTable(lua_State *l) const;
 };
 
+<<<<<<< HEAD
+=======
 class JoystickEvent : public Event {
 public:
 	const SDL_JoystickID joystick;
@@ -194,6 +231,7 @@ public:
 	void ToLuaTable(lua_State *l) const;
 };
 
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 }
 
 #endif

@@ -1,4 +1,8 @@
+<<<<<<< HEAD
+// Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
 // Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "Background.h"
@@ -16,12 +20,10 @@
 #include "graphics/StaticMesh.h"
 #include "graphics/Surface.h"
 #include "graphics/VertexArray.h"
-#include "graphics/TextureBuilder.h"
-#include "StringF.h"
-
+<<<<<<< HEAD
+=======
 #include <SDL_stdinc.h>
-#include <sstream>
-#include <iostream>
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 using namespace Graphics;
 
@@ -53,7 +55,11 @@ namespace Background
 
 void BackgroundElement::SetIntensity(float intensity)
 {
+<<<<<<< HEAD
+	m_material->emissive = Color(intensity);
+=======
 	m_material->emissive = Color(intensity*255);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 }
 
 UniverseBox::UniverseBox(Graphics::Renderer *renderer)
@@ -182,7 +188,11 @@ void Starfield::Fill(Random &rand)
 
 	//fill the array
 	for (int i=0; i<BG_STAR_MAX; i++) {
+<<<<<<< HEAD
+		float col = float(rand.Double(0.2,0.7));
+=======
 		Uint8 col = rand.Double(0.2,0.7)*255;
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 		// this is proper random distribution on a sphere's surface
 		const float theta = float(rand.Double(0.0, 2.0*M_PI));
@@ -192,7 +202,11 @@ void Starfield::Fill(Random &rand)
 				1000.0f * sqrt(1.0f - u*u) * cos(theta),
 				1000.0f * u,
 				1000.0f * sqrt(1.0f - u*u) * sin(theta)
+<<<<<<< HEAD
+			), Color(col, col, col,	1.f)
+=======
 			), Color(col, col, col,	255)
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		);
 	}
 }
@@ -240,8 +254,13 @@ MilkyWay::MilkyWay(Graphics::Renderer *renderer)
 	VertexArray *bottom = new VertexArray(ATTRIB_POSITION | ATTRIB_DIFFUSE);
 	VertexArray *top = new VertexArray(ATTRIB_POSITION | ATTRIB_DIFFUSE);
 
+<<<<<<< HEAD
+	const Color dark(0.f);
+	const Color bright(0.05f, 0.05f, 0.05f, 0.05f);
+=======
 	const Color dark(0);
 	const Color bright(13, 13, 13, 13);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 	//bottom
 	float theta;
@@ -316,26 +335,28 @@ void Container::Refresh(Random &rand)
 
 void Container::Draw(const matrix4x4d &transform)
 {
+<<<<<<< HEAD
+=======
 	PROFILE_SCOPED()
-	m_renderer->SetTransform(transform);
-	if( DRAW_SKYBOX & m_drawFlags ) {
-		m_universeBox.Draw(m_renderState);
-	}
-	if( DRAW_MILKY & m_drawFlags ) {
-		m_milkyWay.Draw(m_renderState);
-	}
-	if( DRAW_STARS & m_drawFlags ) {
-		// squeeze the starfield a bit to get more density near horizon
-		matrix4x4d starTrans = transform * matrix4x4d::ScaleMatrix(1.0, 0.4, 1.0);
-		m_renderer->SetTransform(starTrans);
-		m_starField.Draw(m_renderState);
-	}
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
+	//XXX not really const - renderer can modify the buffers
+	renderer->SetBlendMode(BLEND_SOLID);
+	renderer->SetDepthTest(false);
+	renderer->SetTransform(transform);
+	const_cast<MilkyWay&>(m_milkyWay).Draw(renderer);
+	// squeeze the starfield a bit to get more density near horizon
+	matrix4x4d starTrans = transform * matrix4x4d::ScaleMatrix(1.0, 0.4, 1.0);
+	renderer->SetTransform(starTrans);
+	const_cast<Starfield&>(m_starField).Draw(renderer);
+	renderer->SetDepthTest(true);
 }
 
 void Container::SetIntensity(float intensity)
 {
+<<<<<<< HEAD
+=======
 	PROFILE_SCOPED()
-	m_universeBox.SetIntensity(intensity);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	m_starField.SetIntensity(intensity);
 	m_milkyWay.SetIntensity(intensity);
 }

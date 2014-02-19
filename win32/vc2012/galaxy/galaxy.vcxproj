@@ -94,7 +94,10 @@
     <ClCompile Include="..\..\..\src\galaxy\CustomSystem.cpp" />
     <ClCompile Include="..\..\..\src\galaxy\Galaxy.cpp" />
     <ClCompile Include="..\..\..\src\galaxy\Sector.cpp" />
+<<<<<<< HEAD
+=======
     <ClCompile Include="..\..\..\src\galaxy\SectorCache.cpp" />
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
     <ClCompile Include="..\..\..\src\galaxy\StarSystem.cpp" />
     <ClCompile Include="..\..\..\src\galaxy\SystemPath.cpp" />
     <ClCompile Include="..\..\..\src\win32\pch.cpp">
@@ -107,7 +110,10 @@
     <ClInclude Include="..\..\..\src\galaxy\CustomSystem.h" />
     <ClInclude Include="..\..\..\src\galaxy\Galaxy.h" />
     <ClInclude Include="..\..\..\src\galaxy\Sector.h" />
+<<<<<<< HEAD
+=======
     <ClInclude Include="..\..\..\src\galaxy\SectorCache.h" />
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
     <ClInclude Include="..\..\..\src\galaxy\StarSystem.h" />
     <ClInclude Include="..\..\..\src\galaxy\SystemPath.h" />
     <ClInclude Include="..\..\..\src\win32\pch.h" />

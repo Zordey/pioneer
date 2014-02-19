@@ -1,4 +1,8 @@
+<<<<<<< HEAD
+// Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
 // Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "libs.h"
@@ -118,23 +122,8 @@ int LuaObjectBase::l_exists(lua_State *l)
 	return 1;
 }
 
-int LuaObjectBase::l_hasprop(lua_State *l)
-{
-	luaL_checktype(l, 1, LUA_TUSERDATA);
-	luaL_checktype(l, 2, LUA_TSTRING);
-	lua_getuservalue(l, 1);
-
-	if (lua_isnil(l, -1)) { // Doesn't have properties
-		lua_pushboolean(l, false);
-	} else {
-		lua_pushvalue(l, 2);
-		lua_gettable(l, -2);
-		// We consider that a value isn't set if it is nil
-		lua_pushboolean(l, !lua_isnil(l, -1));
-	}
-	return 1;
-}
-
+<<<<<<< HEAD
+=======
 int LuaObjectBase::l_setprop(lua_State *l)
 {
 	luaL_checktype(l, 1, LUA_TUSERDATA);
@@ -168,6 +157,7 @@ int LuaObjectBase::l_setprop(lua_State *l)
 	return 0;
 }
 
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 int LuaObjectBase::l_isa(lua_State *l)
 {
 	luaL_checktype(l, 1, LUA_TUSERDATA);
@@ -191,6 +181,54 @@ int LuaObjectBase::l_gc(lua_State *l)
 	return 0;
 }
 
+<<<<<<< HEAD
+// drill down from global looking for the appropriate table for the given
+// path. returns with the table and the last fragment on the stack, ready for
+// set a value in the table with that key.
+// eg foo.bar.baz results in something like _G.foo = { bar = {} }, with the
+// "bar" table left at -2 and "baz" at -1.
+static void SplitTablePath(lua_State *l, const std::string &path)
+{
+	LUA_DEBUG_START(l);
+
+	const char delim = '.';
+
+	std::string last;
+
+	lua_rawgeti(l, LUA_REGISTRYINDEX, LUA_RIDX_GLOBALS);
+
+	size_t start = 0, end = 0;
+	while (end != std::string::npos) {
+		// get to the first non-delim char
+		start = path.find_first_not_of(delim, end);
+
+		// read the end, no more to do
+		if (start == std::string::npos)
+			break;
+
+		// have a fragment from last time, get the next table
+		if (!last.empty()) {
+			luaL_getsubtable(l, -1, last.c_str());
+			assert(lua_istable(l, -1));
+			lua_remove(l, -2);
+		}
+
+		// find the end - next delim or end of string
+		end = path.find_first_of(delim, start);
+
+		// extract the fragment and remember it
+		last = path.substr(start, (end == std::string::npos) ? std::string::npos : end - start);
+	}
+
+	assert(!last.empty());
+
+	lua_pushlstring(l, last.c_str(), last.size());
+
+	LUA_DEBUG_END(l, 2);
+}
+
+=======
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 int LuaObjectBase::l_tostring(lua_State *l)
 {
 	luaL_checktype(l, 1, LUA_TUSERDATA);
@@ -210,6 +248,19 @@ static void get_next_method_table(lua_State *l)
 
 	// get the type from the table
 	lua_pushstring(l, "type");
+<<<<<<< HEAD
+	lua_rawget(l, -2);           // object, metatable, type
+
+	const std::string type(lua_tostring(l, -1));
+	lua_pop(l, 1);               // object, metatable
+	SplitTablePath(l, type);     // object, metatable, "global" table, leaf type name
+	lua_rawget(l, -2);           // object, metatable, "global" table, method table
+	lua_remove(l, -2);           // object, metatable, method table
+
+	// see if the metatable has a parent
+	lua_pushstring(l, "parent");
+	lua_rawget(l, -3);           // object, metatable, method table, parent type
+=======
 	lua_rawget(l, -2);                 // object, metatable, type
 
 	const std::string type(lua_tostring(l, -1));
@@ -221,6 +272,7 @@ static void get_next_method_table(lua_State *l)
 	// see if the metatable has a parent
 	lua_pushstring(l, "parent");
 	lua_rawget(l, -3);                 // object, metatable, method table, parent type
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 	// it does, lets fetch it
 	if (!lua_isnil(l, -1)) {
@@ -556,7 +608,11 @@ void LuaObjectBase::CreateClass(const char *type, const char *parent, const luaL
 	lua_pop(l, 1);
 
 	// drill down to the proper "global" table to add the method table to
+<<<<<<< HEAD
+	SplitTablePath(l, type);
+=======
 	pi_lua_split_table_path(l, type);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 	// create table, attach methods to it, leave it on the stack
 	lua_newtable(l);
@@ -581,7 +637,9 @@ void LuaObjectBase::CreateClass(const char *type, const char *parent, const luaL
 	lua_pushcfunction(l, LuaObjectBase::l_isa);
 	lua_rawset(l, -3);
 
-	// add the setprop and hasprop methods
+<<<<<<< HEAD
+=======
+	// add the setprop method
 	lua_pushstring(l, "setprop");
 	lua_pushcfunction(l, LuaObjectBase::l_setprop);
 	lua_rawset(l, -3);
@@ -589,6 +647,7 @@ void LuaObjectBase::CreateClass(const char *type, const char *parent, const luaL
 	lua_pushcfunction(l, LuaObjectBase::l_hasprop);
 	lua_rawset(l, -3);
 
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	// publish the method table
 	lua_rawset(l, -3);
 

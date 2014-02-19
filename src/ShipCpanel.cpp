@@ -1,4 +1,8 @@
+<<<<<<< HEAD
+// Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
 // Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "libs.h"
@@ -12,12 +16,20 @@
 #include "SystemView.h"
 #include "SystemInfoView.h"
 #include "GalacticView.h"
+<<<<<<< HEAD
+#include "GameMenuView.h"
+=======
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 #include "UIView.h"
 #include "Lang.h"
 #include "Game.h"
 
 // XXX duplicated in WorldView. should probably be a theme variable
+<<<<<<< HEAD
+static const Color s_hudTextColor(0.0f,1.0f,0.0f,0.8f);
+=======
 static const Color s_hudTextColor(0,255,0,204);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 ShipCpanel::ShipCpanel(Graphics::Renderer *r): Gui::Fixed(float(Gui::Screen::GetWidth()), 80)
 {
@@ -145,6 +157,43 @@ void ShipCpanel::InitObject()
 	comms_button->onClick.connect(sigc::mem_fun(this, &ShipCpanel::OnClickComms));
 	comms_button->SetRenderDimensions(30, 22);
 	Add(comms_button, 98, 56);
+<<<<<<< HEAD
+
+	m_clock = (new Gui::Label(""))->Color(1.0f,0.7f,0.0f);
+	Add(m_clock, 4, 18);
+
+	m_rightButtonGroup = new Gui::RadioGroup();
+	b = new Gui::ImageRadioButton(m_rightButtonGroup, "icons/map_sector_view.png", "icons/map_sector_view_on.png");
+	m_rightButtonGroup->SetSelected(0);
+	b->onSelect.connect(sigc::bind(sigc::mem_fun(this, &ShipCpanel::OnChangeMapView), MAP_SECTOR));
+	b->SetShortcut(SDLK_F5, KMOD_NONE);
+	b->SetToolTip(Lang::GALAXY_SECTOR_VIEW);
+	b->SetRenderDimensions(30, 22);
+	Add(b, 674, 56);
+	m_mapViewButtons[0] = b;
+	b = new Gui::ImageRadioButton(m_rightButtonGroup, "icons/map_system_view.png", "icons/map_system_view_on.png");
+	b->onSelect.connect(sigc::bind(sigc::mem_fun(this, &ShipCpanel::OnChangeMapView), MAP_SYSTEM));
+	b->SetShortcut(SDLK_F6, KMOD_NONE);
+	b->SetToolTip(Lang::SYSTEM_ORBIT_VIEW);
+	b->SetRenderDimensions(30, 22);
+	Add(b, 706, 56);
+	m_mapViewButtons[1] = b;
+	b = new Gui::ImageRadioButton(m_rightButtonGroup, "icons/map_sysinfo_view.png", "icons/map_sysinfo_view_on.png");
+	b->onSelect.connect(sigc::bind(sigc::mem_fun(this, &ShipCpanel::OnChangeMapView), MAP_INFO));
+	b->SetShortcut(SDLK_F7, KMOD_NONE);
+	b->SetToolTip(Lang::STAR_SYSTEM_INFORMATION);
+	b->SetRenderDimensions(30, 22);
+	Add(b, 738, 56);
+	m_mapViewButtons[2] = b;
+	b = new Gui::ImageRadioButton(m_rightButtonGroup, "icons/map_galactic_view.png", "icons/map_galactic_view_on.png");
+	b->onSelect.connect(sigc::bind(sigc::mem_fun(this, &ShipCpanel::OnChangeMapView), MAP_GALACTIC));
+	b->SetShortcut(SDLK_F8, KMOD_NONE);
+	b->SetToolTip(Lang::GALACTIC_VIEW);
+	b->SetRenderDimensions(30, 22);
+	Add(b, 770, 56);
+	m_mapViewButtons[3] = b;
+
+=======
 
 	m_clock = (new Gui::Label(""))->Color(255,178,0);
 	Add(m_clock, 4, 18);
@@ -180,6 +229,7 @@ void ShipCpanel::InitObject()
 	Add(b, 770, 56);
 	m_mapViewButtons[3] = b;
 
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	m_rotationDampingButton = new Gui::MultiStateImageButton();
 	m_rotationDampingButton->SetSelected(false);
 	m_rotationDampingButton->AddState(0, "icons/rotation_damping_off.png", Lang::ROTATION_DAMPING_OFF);
@@ -214,7 +264,11 @@ void ShipCpanel::InitObject()
 	Add(m_overlay[OVERLAY_TOP_LEFT],     170.0f, 2.0f);
 	Add(m_overlay[OVERLAY_TOP_RIGHT],    500.0f, 2.0f);
 	Add(m_overlay[OVERLAY_BOTTOM_LEFT],  150.0f, 62.0f);
+<<<<<<< HEAD
+	Add(m_overlay[OVERLAY_BOTTOM_RIGHT], 580.0f, 62.0f);
+=======
 	Add(m_overlay[OVERLAY_BOTTOM_RIGHT], 520.0f, 62.0f);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 	m_connOnDockingClearanceExpired =
 		Pi::onDockingClearanceExpired.connect(sigc::mem_fun(this, &ShipCpanel::OnDockingClearanceExpired));
@@ -276,7 +330,10 @@ void ShipCpanel::OnDockingClearanceExpired(const SpaceStation *s)
 
 void ShipCpanel::Update()
 {
+<<<<<<< HEAD
+=======
 	PROFILE_SCOPED()
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	int timeAccel = Pi::game->GetTimeAccel();
 	int requested = Pi::game->GetRequestedTimeAccel();
 
@@ -356,13 +413,22 @@ void ShipCpanel::OnClickTimeaccel(Game::TimeAccel val)
 {
 	Pi::BoinkNoise();
 	if ((Pi::game->GetTimeAccel() == val) && (val == Game::TIMEACCEL_PAUSED)) {
+<<<<<<< HEAD
+		if (Pi::GetView() != Pi::gameMenuView)
+			Pi::SetView(Pi::gameMenuView);
+=======
 		if (Pi::GetView() != Pi::settingsView)
 			Pi::SetView(Pi::settingsView);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		else
 			Pi::SetView(Pi::worldView);
 	}
 	else {
+<<<<<<< HEAD
+		if (Pi::GetView() == Pi::gameMenuView)
+=======
 		if (Pi::GetView() == Pi::settingsView)
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 			Pi::SetView(Pi::worldView);
 		Pi::game->RequestTimeAccel(val, Pi::KeyState(SDLK_LCTRL) || Pi::KeyState(SDLK_RCTRL));
 	}
@@ -411,7 +477,10 @@ void ShipCpanel::SetAlertState(Ship::AlertState as)
 
 void ShipCpanel::TimeStepUpdate(float step)
 {
+<<<<<<< HEAD
+=======
 	PROFILE_SCOPED()
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	m_scanner->TimeStepUpdate(step);
 }
 

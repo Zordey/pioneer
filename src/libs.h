@@ -1,4 +1,8 @@
+<<<<<<< HEAD
+// Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
 // Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #ifndef _LIBS_H
@@ -22,6 +26,21 @@
 #include <deque>
 #include <vector>
 #include <map>
+<<<<<<< HEAD
+
+#ifdef _WIN32
+#	include <malloc.h>
+
+#	ifdef _MSC_VER
+#		pragma warning(disable : 4244) // "conversion from x to x: possible loss of data"
+#		pragma warning(disable : 4800) // int-to-bool "performance warning"
+#		pragma warning(disable : 4355) // 'this' used in base member initializer list
+#		pragma warning(disable : 4351) // new behavior [after vs2003!]: elements of array 'array' will be default initialized
+#	endif
+
+#	ifndef __MINGW32__
+#
+=======
 #include <algorithm>
 #include <memory>
 
@@ -38,11 +57,20 @@
 #	endif
 
 #	ifndef __MINGW32__
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 #		define alloca _alloca
 #		define strncasecmp _strnicmp
 #		define strcasecmp _stricmp
 #		define snprintf _snprintf
+<<<<<<< HEAD
+
+#		ifndef isfinite
+inline int isfinite(double x) { return _finite(x); }
+#		endif
+#	endif /* __MINGW32__ */
+=======
 #	endif
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 #endif
 
 #ifdef _MSC_VER // MSVC doesn't support the %z specifier, but has its own %I specifier
@@ -59,12 +87,19 @@
 #include "matrix4x4.h"
 #include "Color.h"
 #include "Random.h"
+<<<<<<< HEAD
+
+#include "FloatComparison.h"
+#include "SmartPtr.h"
+#include "RefCounted.h"
+=======
 
 #include "FloatComparison.h"
 #include "SmartPtr.h"
 #include "RefCounted.h"
 
 #include "profiler/Profiler.h"
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 #ifdef NDEBUG
 #define	PiVerify(x) ((void)(x))

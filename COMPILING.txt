@@ -34,12 +34,22 @@ Linux - Autotools
     pkg-config
     libsigc++-dev
     libsigc++-2.0-dev
+<<<<<<< HEAD
+    libsdl1.2-dev
+    libsdl-image1.2-dev
+=======
     libsdl2-dev
     libsdl2-image-dev
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
     libfreetype6-dev
     libvorbis-dev
     libpng-dev
     libassimp-dev >= 3.0
+<<<<<<< HEAD
+    libglew-dev
+    libglu1-mesa-dev
+=======
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
     mesa-common-dev
 
    If your platform doesn't have assimp 3.0, you'll need to build it from
@@ -69,6 +79,16 @@ Windows - MSVC
 Windows - Autotools (Linux cross-compile)
 -----------------------------------------
 
+<<<<<<< HEAD
+1. First you need a cross-compiling environment. We use MXE (http://mxe.cc).
+   The release downloads are always out of date, so grab the latest from git:
+
+     git://github.com/mxe/mxe.git
+
+   Now compile GCC and the dependencies needed for Pioneer:
+
+     make gcc freetype glew sdl sdl_image vorbis libsigc++
+=======
 1. First you need a cross-compiling environment. We use MXE (http://mxe.cc)
    with a patch required to make SDL2 compile. Until that patch is merged
    upstream, grab it from:
@@ -78,6 +98,7 @@ Windows - Autotools (Linux cross-compile)
    Now compile GCC and the dependencies needed for Pioneer:
 
      make gcc freetype sdl2 sdl2_image vorbis libsigc++
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 2. Prepare the pioneer-thirdparty repository. See below.
 
@@ -104,9 +125,16 @@ OS X - Autotools
      assimp
      pkgconfig
      freetype
+<<<<<<< HEAD
+     libsdl
+     libsdl_image
+     libsdl_sound
+     glew
+=======
      libsdl2
      libsdl2_image
      libsdl2_sound
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
      libsigcxx2
      libvorbis
      autoconf

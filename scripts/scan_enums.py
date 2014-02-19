@@ -345,7 +345,11 @@ def parse_enum(toktype, toktext, tokens, preceding_comment=None):
         return None
 
 def write_license_header(fl):
+<<<<<<< HEAD
+    fl.write('/* Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details */\n')
+=======
     fl.write('/* Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details */\n')
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
     fl.write('/* Licensed under the terms of the GPL v3. See licenses/GPL-3.txt        */\n')
     fl.write('\n')
 
@@ -485,6 +489,8 @@ def main():
                 prettypath = "'" + path + "'"
             sys.stderr.write("Warning: C++ parse error in " + prettypath + ":\n")
             sys.stderr.write('    ' + e.value + '\n')
+<<<<<<< HEAD
+=======
         except UnicodeDecodeError as e:
             if path == '-':
                 prettypath = 'input'
@@ -492,6 +498,7 @@ def main():
                 prettypath = "'" + path + "'"
             sys.stderr.write("Warning: UTF-8 decode error in " + prettypath + ":\n")
             sys.stderr.write('    ' + str(e) + '\n')
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
     if options.outfile == '-':
         # write to stdout (no header)

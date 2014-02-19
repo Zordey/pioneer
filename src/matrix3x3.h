@@ -1,4 +1,8 @@
+<<<<<<< HEAD
+// Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
 // Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #ifndef _MATRIX3X3_H
@@ -144,6 +148,8 @@ class matrix3x3 {
 typedef matrix3x3<float> matrix3x3f;
 typedef matrix3x3<double> matrix3x3d;
 
+<<<<<<< HEAD
+=======
 static inline void matrix3x3ftod(const matrix3x3f &in, matrix3x3d &out)
 {
 	for (int i = 0; i < 9; i++) 
@@ -155,4 +161,5 @@ static inline void matrix3x3dtof(const matrix3x3d &in, matrix3x3f &out)
 		out[i] = float(in[i]);
 }
 
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 #endif /* _MATRIX3x3_H */

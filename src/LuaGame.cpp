@@ -1,4 +1,8 @@
+<<<<<<< HEAD
+// Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
 // Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "LuaGame.h"
@@ -10,7 +14,10 @@
 #include "Game.h"
 #include "Lang.h"
 #include "StringF.h"
+<<<<<<< HEAD
+=======
 #include "WorldView.h"
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 /*
  * Interface: Game
@@ -25,7 +32,11 @@
  *
  * Start a new game.
  *
+<<<<<<< HEAD
+ * > Game.StartGame(system_path)
+=======
  * > Game.StartGame(system_path, start_time)
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
  *
  * Parameters:
  *
@@ -33,9 +44,12 @@
  *                 will begin docked here; otherwise the player will begin in
  *                 orbit around the specified body.
  *
+<<<<<<< HEAD
+=======
  *   start_time - optional, default 0. Time to start at in seconds from the
  *                Pioneer epoch (i.e. from 3200-01-01 00:00 UTC).
  *
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
  * Availability:
  *
  *   alpha 28
@@ -52,6 +66,16 @@ static int l_game_start_game(lua_State *l)
 	}
 
 	SystemPath *path = LuaObject<SystemPath>::CheckFromLua(1);
+<<<<<<< HEAD
+
+	RefCountedPtr<StarSystem> system(StarSystem::GetCached(*path));
+	SystemBody *sbody = system->GetBodyByPath(path);
+
+	if (sbody->GetSuperType() == SystemBody::SUPERTYPE_STARPORT)
+		Pi::game = new Game(*path);
+	else
+		Pi::game = new Game(*path, vector3d(0, 1.5*sbody->GetRadius(), 0));
+=======
 	const double start_time = luaL_optnumber(l, 2, 0.0);
 
 	RefCountedPtr<StarSystem> system(StarSystemCache::GetCached(*path));
@@ -60,6 +84,7 @@ static int l_game_start_game(lua_State *l)
 		Pi::game = new Game(*path, start_time);
 	else
 		Pi::game = new Game(*path, vector3d(0, 1.5*sbody->GetRadius(), 0), start_time);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 	return 0;
 }
@@ -250,6 +275,10 @@ static int l_game_attr_time(lua_State *l)
 	return 1;
 }
 
+<<<<<<< HEAD
+void LuaGame::Register()
+{
+=======
 // XXX temporary to support StationView "Launch" button
 // remove once WorldView has been converted to the new UI
 static int l_game_switch_to_world_view(lua_State *l)
@@ -266,14 +295,18 @@ void LuaGame::Register()
 
 	LUA_DEBUG_START(l);
 
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	static const luaL_Reg l_methods[] = {
 		{ "StartGame", l_game_start_game },
 		{ "LoadGame",  l_game_load_game  },
 		{ "SaveGame",  l_game_save_game  },
 		{ "EndGame",   l_game_end_game   },
+<<<<<<< HEAD
+=======
 
 		{ "SwitchToWorldView", l_game_switch_to_world_view },
 
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		{ 0, 0 }
 	};
 
@@ -284,10 +317,15 @@ void LuaGame::Register()
 		{ 0, 0 }
 	};
 
+<<<<<<< HEAD
+	LuaObjectBase::CreateObject(l_methods, l_attrs, 0);
+	lua_setglobal(Lua::manager->GetLuaState(), "Game");
+=======
 	lua_getfield(l, LUA_REGISTRYINDEX, "CoreImports");
 	LuaObjectBase::CreateObject(l_methods, l_attrs, 0);
 	lua_setfield(l, -2, "Game");
 	lua_pop(l, 1);
 
 	LUA_DEBUG_END(l, 0);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 }

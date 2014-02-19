@@ -1,9 +1,17 @@
+<<<<<<< HEAD
+// Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
 // Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "../libs.h"
 #include "GeomTree.h"
 #include "BVHTree.h"
+<<<<<<< HEAD
+#include <map>
+=======
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 int GeomTree::stats_rayTriIntersections;
 
@@ -20,9 +28,15 @@ GeomTree::~GeomTree()
 	delete m_edgeTree;
 }
 
+<<<<<<< HEAD
+#include <SDL.h>
+
+GeomTree::GeomTree(int numVerts, int numTris, float *vertices, int *indices, unsigned int *triflags): m_numVertices(numVerts)
+=======
 GeomTree::GeomTree(int numVerts, int numTris, float *vertices, Uint16 *indices, unsigned int *triflags)
 : m_numVertices(numVerts)
 , m_numTris(numTris)
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 {
 	m_vertices = vertices;
 	m_indices  = indices;
@@ -203,7 +217,11 @@ void GeomTree::TraceCoherentRays(const BVHNode *currnode, int numRays, const vec
 {
 	bvhstack stack[32];
 	int stackpos = -1;
+<<<<<<< HEAD
+	vector3f *invDirs = reinterpret_cast<vector3f*>(alloca(sizeof(vector3f)*numRays));
+=======
 	vector3f *invDirs = static_cast<vector3f*>(alloca(sizeof(vector3f)*numRays));
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	for (int i=0; i<numRays; i++) {
 		invDirs[i] = vector3f(1.0f/a_dirs[i].x, 1.0f/a_dirs[i].y, 1.0f/a_dirs[i].z);
 	}

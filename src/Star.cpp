@@ -1,4 +1,8 @@
+<<<<<<< HEAD
+// Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
 // Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "Star.h"
@@ -6,8 +10,10 @@
 #include "graphics/Renderer.h"
 #include "graphics/VertexArray.h"
 #include "gui/Gui.h"
-#include "Pi.h"
+<<<<<<< HEAD
+=======
 #include <SDL_stdinc.h>
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 using namespace Graphics;
 
@@ -68,14 +74,23 @@ void Star::Render(Graphics::Renderer *renderer, const Camera *camera, const vect
 
 	renderer->SetTransform(trans * rot);
 
+<<<<<<< HEAD
+	const float *col = StarSystem::starRealColors[GetSystemBody()->type];
+=======
 	const Uint8 *col = StarSystem::starRealColors[GetSystemBody()->type];
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 	Random(rand);
 
 	//render star halo
 	VertexArray va(ATTRIB_POSITION | ATTRIB_DIFFUSE);
+<<<<<<< HEAD
+	const Color bright(col[0], col[1], col[2], 1.f);
+	const Color dark(0.f, 0.f, 0.f, 0.f);
+=======
 	const Color bright(col[0], col[1], col[2], 255);
 	const Color dark(0);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 	va.Add(vector3f(0.f), bright);
 	for (float ang=0; ang<2*M_PI; ang+=0.26183+rand.Double(0,0.4)) {

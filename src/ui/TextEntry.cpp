@@ -1,4 +1,8 @@
+<<<<<<< HEAD
+// Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
 // Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "TextEntry.h"
@@ -87,12 +91,19 @@ TextEntry *TextEntry::SetText(const std::string &text)
 {
 	bool atEnd = m_label->GetText().size() == m_cursor;
 	m_label->SetText(text);
-	m_cursor = atEnd ? Uint32(text.size()) : Clamp(m_cursor, Uint32(0), Uint32(text.size()));
+<<<<<<< HEAD
+=======
+	m_cursor = Clamp(m_cursor, Uint32(0), Uint32(text.size()));
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	GetContext()->RequestLayout();
 	return this;
 }
 
+<<<<<<< HEAD
+void TextEntry::HandleKeyPress(const KeyboardEvent &event)
+=======
 void TextEntry::HandleKeyDown(const KeyboardEvent &event)
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 {
 	std::string text(m_label->GetText());
 
@@ -146,6 +157,10 @@ void TextEntry::HandleKeyDown(const KeyboardEvent &event)
 			break;
 
 		default:
+<<<<<<< HEAD
+
+=======
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 			if (event.keysym.mod & KMOD_CTRL) {
 				switch (event.keysym.sym) {
 					case SDLK_u:
@@ -180,6 +195,25 @@ void TextEntry::HandleKeyDown(const KeyboardEvent &event)
 				}
 			}
 
+<<<<<<< HEAD
+			// ignore non-shift meta
+			else if (event.keysym.mod & ~KMOD_SHIFT)
+				return;
+
+			// naively accept anything outside C0 and C1. probably safe enough for
+			// now, but needs revisiting if we one day support rtl, cjk, etc
+			if ((event.keysym.unicode > 0x1f && event.keysym.unicode < 0x7f) || event.keysym.unicode > 0x9f) {
+				char buf[4] = {};
+				const int len = Text::utf8_encode_char(event.keysym.unicode, buf);
+				text.insert(m_cursor, buf, len);
+				m_cursor += len;
+
+				m_label->SetText(text);
+				onChange.emit(text);
+			}
+
+			break;
+=======
 	}
 }
 
@@ -198,6 +232,7 @@ void TextEntry::HandleTextInput(const TextInputEvent &event)
 		m_cursor += len;
 
 		onChange.emit(text);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	}
 }
 

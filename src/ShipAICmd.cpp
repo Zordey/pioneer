@@ -1,4 +1,8 @@
+<<<<<<< HEAD
+// Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
 // Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "libs.h"
@@ -768,11 +772,15 @@ Output("Autopilot dist = %.1f, speed = %.1f, zthrust = %.2f, state = %i\n",
 	double maxdecel = m_state ? m_ship->GetAccelFwd() : m_ship->GetAccelRev();
 	double gravdir = -reldir.Dot(m_ship->GetPosition().Normalized());
 	maxdecel -= gravdir * GetGravityAtPos(m_ship->GetFrame(), m_ship->GetPosition());
+<<<<<<< HEAD
+	if (maxdecel < 0) maxdecel = 0.0;
+=======
 	bool bZeroDecel = false;
 	if (maxdecel < 0) {
 		maxdecel = 0.0;
 		bZeroDecel = true;
 	}
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 	// target ship acceleration adjustment
 	if (m_target && m_target->IsType(Object::SHIP)) {
@@ -787,11 +795,20 @@ Output("Autopilot dist = %.1f, speed = %.1f, zthrust = %.2f, state = %i\n",
 		maxdecel = std::max(maxdecel, 0.1*m_ship->GetAccelFwd());
 	}
 
+<<<<<<< HEAD
+	double curspeed = -relvel.Dot(reldir);
+	double tt = sqrt(2.0*targdist / maxdecel);
+	if (tt < timestep) tt = timestep;
+	vector3d perpvel = relvel + reldir * curspeed;
+	double perpspeed = perpvel.Length();
+	vector3d perpdir = (perpspeed > 1e-30) ? perpvel / perpspeed : vector3d(0,0,1);
+=======
 	const double curspeed = -relvel.Dot(reldir);
 	const double tt = (bZeroDecel) ? timestep : std::max( sqrt(2.0*targdist / maxdecel), timestep );
 	const vector3d perpvel = relvel + reldir * curspeed;
 	double perpspeed = perpvel.Length();
 	const vector3d perpdir = (perpspeed > 1e-30) ? perpvel / perpspeed : vector3d(0,0,1);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 	double sidefactor = perpspeed / (tt*0.5);
 	if (curspeed > (tt+timestep)*maxdecel || maxdecel < sidefactor) {

@@ -1,4 +1,8 @@
+<<<<<<< HEAD
+// Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
 // Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #ifndef _SCENEGRAPH_MODEL_H
@@ -69,7 +73,10 @@
 #include "graphics/Material.h"
 #include "graphics/Drawables.h"
 #include "Serializer.h"
+<<<<<<< HEAD
+=======
 #include "DeleteEmitter.h"
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 #include <stdexcept>
 
 namespace Graphics { class Renderer; }
@@ -88,7 +95,11 @@ typedef std::vector<std::pair<std::string, RefCountedPtr<Graphics::Material> > >
 typedef std::vector<Animation*> AnimationContainer;
 typedef std::vector<MatrixTransform *> TagContainer;
 
+<<<<<<< HEAD
+class Model
+=======
 class Model : public DeleteEmitter
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 {
 public:
 	friend class BaseLoader;
@@ -122,8 +133,12 @@ public:
 	const PatternContainer &GetPatterns() const { return m_patterns; }
 	unsigned int GetNumPatterns() const { return m_patterns.size(); }
 	void SetPattern(unsigned int index);
+<<<<<<< HEAD
+	void SetColors(const std::vector<Color4ub> &colors);
+=======
 	unsigned int GetPattern() const { return m_curPatternIndex; }
 	void SetColors(const std::vector<Color> &colors);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	void SetDecalTexture(Graphics::Texture *t, unsigned int index = 0);
 	void ClearDecal(unsigned int index = 0);
 	void ClearDecals();
@@ -176,7 +191,10 @@ private:
 	RenderData m_renderData;
 
 	//per-instance flavour data
+<<<<<<< HEAD
+=======
 	unsigned int m_curPatternIndex;
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	Graphics::Texture *m_curPattern;
 	Graphics::Texture *m_curDecals[MAX_DECAL_MATERIALS];
 

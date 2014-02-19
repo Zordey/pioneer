@@ -1,7 +1,13 @@
+<<<<<<< HEAD
+// Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+// Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
+
+=======
 // Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "Easing.h"
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 #include "Thruster.h"
 #include "NodeVisitor.h"
 #include "BaseLoader.h"
@@ -15,7 +21,11 @@ namespace SceneGraph {
 
 static const std::string thrusterTextureFilename("textures/thruster.png");
 static const std::string thrusterGlowTextureFilename("textures/halo.png");
+<<<<<<< HEAD
+static Color baseColor(0.7f, 0.6f, 1.f, 1.f);
+=======
 static Color baseColor(178, 153, 255, 255);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 Thruster::Thruster(Graphics::Renderer *r, bool _linear, const vector3f &_pos, const vector3f &_dir)
 : Node(r, NODE_TRANSPARENT)
@@ -23,12 +33,22 @@ Thruster::Thruster(Graphics::Renderer *r, bool _linear, const vector3f &_pos, co
 , dir(_dir)
 , pos(_pos)
 {
+<<<<<<< HEAD
+	m_tVerts.Reset(CreateGeometry());
+=======
 	m_tVerts.reset(CreateThrusterGeometry());
 	m_glowVerts.reset(CreateGlowGeometry());
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 	//set up materials
 	Graphics::MaterialDescriptor desc;
 	desc.textures = 1;
+	desc.twoSided = true;
+<<<<<<< HEAD
+	m_tMat.Reset(r->CreateMaterial(desc));
+	m_tMat->texture0 = Graphics::TextureBuilder::Billboard(thrusterTextureFilename).GetOrCreateTexture(r, "model");
+	m_tMat->diffuse = baseColor;
+=======
 
 	m_tMat.Reset(r->CreateMaterial(desc));
 	m_tMat->texture0 = Graphics::TextureBuilder::Billboard(thrusterTextureFilename).GetOrCreateTexture(r, "billboard");
@@ -37,12 +57,7 @@ Thruster::Thruster(Graphics::Renderer *r, bool _linear, const vector3f &_pos, co
 	m_glowMat.Reset(r->CreateMaterial(desc));
 	m_glowMat->texture0 = Graphics::TextureBuilder::Billboard(thrusterGlowTextureFilename).GetOrCreateTexture(r, "billboard");
 	m_glowMat->diffuse = baseColor;
-
-	Graphics::RenderStateDesc rsd;
-	rsd.blendMode = Graphics::BLEND_ALPHA_ONE;
-	rsd.depthWrite = false;
-	rsd.cullMode = Graphics::CULL_NONE;
-	m_renderState = r->CreateRenderState(rsd);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 }
 
 Thruster::Thruster(const Thruster &thruster, NodeCopyCache *cache)
@@ -53,8 +68,12 @@ Thruster::Thruster(const Thruster &thruster, NodeCopyCache *cache)
 , dir(thruster.dir)
 , pos(thruster.pos)
 {
+<<<<<<< HEAD
+	m_tVerts.Reset(CreateGeometry());
+=======
 	m_tVerts.reset(CreateThrusterGeometry());
 	m_glowVerts.reset(CreateGlowGeometry());
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 }
 
 Node* Thruster::Clone(NodeCopyCache *cache)
@@ -92,6 +111,24 @@ void Thruster::Render(const matrix4x4f &trans, const RenderData *rd)
 	}
 	if (power < 0.001f) return;
 
+	Graphics::Renderer *r = GetRenderer();
+<<<<<<< HEAD
+	r->SetBlendMode(Graphics::BLEND_ADDITIVE);
+	r->SetDepthWrite(false);
+	r->SetTransform(trans);
+
+	m_tMat->diffuse = baseColor * power;
+	//directional fade
+	/*vector3f cdir(0.f, 0.f, -1.f);
+	vector3f vdir(-trans[2], -trans[6], -trans[10]);
+	m_tMat->diffuse.a = 1.f - Clamp(vdir.Dot(cdir), 0.f, 1.f);*/
+	r->DrawTriangles(m_tVerts.Get(), m_tMat.Get());
+=======
+	r->SetTransform(trans);
+
+	r->SetBlendMode(Graphics::BLEND_ALPHA_ONE);
+	r->SetDepthWrite(false);
+
 	m_tMat->diffuse = m_glowMat->diffuse = baseColor * power;
 
 	//directional fade
@@ -115,16 +152,16 @@ void Thruster::Save(NodeDatabase &db)
 	db.wr->Vector3f(pos);
 }
 
-Thruster *Thruster::Load(NodeDatabase &db)
-{
-	const bool linear = db.rd->Bool();
-	const vector3f dir = db.rd->Vector3f();
-	const vector3f pos = db.rd->Vector3f();
-	Thruster *t = new Thruster(db.loader->GetRenderer(), linear, pos, dir);
-	return t;
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
+	r->SetBlendMode(Graphics::BLEND_SOLID);
+	r->SetDepthWrite(true);
 }
 
+<<<<<<< HEAD
+Graphics::VertexArray *Thruster::CreateGeometry()
+=======
 Graphics::VertexArray *Thruster::CreateThrusterGeometry()
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 {
 	Graphics::VertexArray *verts =
 		new Graphics::VertexArray(Graphics::ATTRIB_POSITION | Graphics::ATTRIB_UV0);
@@ -165,6 +202,8 @@ Graphics::VertexArray *Thruster::CreateThrusterGeometry()
 	return verts;
 }
 
+<<<<<<< HEAD
+=======
 Graphics::VertexArray *Thruster::CreateGlowGeometry()
 {
 	Graphics::VertexArray *verts =
@@ -200,4 +239,5 @@ Graphics::VertexArray *Thruster::CreateGlowGeometry()
 	return verts;
 }
 
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 }

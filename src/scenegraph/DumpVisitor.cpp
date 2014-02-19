@@ -1,4 +1,8 @@
+<<<<<<< HEAD
+// Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
 // Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "DumpVisitor.h"
@@ -11,12 +15,20 @@
 #include <sstream>
 
 namespace SceneGraph {
+<<<<<<< HEAD
+
+=======
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 DumpVisitor::DumpVisitor(const Model *m)
 : m_level(0)
 , m_stats()
 {
-	//model statistics that cannot be visited)
-	m_modelStats.collTriCount = m->GetCollisionMesh() ? m->GetCollisionMesh()->GetNumTriangles() : 0;
+	//model statistics that cannot be visited
+<<<<<<< HEAD
+	m_modelStats.collTriCount = m->GetCollisionMesh()->m_indices.size()/3;
+=======
+	m_modelStats.collTriCount = m->GetCollisionMesh()->GetNumTriangles();
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	m_modelStats.materialCount = m->GetNumMaterials();
 }
 
@@ -106,3 +118,9 @@ void DumpVisitor::PutNodeName(const Node &g) const
 		Output("%s - %s\n", g.GetTypeName(), g.GetName().c_str());
 }
 }
+<<<<<<< HEAD
+
+}
+=======
+}
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755

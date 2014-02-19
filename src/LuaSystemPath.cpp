@@ -1,4 +1,8 @@
+<<<<<<< HEAD
+// Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
 // Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "LuaObject.h"
@@ -6,7 +10,10 @@
 #include "galaxy/SystemPath.h"
 #include "galaxy/StarSystem.h"
 #include "galaxy/Sector.h"
+<<<<<<< HEAD
+=======
 #include "galaxy/SectorCache.h"
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 /*
  * Class: SystemPath
@@ -30,6 +37,8 @@
  * same system without reference to their body indexes, use <IsSameSystem>.
  */
 
+<<<<<<< HEAD
+=======
 template <> void LuaObject<SystemPath>::PushToLua(const SystemPath &o) {
 	lua_State *l = Lua::manager->GetLuaState();
 
@@ -69,6 +78,7 @@ template <> void LuaObject<SystemPath>::PushToLua(const SystemPath &o) {
 	}
 }
 
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 /*
  * Function: New
  *
@@ -110,8 +120,13 @@ static int l_sbodypath_new(lua_State *l)
 		path.systemIndex = luaL_checkinteger(l, 4);
 
 		// if this is a system path, then check that the system exists
-		RefCountedPtr<const Sector> s = Sector::cache.GetCached(path);
+<<<<<<< HEAD
+		Sector s(sector_x, sector_y, sector_z);
+		if (size_t(path.systemIndex) >= s.m_systems.size())
+=======
+		const Sector* s = Sector::cache.GetCached(path);
 		if (size_t(path.systemIndex) >= s->m_systems.size())
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 			luaL_error(l, "System %d in sector <%d,%d,%d> does not exist", path.systemIndex, sector_x, sector_y, sector_z);
 
 		if (lua_gettop(l) > 4) {
@@ -281,10 +296,17 @@ static int l_sbodypath_distance_to(lua_State *l)
 		loc2 = &(s2->GetPath());
 	}
 
-	RefCountedPtr<const Sector> sec1 = Sector::cache.GetCached(*loc1);
-	RefCountedPtr<const Sector> sec2 = Sector::cache.GetCached(*loc2);
+<<<<<<< HEAD
+	Sector sec1(loc1->sectorX, loc1->sectorY, loc1->sectorZ);
+	Sector sec2(loc2->sectorX, loc2->sectorY, loc2->sectorZ);
+
+	double dist = Sector::DistanceBetween(&sec1, loc1->systemIndex, &sec2, loc2->systemIndex);
+=======
+	const Sector* sec1 = Sector::cache.GetCached(*loc1);
+	const Sector* sec2 = Sector::cache.GetCached(*loc2);
 
 	double dist = Sector::DistanceBetween(sec1, loc1->systemIndex, sec2, loc2->systemIndex);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 	lua_pushnumber(l, dist);
 
@@ -475,6 +497,18 @@ static int l_sbodypath_attr_body_index(lua_State *l)
 	return 1;
 }
 
+<<<<<<< HEAD
+static int l_sbodypath_meta_eq(lua_State *l)
+{
+	SystemPath *a = LuaObject<SystemPath>::CheckFromLua(1);
+	SystemPath *b = LuaObject<SystemPath>::CheckFromLua(2);
+
+	lua_pushboolean(l, *a == *b);
+	return 1;
+}
+
+=======
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 static int l_sbodypath_meta_tostring(lua_State *l)
 {
 	SystemPath *path = LuaObject<SystemPath>::CheckFromLua(1);
@@ -524,6 +558,10 @@ template <> void LuaObject<SystemPath>::RegisterClass()
 	};
 
 	static const luaL_Reg l_meta[] = {
+<<<<<<< HEAD
+		{ "__eq",  l_sbodypath_meta_eq },
+=======
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		{ "__tostring", l_sbodypath_meta_tostring },
 		{ 0, 0 }
 	};

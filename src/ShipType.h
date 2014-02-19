@@ -1,4 +1,8 @@
+<<<<<<< HEAD
+// Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
 // Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #ifndef _SHIPTYPE_H
@@ -42,10 +46,14 @@ struct ShipType {
 	Tag tag;
 	Id id;
 	std::string name;
+<<<<<<< HEAD
+	std::string modelName;
+=======
 	std::string shipClass;
 	std::string manufacturer;
 	std::string modelName;
 	std::string cockpitName;
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	float linThrust[THRUSTER_MAX];
 	float angThrust;
 	struct GunMount {
@@ -65,9 +73,12 @@ struct ShipType {
 	int minCrew, maxCrew; // XXX really only for Lua, but needs to be declared in the ship def
 	///////
 
+<<<<<<< HEAD
+=======
 	// percentage (ie, 0--100) of tank used per second at full thrust
 	float GetFuelUseRate() const;
 
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	static std::string POLICE;
 	static std::string MISSILE_GUIDED;
 	static std::string MISSILE_NAVAL;

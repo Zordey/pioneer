@@ -1,4 +1,8 @@
+<<<<<<< HEAD
+// Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
 // Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #ifndef _TERRAIN_H
@@ -23,7 +27,11 @@ struct fracdef_t {
 template <typename,typename> class TerrainGenerator;
 
 
+<<<<<<< HEAD
+class Terrain {
+=======
 class Terrain : public RefCounted {
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 public:
 	// location and intensity of effects are controlled by the colour fractals;
 	// it's possible for a Terrain to have a flag set but not actually to exhibit any of that effect
@@ -37,8 +45,13 @@ public:
 
 	virtual ~Terrain();
 
+<<<<<<< HEAD
+	void SetFracDef(unsigned int index, double featureHeightMeters, double featureWidthMeters, double smallestOctaveMeters = 20.0);
+	inline const fracdef_t &GetFracDef(unsigned int index) const { return m_fracdef[index]; }
+=======
 	void SetFracDef(const unsigned int index, const double featureHeightMeters, const double featureWidthMeters, const double smallestOctaveMeters = 20.0);
 	inline const fracdef_t &GetFracDef(const unsigned int index) const { assert(index>=0 && index<MAX_FRACDEFS); return m_fracdef[index]; }
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 	virtual double GetHeight(const vector3d &p) const = 0;
 	virtual vector3d GetColor(const vector3d &p, double height, const vector3d &norm) const = 0;
@@ -77,7 +90,14 @@ protected:
 
 	// heightmap stuff
 	// XXX unify heightmap types
+<<<<<<< HEAD
+	// for the earth heightmap
+	Sint16 *m_heightMap;
+	// For the moon and other bodies (with height scaling)
+	Uint16 *m_heightMapScaled;
+=======
 	std::unique_ptr<double[]> m_heightMap;
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	double m_heightScaling, m_minh;
 
 	int m_heightMapSizeX;
@@ -109,22 +129,12 @@ protected:
 
 	/* XXX you probably shouldn't increase this. If you are
 	   using more than 10 then things will be slow as hell */
+<<<<<<< HEAD
+	fracdef_t m_fracdef[10];
+=======
 	static const Uint32 MAX_FRACDEFS = 10;
 	fracdef_t m_fracdef[MAX_FRACDEFS];
-
-	struct MinBodyData {
-		MinBodyData(const SystemBody* body) {
-			m_radius = body->GetRadius();
-			m_aspectRatio = body->aspectRatio.ToDouble();
-			m_path = body->path;
-			m_name = body->name;
-		}
-		double m_radius;
-		double m_aspectRatio;
-		SystemPath m_path;
-		std::string m_name;
-	};
-	MinBodyData m_minBody;
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 };
 
 
@@ -236,7 +246,10 @@ class TerrainColorDesert;
  http://www.spacesimcentral.com/forum/download/file.php?id=1885&mode=view
 and better distribution of snow :  http://www.spacesimcentral.com/forum/download/file.php?id=1879&mode=view  */
 class TerrainColorEarthLike;
+<<<<<<< HEAD
+=======
 class TerrainColorEarthLikeHeightmapped;
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 class TerrainColorGGJupiter;
 class TerrainColorGGNeptune2;
 class TerrainColorGGNeptune;

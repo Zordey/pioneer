@@ -1,4 +1,8 @@
+<<<<<<< HEAD
+// Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
 // Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #ifndef _STATICGEOMETRY_H
@@ -33,8 +37,11 @@ public:
 	unsigned int GetNumMeshes() const { return m_meshes.size(); }
 	RefCountedPtr<Graphics::StaticMesh> GetMesh(unsigned int i) { return m_meshes.at(i); }
 
-	void SetRenderState(Graphics::RenderState *s) { m_renderState = s; }
+<<<<<<< HEAD
+=======
+	void DisableDepthWrite() { m_bDisableDepthWrite = true; }
 
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	Aabb m_boundingBox;
 	Graphics::BlendMode m_blendMode;
 
@@ -43,7 +50,10 @@ protected:
 	void DrawBoundingBox(const Aabb &bb);
 	std::vector<RefCountedPtr<Graphics::StaticMesh> > m_meshes;
 	typedef std::vector<RefCountedPtr<Graphics::StaticMesh> > MeshContainer;
-	Graphics::RenderState *m_renderState; //XXX should potentially be per surface
+<<<<<<< HEAD
+=======
+	bool m_bDisableDepthWrite;
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 };
 
 }

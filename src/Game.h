@@ -1,4 +1,8 @@
+<<<<<<< HEAD
+// Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
 // Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #ifndef _GAME_H
@@ -23,10 +27,17 @@ public:
 	static void SaveGame(const std::string &filename, Game *game);
 
 	// start docked in station referenced by path
+<<<<<<< HEAD
+	Game(const SystemPath &path);
+
+	// start at position relative to body referenced by path
+	Game(const SystemPath &path, const vector3d &pos);
+=======
 	Game(const SystemPath &path, double time = 0.0);
 
 	// start at position relative to body referenced by path
 	Game(const SystemPath &path, const vector3d &pos, double time = 0.0);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 	// load game
 	Game(Serializer::Reader &rd);
@@ -40,9 +51,15 @@ public:
 	bool IsNormalSpace() const { return m_state == STATE_NORMAL; }
 	bool IsHyperspace() const { return m_state == STATE_HYPERSPACE; }
 
+<<<<<<< HEAD
+	Space *GetSpace() const { return m_space.Get(); }
+	double GetTime() const { return m_time; }
+	Player *GetPlayer() const { return m_player.Get(); }
+=======
 	Space *GetSpace() const { return m_space.get(); }
 	double GetTime() const { return m_time; }
 	Player *GetPlayer() const { return m_player.get(); }
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 	// physics step
 	void TimeStep(float step);
@@ -80,8 +97,11 @@ public:
 	bool IsPaused() const { return m_timeAccel == TIMEACCEL_PAUSED; }
 
 	float GetTimeAccelRate() const { return s_timeAccelRates[m_timeAccel]; }
+<<<<<<< HEAD
+=======
 	float GetInvTimeAccelRate() const { return s_timeInvAccelRates[m_timeAccel]; }
 
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	float GetTimeStep() const { return s_timeAccelRates[m_timeAccel]*(1.0f/PHYSICS_HZ); }
 
 private:
@@ -92,10 +112,17 @@ private:
 	void SwitchToHyperspace();
 	void SwitchToNormalSpace();
 
+<<<<<<< HEAD
+	ScopedPtr<Space> m_space;
+	double m_time;
+
+	ScopedPtr<Player> m_player;
+=======
 	std::unique_ptr<Space> m_space;
 	double m_time;
 
 	std::unique_ptr<Player> m_player;
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 	enum State {
 		STATE_NORMAL,
@@ -117,7 +144,10 @@ private:
 	bool m_forceTimeAccel;
 
 	static const float s_timeAccelRates[];
+<<<<<<< HEAD
+=======
 	static const float s_timeInvAccelRates[];
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 };
 
 #endif

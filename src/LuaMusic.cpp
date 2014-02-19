@@ -1,4 +1,8 @@
+<<<<<<< HEAD
+// Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
 // Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "LuaMusic.h"
@@ -239,7 +243,11 @@ void LuaMusic::Register()
 
 	LUA_DEBUG_START(l);
 
+<<<<<<< HEAD
+	static const luaL_Reg methods[]= {
+=======
 	static const luaL_Reg l_methods[]= {
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		{ "GetSongName", l_music_get_song },
 		{ "GetSongList", l_music_get_song_list },
 		{ "Play", l_music_play },
@@ -250,10 +258,15 @@ void LuaMusic::Register()
 		{0, 0}
 	};
 
+<<<<<<< HEAD
+	luaL_newlib(l, methods);
+	lua_setglobal(l, "Music");
+=======
 	lua_getfield(l, LUA_REGISTRYINDEX, "CoreImports");
 	LuaObjectBase::CreateObject(l_methods, 0, 0);
 	lua_setfield(l, -2, "Music");
 	lua_pop(l, 1);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 	LUA_DEBUG_END(l, 0);
 }

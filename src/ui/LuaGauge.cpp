@@ -1,4 +1,8 @@
+<<<<<<< HEAD
+// Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
 // Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "Gauge.h"
@@ -21,6 +25,8 @@ public:
 		return 1;
 	}
 
+<<<<<<< HEAD
+=======
 	static int l_set_upper_value(lua_State *l) {
 		UI::Gauge *gauge = LuaObject<UI::Gauge>::CheckFromLua(1);
 		gauge->SetUpperValue(luaL_checknumber(l, 2));
@@ -28,6 +34,7 @@ public:
 		return 1;
 	}
 
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	static int l_set_warning_level(lua_State *l) {
 		UI::Gauge *gauge = LuaObject<UI::Gauge>::CheckFromLua(1);
 		gauge->SetWarningLevel(luaL_checknumber(l, 2));
@@ -63,7 +70,10 @@ template <> void LuaObject<UI::Gauge>::RegisterClass()
 
 	static const luaL_Reg l_methods[] = {
 		{ "SetValue",          &LuaGauge::l_set_value },
+<<<<<<< HEAD
+=======
 		{ "SetUpperValue",     &LuaGauge::l_set_upper_value },
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		{ "SetWarningLevel",   &LuaGauge::l_set_warning_level },
 		{ "SetCriticalLevel",  &LuaGauge::l_set_critical_level },
 		{ "SetLevelAscending", &LuaGauge::l_set_level_ascending },

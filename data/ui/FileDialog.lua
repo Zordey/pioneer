@@ -1,3 +1,17 @@
+<<<<<<< HEAD
+-- Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+-- Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
+
+local ui = Engine.ui
+local t = Translate:GetTranslator()
+
+ui.templates.FileDialog = function (args)
+	local title       = args.title       or t("Select file...")
+	local root        = args.root        or "USER"
+	local path        = args.path        or ""
+	local selectLabel = args.selectLabel or t("Select")
+	local cancelLabel = args.cancelLabel or t("Cancel")
+=======
 -- Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
 -- Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
@@ -14,6 +28,7 @@ ui.templates.FileDialog = function (args)
 	local path        = args.path        or ""
 	local selectLabel = args.selectLabel or l.SELECT
 	local cancelLabel = args.cancelLabel or l.CANCEL
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	local onSelect    = args.onSelect    or function (name) end
 	local onCancel    = args.onCancel    or function () end
 
@@ -28,6 +43,22 @@ ui.templates.FileDialog = function (args)
 
 	local selectButton = ui:Button(ui:Label(selectLabel):SetFont("HEADING_NORMAL"))
 	local cancelButton = ui:Button(ui:Label(cancelLabel):SetFont("HEADING_NORMAL"))
+<<<<<<< HEAD
+	selectButton.onClick:Connect(function () onSelect(list.selectedOption) end)
+	cancelButton.onClick:Connect(onCancel)
+
+	local dialog =
+		ui:Grid({1,3,1}, {1,3,1})
+			:SetCell(1,1,
+				ui:VBox(10)
+					:PackEnd(ui:Background(ui:Label(title):SetFont("HEADING_NORMAL")))
+					:PackEnd(ui:Expand("BOTH", ui:Scroller():SetInnerWidget(list)))
+					:PackEnd(ui:Grid(2,1):SetRow(0, {
+						ui:Align("LEFT", selectButton),
+						ui:Align("RIGHT", cancelButton),
+					}))
+			)
+=======
 	cancelButton.onClick:Connect(onCancel)
 
 	if #files > 0 then
@@ -86,6 +117,7 @@ ui.templates.FileDialog = function (args)
 			ui:Grid({1,3,1}, {1,3,1})
 				:SetCell(1,1, ui:Background(content))
 		)
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 	return dialog
 end

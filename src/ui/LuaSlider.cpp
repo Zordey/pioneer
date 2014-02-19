@@ -1,15 +1,24 @@
+<<<<<<< HEAD
+// Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
 // Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "Slider.h"
 #include "LuaObject.h"
+<<<<<<< HEAD
+=======
 #include "LuaSignal.h"
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 namespace UI {
 
 class LuaSlider {
 public:
 
+<<<<<<< HEAD
+=======
 	static int l_set_range(lua_State *l) {
 		UI::Slider *slider = LuaObject<UI::Slider>::CheckFromLua(1);
 		const float min = luaL_checknumber(l, 2);
@@ -51,6 +60,7 @@ public:
 		return 1;
 	}
 
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 };
 
 class LuaHSlider;
@@ -64,6 +74,11 @@ template <> const char *LuaObject<UI::Slider>::s_type = "UI.Slider";
 
 template <> void LuaObject<UI::Slider>::RegisterClass()
 {
+<<<<<<< HEAD
+	static const char *l_parent = "UI.Slider";
+
+	static const luaL_Reg l_methods[] = {
+=======
 	static const char *l_parent = "UI.Widget";
 
 	static const luaL_Reg l_methods[] = {
@@ -77,11 +92,16 @@ template <> void LuaObject<UI::Slider>::RegisterClass()
 
 	static const luaL_Reg l_attrs[] = {
 		{ "onValueChanged", LuaSlider::l_attr_on_value_changed  },
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 		{ 0, 0 }
 	};
 
+<<<<<<< HEAD
+	LuaObjectBase::CreateClass(s_type, l_parent, l_methods, 0, 0);
+=======
 	LuaObjectBase::CreateClass(s_type, l_parent, l_methods, l_attrs, 0);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	LuaObjectBase::RegisterPromotion(l_parent, s_type, LuaObject<UI::Slider>::DynamicCastPromotionTest);
 }
 

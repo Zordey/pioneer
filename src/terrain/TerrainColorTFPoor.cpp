@@ -1,4 +1,8 @@
+<<<<<<< HEAD
+// Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
 // Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "Terrain.h"
@@ -41,6 +45,27 @@ vector3d TerrainColorFractal<TerrainColorTFPoor>::GetColor(const vector3d &p, do
 		return col;
 	}
 	// This is for fake ocean depth by the coast.
+<<<<<<< HEAD
+		if (m_heightMap) {
+			continents = 0;
+		} else {
+			continents = ridged_octavenoise(GetFracDef(3-m_fracnum), 0.55, p) * (1.0-m_sealevel) - ((m_sealevel*0.1)-0.1);
+		}
+	// water
+	if (n <= 0) {
+		if (m_heightMap) {
+			// waves
+			if (textures) {
+				n += terrain_colournoise_water;
+				n *= 0.1;
+			}
+		} else {
+		// Oooh, pretty coastal regions with shading based on underwater depth.
+			n += continents;// - (GetFracDef(3).amplitude*m_sealevel*0.49);
+			n *= n*10.0;
+			//n = (n>0.3 ? 0.3-(n*n*n-0.027) : n);
+		}
+=======
 	continents = ridged_octavenoise(GetFracDef(3-m_fracnum), 0.55, p) * (1.0-m_sealevel) - ((m_sealevel*0.1)-0.1);
 	
 	// water
@@ -49,6 +74,7 @@ vector3d TerrainColorFractal<TerrainColorTFPoor>::GetColor(const vector3d &p, do
 		n += continents;// - (GetFracDef(3).amplitude*m_sealevel*0.49);
 		n *= n*10.0;
 		//n = (n>0.3 ? 0.3-(n*n*n-0.027) : n);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		col = interpolate_color(n, vector3d(0,0.0,0.1), vector3d(0,0.5,0.5));
 		return col;
 	}

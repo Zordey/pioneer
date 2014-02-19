@@ -1,3 +1,10 @@
+<<<<<<< HEAD
+-- Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+-- Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
+
+-- Get the translator function
+local t = Translate:GetTranslator()
+=======
 -- Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
 -- Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
@@ -12,6 +19,7 @@ local Serializer = import("Serializer")
 local l = Lang.GetResource("module-goodstrader")
 
 local num_names = 6 -- number of GOODS_TRADER_N names
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 local ads = {}
 
@@ -26,7 +34,11 @@ local onChat = function (form, ref, option)
 	form:Clear()
 	form:SetTitle(ad.flavour)
 	form:SetFace({ seed = ad.faceseed })
+<<<<<<< HEAD
+	form:SetMessage(t("Welcome to ")..ad.flavour)
+=======
 	form:SetMessage(l.WELCOME_TO..ad.flavour)
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 	local onClick = function (ref)
 		if not ads[ref].ispolice then
@@ -98,7 +110,11 @@ local onCreateBB = function (station)
 	for i = 1,num do
 		local ispolice = rand:Integer(1) == 1
 
+<<<<<<< HEAD
+		local flavour = string.interp(t('GOODS_TRADER')[rand:Integer(1, #(t('GOODS_TRADER')))], {name = NameGen.Surname(rand)})
+=======
 		local flavour = string.interp(l["GOODS_TRADER_"..rand:Integer(1, num_names)-1], {name = NameGen.Surname(rand)})
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 		local ad = {
 			station  = station,

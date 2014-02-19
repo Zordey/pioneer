@@ -1,4 +1,8 @@
+<<<<<<< HEAD
+// Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
 // Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #ifndef _QUATERNION_H
@@ -154,6 +158,8 @@ public:
 		//printf("a: %f,%f,%f,%f\n", a.x, a.y, a.z, a.w);
 		//printf("b: %f,%f,%f,%f\n", b.x, b.y, b.z, b.w);
 		return (a + t*(b-a)).Normalized();
+<<<<<<< HEAD
+=======
 	}
 
 	// spherical linear interpolation between two quaternions
@@ -194,6 +200,7 @@ public:
 			sclp * a.y + sclq * end.y,
 			sclp * a.z + sclq * end.z
 		);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	}
 
 	//void Print() const {

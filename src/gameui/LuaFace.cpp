@@ -1,4 +1,8 @@
+<<<<<<< HEAD
+// Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
 // Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "Face.h"
@@ -37,13 +41,19 @@ public:
 
 		Uint32 seed = 0;
 
+<<<<<<< HEAD
+		if (lua_gettop(l) > 2)
+=======
 		if (lua_gettop(l) > 2 && !lua_isnil(l, 3))
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 			seed = luaL_checkinteger(l, 3);
 
 		LuaObject<Face>::PushToLua(new Face(c, flags, seed));
 		return 1;
 	}
 
+<<<<<<< HEAD
+=======
 	static int l_set_height_lines(lua_State *l) {
 		Face *f = LuaObject<GameUI::Face>::CheckFromLua(1);
 		Uint32 lines = luaL_checkinteger(l, 2);
@@ -52,6 +62,7 @@ public:
 		return 1;
 	}
 
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 };
 
 }
@@ -65,8 +76,12 @@ template <> void LuaObject<GameUI::Face>::RegisterClass()
 	static const char *l_parent = "UI.Single";
 
 	static const luaL_Reg l_methods[] = {
+<<<<<<< HEAD
+		{ "New", LuaFace::l_new },
+=======
 		{ "New",            LuaFace::l_new },
 		{ "SetHeightLines", LuaFace::l_set_height_lines },
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
         { 0, 0 }
 	};
 

@@ -11,7 +11,11 @@ include $(top_srcdir)/Makefile.common
 
 AM_CFLAGS += $(WARN_CFLAGS)
 AM_CPPFLAGS += $(WARN_CPPFLAGS)
+<<<<<<< HEAD
+AM_CXXFLAGS += $(WARN_CXXFLAGS)
+=======
 AM_CXXFLAGS += $(STD_CXXFLAGS) $(WARN_CXXFLAGS)
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 bin_PROGRAMS = pioneer
 noinst_HEADERS = \
@@ -27,6 +31,10 @@ noinst_HEADERS = \
 	ChatForm.h \
 	CityOnPlanet.h \
 	Color.h \
+<<<<<<< HEAD
+	CommodityTradeWidget.h \
+=======
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	Cutscene.h \
 	CRC32.h \
 	DeathView.h \
@@ -36,8 +44,14 @@ noinst_HEADERS = \
 	EnumStrings.h \
 	EquipSet.h \
 	EquipType.h \
+<<<<<<< HEAD
+	FaceVideoLink.h \
+	Factions.h \
+	FileSelectorWidget.h \
+=======
 	FaceGenManager.h \
 	Factions.h \
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	FileSystem.h \
 	FontCache.h \
 	Form.h \
@@ -45,6 +59,10 @@ noinst_HEADERS = \
 	Frame.h \
 	GalacticView.h \
 	Game.h \
+<<<<<<< HEAD
+	GameMenuView.h \
+=======
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	GeoSphere.h \
 	HudTrail.h \
 	HyperspaceCloud.h \
@@ -56,6 +74,10 @@ noinst_HEADERS = \
 	Lang.h \
 	LangStrings.inc.h \
 	Lua.h \
+<<<<<<< HEAD
+	LuaChatForm.h \
+=======
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	LuaComms.h \
 	LuaConsole.h \
 	LuaConstants.h \
@@ -84,6 +106,10 @@ noinst_HEADERS = \
 	LuaTimer.h \
 	LuaUtils.h \
 	LuaWrappable.h \
+<<<<<<< HEAD
+	MarketAgent.h \
+=======
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	MathUtil.h \
 	Missile.h \
 	ModelBody.h \
@@ -111,6 +137,23 @@ noinst_HEADERS = \
 	SectorView.h \
 	Sensors.h \
 	Serializer.h \
+<<<<<<< HEAD
+	StationAdvertForm.h \
+	StationBulletinBoardForm.h \
+	StationCommodityMarketForm.h \
+	StationPoliceForm.h \
+	StationServicesForm.h \
+	StationShipEquipmentForm.h \
+	StationShipMarketForm.h \
+	StationShipRepairForm.h \
+	StationShipViewForm.h \
+	StationShipyardForm.h \
+	StringF.h \
+	StringRange.h \
+	Sfx.h \
+	Ship.h \
+	ShipAICmd.h \
+=======
 	StringF.h \
 	StringRange.h \
 	Sfx.h \
@@ -118,6 +161,7 @@ noinst_HEADERS = \
 	Ship.h \
 	ShipAICmd.h \
 	ShipCockpit.h \
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	ShipController.h \
 	ShipCpanel.h \
 	ShipCpanelMultiFuncDisplays.h \
@@ -127,7 +171,11 @@ noinst_HEADERS = \
 	Space.h \
 	SpaceStation.h \
 	SpaceStationType.h \
+<<<<<<< HEAD
+	SpaceStationView.h \
+=======
 	SpeedLines.h \
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	Star.h \
 	SystemInfoView.h \
 	SystemView.h \
@@ -159,13 +207,23 @@ pioneer_SOURCES	= \
 	Color.cpp \
 	ChatForm.cpp \
 	CityOnPlanet.cpp \
+<<<<<<< HEAD
+	CommodityTradeWidget.cpp \
+=======
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	CRC32.cpp \
 	DeathView.cpp \
 	DynamicBody.cpp \
 	EnumStrings.cpp \
 	EquipType.cpp \
+<<<<<<< HEAD
+	FaceVideoLink.cpp \
+	Factions.cpp \
+	FileSelectorWidget.cpp \
+=======
 	FaceGenManager.cpp \
 	Factions.cpp \
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	FileSourceZip.cpp \
 	FileSystem.cpp \
 	FontCache.cpp \
@@ -173,6 +231,10 @@ pioneer_SOURCES	= \
 	Frame.cpp \
 	GalacticView.cpp \
 	Game.cpp \
+<<<<<<< HEAD
+	GameMenuView.cpp \
+=======
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	GeoPatch.cpp \
 	GeoPatchContext.cpp \
 	GeoPatchID.cpp \
@@ -189,6 +251,10 @@ pioneer_SOURCES	= \
 	Lua.cpp \
 	LuaBody.cpp \
 	LuaCargoBody.cpp \
+<<<<<<< HEAD
+	LuaChatForm.cpp \
+=======
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	LuaComms.cpp \
 	LuaConsole.cpp \
 	LuaConstants.cpp \
@@ -206,7 +272,10 @@ pioneer_SOURCES	= \
 	LuaFixed.cpp \
 	LuaManager.cpp \
 	LuaMissile.cpp \
+<<<<<<< HEAD
+=======
 	LuaModelBody.cpp \
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	LuaMusic.cpp \
 	LuaNameGen.cpp \
 	LuaObject.cpp \
@@ -226,6 +295,10 @@ pioneer_SOURCES	= \
 	LuaStarSystem.cpp \
 	LuaTimer.cpp \
 	LuaUtils.cpp \
+<<<<<<< HEAD
+	MarketAgent.cpp \
+=======
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	MathUtil.cpp \
 	Missile.cpp \
 	ModelBody.cpp \
@@ -246,6 +319,23 @@ pioneer_SOURCES	= \
 	SectorView.cpp \
 	Sensors.cpp \
 	Serializer.cpp \
+<<<<<<< HEAD
+	StationAdvertForm.cpp \
+	StationBulletinBoardForm.cpp \
+	StationCommodityMarketForm.cpp \
+	StationPoliceForm.cpp \
+	StationServicesForm.cpp \
+	StationShipEquipmentForm.cpp \
+	StationShipMarketForm.cpp \
+	StationShipRepairForm.cpp \
+	StationShipViewForm.cpp \
+	StationShipyardForm.cpp \
+	StringF.cpp \
+	Sfx.cpp \
+	Ship-AI.cpp \
+	Ship.cpp \
+	ShipAICmd.cpp \
+=======
 	StringF.cpp \
 	Sfx.cpp \
 	Shields.cpp \
@@ -253,6 +343,7 @@ pioneer_SOURCES	= \
 	Ship.cpp \
 	ShipAICmd.cpp \
 	ShipCockpit.cpp \
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	ShipController.cpp \
 	ShipCpanel.cpp \
 	ShipCpanelMultiFuncDisplays.cpp \
@@ -262,7 +353,11 @@ pioneer_SOURCES	= \
 	Space.cpp \
 	SpaceStation.cpp \
 	SpaceStationType.cpp \
+<<<<<<< HEAD
+	SpaceStationView.cpp \
+=======
 	SpeedLines.cpp \
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	Star.cpp \
 	SystemInfoView.cpp \
 	SystemView.cpp \
@@ -286,6 +381,15 @@ pioneer_LDADD = \
 	terrain/libterrain.a \
 	ui/libui.a \
 	gameui/libgameui.a \
+<<<<<<< HEAD
+	../contrib/miniz/libminiz.a \
+	../contrib/PicoDDS/libpicodds.a \
+	../contrib/jenkins/libjenkins.a
+
+pioneer_LDADD += \
+	$(FREETYPE_LIBS) $(GLEW_LIBS) $(GLU_LIBS) $(GL_LIBS) \
+	$(SDL_LIBS) $(SIGC_LIBS) $(LUA_LIBS) $(VORBIS_LIBS) \
+=======
 	../contrib/PicoDDS/libpicodds.a \
 	../contrib/jenkins/libjenkins.a \
 	../contrib/json/libjson.a \
@@ -295,6 +399,7 @@ pioneer_LDADD = \
 pioneer_LDADD += \
 	$(FREETYPE_LIBS) $(GL_LIBS) \
 	$(SDL2_LIBS) $(SIGC_LIBS) $(LUA_LIBS) $(VORBIS_LIBS) \
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	$(PNG_LIBS) $(ASSIMP_LIBS) $(EXTRA_LIBS)
 
 if BUILD_WIN32
@@ -333,6 +438,10 @@ tests_LDADD = \
 	graphics/libgraphics.a \
 	terrain/libterrain.a \
     posix/libposix.a \
+<<<<<<< HEAD
+	../contrib/miniz/libminiz.a \
+=======
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	../contrib/PicoDDS/libpicodds.a \
 	../contrib/jenkins/libjenkins.a \
 	$(SIGC_LIBS)
@@ -365,6 +474,13 @@ uitest_LDADD = \
 	graphics/libgraphics.a \
 	posix/libposix.a \
 	../contrib/jenkins/libjenkins.a \
+<<<<<<< HEAD
+	../contrib/PicoDDS/libpicodds.a
+
+uitest_LDADD += \
+	$(FREETYPE_LIBS) $(GLEW_LIBS) $(GLU_LIBS) $(GL_LIBS) \
+	$(SDL_LIBS) $(SIGC_LIBS) $(LUA_LIBS) $(PNG_LIBS)
+=======
 	../contrib/PicoDDS/libpicodds.a \
 	../contrib/json/libjson.a \
 	../contrib/glew/libglew.a \
@@ -373,6 +489,7 @@ uitest_LDADD = \
 uitest_LDADD += \
 	$(FREETYPE_LIBS) $(GL_LIBS) \
 	$(SDL2_LIBS) $(SIGC_LIBS) $(LUA_LIBS) $(PNG_LIBS)
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 if !HAVE_LUA
 uitest_LDADD += ../contrib/lua/liblua.a
@@ -394,6 +511,13 @@ textstress_LDADD = \
 	text/libtext.a \
 	graphics/libgraphics.a \
 	posix/libposix.a \
+<<<<<<< HEAD
+	../contrib/PicoDDS/libpicodds.a
+
+textstress_LDADD += \
+	$(FREETYPE_LIBS) $(GLEW_LIBS) $(GLU_LIBS) $(GL_LIBS) \
+	$(SDL_LIBS) $(SIGC_LIBS) $(LUA_LIBS) $(PNG_LIBS)
+=======
 	../contrib/json/libjson.a \
 	../contrib/glew/libglew.a \
 	../contrib/profiler/libprofiler.a
@@ -401,6 +525,7 @@ textstress_LDADD = \
 textstress_LDADD += \
 	$(FREETYPE_LIBS) $(GL_LIBS) \
 	$(SDL2_LIBS) $(SIGC_LIBS) $(LUA_LIBS) $(PNG_LIBS)
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 if !HAVE_LUA
 textstress_LDADD += ../contrib/lua/liblua.a

@@ -36,12 +36,15 @@
     <ClCompile Include="..\..\..\src\gameui\LuaModelSpinner.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+<<<<<<< HEAD
+=======
     <ClCompile Include="..\..\..\src\gameui\LuaBindingCapture.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\gameui\BindingCapture.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\src\gameui\Face.h">
@@ -59,8 +62,11 @@
     <ClInclude Include="..\..\..\src\gameui\ModelSpinner.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+<<<<<<< HEAD
+=======
     <ClInclude Include="..\..\..\src\gameui\BindingCapture.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
   </ItemGroup>
 </Project>

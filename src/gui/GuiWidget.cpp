@@ -1,4 +1,8 @@
+<<<<<<< HEAD
+// Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
 // Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "Gui.h"
@@ -21,7 +25,10 @@ Widget::Widget()
 
 bool Widget::IsVisible() const
 {
+<<<<<<< HEAD
+=======
 	PROFILE_SCOPED()
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	if (!m_visible) return false;
 	Container *parent = m_parent;
 	while ((parent) && (parent->m_parent)) {
@@ -64,7 +71,11 @@ bool Widget::IsFocused()
 	return Screen::IsFocused(this);
 }
 
+<<<<<<< HEAD
+void Widget::SetShortcut(SDLKey key, SDLMod mod)
+=======
 void Widget::SetShortcut(SDL_Keycode key, SDL_Keymod mod)
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 {
 	assert(m_shortcut.sym == 0); // because AddShortcutWidget will add more than once. fix this otherwise on destruct we leave bad pointers in the Screen shortcut widgets list
 	m_shortcut.sym = key;
@@ -72,7 +83,11 @@ void Widget::SetShortcut(SDL_Keycode key, SDL_Keymod mod)
 	Screen::AddShortcutWidget(this);
 }
 
+<<<<<<< HEAD
+void Widget::OnPreShortcut(const SDL_keysym *sym)
+=======
 void Widget::OnPreShortcut(const SDL_Keysym *sym)
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 {
 	int mod = sym->mod & 0xfff; // filters out numlock, capslock, which fuck things up
 	if ((sym->sym == m_shortcut.sym) && (mod == m_shortcut.mod)) {

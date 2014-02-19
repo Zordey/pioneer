@@ -1,4 +1,8 @@
+<<<<<<< HEAD
+// Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
 // Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #ifndef _CAMERA_H
@@ -12,8 +16,13 @@
 #include "Background.h"
 #include "Body.h"
 
+<<<<<<< HEAD
+
+class Frame;
+=======
 class Frame;
 class ShipCockpit;
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 namespace Graphics { class Renderer; }
 
 class CameraContext : public RefCounted {
@@ -22,11 +31,12 @@ public:
 	CameraContext(float width, float height, float fovAng, float zNear, float zFar);
 	~CameraContext();
 
-	float GetWidth()  const { return m_width;  }
-	float GetHeight() const { return m_height; }
-	float GetFovAng() const { return m_fovAng; }
-	float GetZNear()  const { return m_zNear;  }
-	float GetZFar()   const { return m_zFar;   }
+	void Update();
+<<<<<<< HEAD
+	void Draw(Graphics::Renderer *r, const Body *excludeBody = 0);
+=======
+	void Draw(Graphics::Renderer *r, const Body *excludeBody = nullptr, ShipCockpit* cockpit = nullptr);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 	// frame to position the camera relative to
 	void SetFrame(Frame *frame) { m_frame = frame; }

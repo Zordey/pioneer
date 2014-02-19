@@ -1,4 +1,8 @@
+<<<<<<< HEAD
+// Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
 // Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "galaxy/StarSystem.h"
@@ -122,6 +126,19 @@ void Writer::Color4UB(const Color &c)
 	Byte(c.a);
 }
 
+<<<<<<< HEAD
+Reader::Reader(): m_data(""), m_pos(0) {
+}
+Reader::Reader(const std::string &data):
+	m_data(data),
+	m_pos(0) {
+
+}
+Reader::Reader(FILE *fptr): m_pos(0) {
+	m_data = "";
+	while (!feof(fptr)) m_data.push_back(fgetc(fptr));
+	printf(SIZET_FMT " characters in savefile\n", m_data.size());
+=======
 Reader::Reader(const ByteRange &data):
 	m_data(data),
 	m_at(data.begin)
@@ -132,6 +149,7 @@ void Reader::Seek(int pos)
 {
 	assert(pos >= 0 && size_t(pos) <= m_data.Size());
 	m_at = m_data.begin + pos;
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 }
 
 Uint8 Reader::Byte()
@@ -139,11 +157,17 @@ Uint8 Reader::Byte()
 #ifdef DEBUG
 	assert(!AtEnd());
 #endif /* DEBUG */
+<<<<<<< HEAD
+	return Uint8(m_data[m_pos++]);
+}
+bool Reader::Bool() {
+=======
 	return Uint8(*m_at++);
 }
 
 bool Reader::Bool()
 {
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	return Byte() != 0;
 }
 
@@ -208,6 +232,18 @@ double Reader::Double ()
 ByteRange Reader::Blob()
 {
 	int size = Int32();
+<<<<<<< HEAD
+	if (size == 0) return "";
+
+	std::string buf;
+	buf.reserve(size-1);
+
+	for (int i=0; i<size-1; i++) {
+		buf.push_back(char(Byte()));
+	}
+	Byte();// discard null terminator
+	return buf;
+=======
 	if (size == 0) return ByteRange();
 
 	if (size > (m_data.end - m_at)) {
@@ -228,6 +264,7 @@ std::string Reader::String()
 {
 	ByteRange range = Blob();
 	return std::string(range.begin, range.Size());
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 }
 
 vector3f Reader::Vector3f()

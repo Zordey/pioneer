@@ -1,4 +1,8 @@
+<<<<<<< HEAD
+// Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
 // Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #ifndef _VERTEXARRAY_H
@@ -34,6 +38,27 @@ class VertexArray {
 public:
 	//specify attributes to be used, additionally reserve space for vertices
 	VertexArray(AttributeSet attribs, int size=0);
+<<<<<<< HEAD
+	virtual ~VertexArray();
+
+	//check presence of an attribute
+	virtual bool HasAttrib(VertexAttrib v) const;
+	virtual unsigned int GetNumVerts() const;
+	virtual AttributeSet GetAttributeSet() const { return m_attribs; }
+
+	//removes vertices, does not deallocate space
+	virtual void Clear();
+
+	// don't mix these
+	virtual void Add(const vector3f &v);
+	virtual void Add(const vector3f &v, const Color &c);
+	virtual void Add(const vector3f &v, const Color &c, const vector3f &normal);
+	virtual void Add(const vector3f &v, const Color &c, const vector2f &uv);
+	virtual void Add(const vector3f &v, const vector2f &uv);
+	virtual void Add(const vector3f &v, const vector3f &normal, const vector2f &uv);
+	//virtual void Reserve(unsigned int howmuch)
+
+=======
 	~VertexArray();
 
 	//check presence of an attribute
@@ -61,6 +86,7 @@ public:
 	void Set(const Uint32 idx, const vector3f &v, const vector2f &uv);
 	void Set(const Uint32 idx, const vector3f &v, const vector3f &normal, const vector2f &uv);
 
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	//could make these private, but it is nice to be able to
 	//add attributes separately...
 	std::vector<vector3f> position;
@@ -69,7 +95,11 @@ public:
 	std::vector<vector2f> uv0;
 
 private:
+<<<<<<< HEAD
+	int m_attribs;
+=======
 	AttributeSet m_attribs;
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 };
 
 }

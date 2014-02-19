@@ -9,26 +9,37 @@ uniform sampler2D texture3; //pattern
 uniform sampler2D texture4; //color
 varying vec2 texCoord0;
 #endif
+<<<<<<< HEAD
+=======
 
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 #ifdef VERTEXCOLOR
 varying vec4 vertexColor;
 #endif
 #if (NUM_LIGHTS > 0)
 varying vec3 eyePos;
 varying vec3 normal;
+<<<<<<< HEAD
+#endif
+=======
 	#ifdef HEAT_COLOURING
 		uniform sampler2D heatGradient;
 		uniform float heatingAmount; // 0.0 to 1.0 used for `u` component of heatGradient texture
 		varying vec3 heatingDir;
 	#endif // HEAT_COLOURING
 #endif // (NUM_LIGHTS > 0)
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 uniform Scene scene;
 uniform Material material;
 
 #if (NUM_LIGHTS > 0)
 //ambient, diffuse, specular
+<<<<<<< HEAD
+//would be a good idead to make specular optional
+=======
 //would be a good idea to make specular optional
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 void ads(in int lightNum, in vec3 pos, in vec3 n, inout vec4 light, inout vec4 specular)
 {
 	vec3 s = normalize(vec3(gl_LightSource[lightNum].position)); //directional light
@@ -57,10 +68,16 @@ void main(void)
 #endif
 //patterns - simple lookup
 #ifdef MAP_COLOR
+<<<<<<< HEAD
+	float pat = texture2D(texture3, texCoord0).r;
+	vec4 mapColor = texture2D(texture4, vec2(pat, 0.0));
+	color *= mapColor;
+=======
 	vec4 pat = texture2D(texture3, texCoord0);
 	vec4 mapColor = texture2D(texture4, vec2(pat.r, 0.0));
 	vec4 tint = mix(vec4(1.0),mapColor,pat.a);
 	color *= tint;
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 #endif
 
 #ifdef ALPHA_TEST
@@ -84,6 +101,9 @@ void main(void)
 #endif //NUM_LIGHTS
 
 #if (NUM_LIGHTS > 0)
+<<<<<<< HEAD
+	gl_FragColor = color * light + specular;
+=======
 	#ifdef HEAT_COLOURING
 		if (heatingAmount > 0.0)
 		{
@@ -100,6 +120,7 @@ void main(void)
 	#else
 		gl_FragColor = color * light + specular;
 	#endif // HEAT_COLOURING
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 #else
 	gl_FragColor = color;
 #endif

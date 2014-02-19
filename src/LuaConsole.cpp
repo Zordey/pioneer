@@ -1,4 +1,8 @@
+<<<<<<< HEAD
+// Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
 // Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "LuaConsole.h"
@@ -8,8 +12,11 @@
 #include "text/TextureFont.h"
 #include "text/TextSupport.h"
 #include "KeyBindings.h"
+<<<<<<< HEAD
+=======
 #include "FileSystem.h"
 #include "LuaUtils.h"
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 #include <sstream>
 #include <stack>
 #include <algorithm>
@@ -30,7 +37,12 @@ LuaConsole::LuaConsole():
 	m_output = Pi::ui->MultiLineText("");
 	m_entry = Pi::ui->TextEntry();
 
-	m_scroller = Pi::ui->Scroller()->SetInnerWidget(m_output);
+	SetTransparency(false);
+<<<<<<< HEAD
+	SetBgColor(0.6f, 0.1f, 0.0f, 0.6f);
+=======
+	SetBgColor(Color(160,32,0,160));
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 	m_container.Reset(Pi::ui->Margin(10)->SetInnerWidget(
 		Pi::ui->ColorBackground(Color(0,0,0,0xc0))->SetInnerWidget(
@@ -43,7 +55,16 @@ LuaConsole::LuaConsole():
 		)
 	));
 
-	m_container->SetFont(UI::Widget::FONT_MONO_NORMAL);
+	// XXX HACK: bypassing TextEntry::Show, because it grabs focus
+	m_entryField->Gui::Widget::Show();
+<<<<<<< HEAD
+	m_entryField->onFilterKeys.connect(sigc::mem_fun(this, &LuaConsole::OnFilterKeys));
+	m_entryField->onKeyPress.connect(sigc::mem_fun(this, &LuaConsole::OnKeyPressed));
+
+	PackEnd(m_entryField);
+=======
+	m_entryField->onKeyPress.connect(sigc::mem_fun(this, &LuaConsole::OnKeyPressed));
+	m_entryField->onValueChanged.connect(sigc::mem_fun(this, &LuaConsole::OnTextChanged));
 
 	m_entry->onKeyDown.connect(sigc::mem_fun(this, &LuaConsole::OnKeyDown));
 	m_entry->onChange.connect(sigc::mem_fun(this, &LuaConsole::OnChange));
@@ -152,22 +173,48 @@ void LuaConsole::RegisterAutoexec() {
 	lua_pop(L, 1);
 
 	LUA_DEBUG_END(L, 0);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 }
 
 LuaConsole::~LuaConsole() {}
 
-bool LuaConsole::OnKeyDown(const UI::KeyboardEvent &event) {
+bool LuaConsole::IsActive() const {
+	return IsVisible() && m_entryField->IsFocused();
+}
 
-	switch (event.keysym.sym) {
-		case SDLK_UP:
-		case SDLK_DOWN: {
-			if (m_historyPosition == -1) {
-				if (event.keysym.sym == SDLK_UP) {
-					m_historyPosition = (m_statementHistory.size() - 1);
-					if (m_historyPosition != -1) {
-						m_stashedStatement = m_entry->GetText();
-						m_entry->SetText(m_statementHistory[m_historyPosition]);
-					}
+<<<<<<< HEAD
+bool LuaConsole::OnFilterKeys(const SDL_keysym *sym) {
+	return !KeyBindings::toggleLuaConsole.binding.Matches(sym);
+}
+
+void LuaConsole::OnKeyPressed(const SDL_keysym *sym) {
+=======
+void LuaConsole::OnKeyPressed(const SDL_Keysym *sym) {
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
+	// XXX totally horrible doing this on every key press
+	ResizeRequest();
+
+	if ((sym->sym == SDLK_UP) || (sym->sym == SDLK_DOWN)) {
+		if (m_historyPosition == -1) {
+			if (sym->sym == SDLK_UP) {
+				m_historyPosition = (m_statementHistory.size() - 1);
+				if (m_historyPosition != -1) {
+					m_stashedStatement = m_entryField->GetText();
+					m_entryField->SetText(m_statementHistory[m_historyPosition]);
+					ResizeRequest();
+				}
+			}
+		} else {
+			if (sym->sym == SDLK_DOWN) {
+				++m_historyPosition;
+				if (m_historyPosition >= int(m_statementHistory.size())) {
+					m_historyPosition = -1;
+					m_entryField->SetText(m_stashedStatement);
+					m_stashedStatement.clear();
+					ResizeRequest();
+				} else {
+					m_entryField->SetText(m_statementHistory[m_historyPosition]);
+					ResizeRequest();
 				}
 			} else {
 				if (event.keysym.sym == SDLK_DOWN) {
@@ -205,25 +252,22 @@ bool LuaConsole::OnKeyDown(const UI::KeyboardEvent &event) {
 				m_output->SetText("");
 				return true;
 			}
-			break;
+			m_entryField->SetText(m_precompletionStatement + m_completionList[m_currentCompletion]);
+			ResizeRequest();
+		}
+<<<<<<< HEAD
+	} else if (!m_completionList.empty() && (sym->sym < SDLK_NUMLOCK || sym->sym > SDLK_COMPOSE)) {
+		m_completionList.clear();
+	}
 
-		case SDLK_TAB:
-			if (m_completionList.empty()) {
-				UpdateCompletion(m_entry->GetText());
-			}
-			if (!m_completionList.empty()) { // We still need to test whether it failed or not.
-				if (event.keysym.mod & KMOD_SHIFT) {
-					if (m_currentCompletion == 0)
-						m_currentCompletion = m_completionList.size();
-					m_currentCompletion--;
-				} else {
-					m_currentCompletion++;
-					if (m_currentCompletion == m_completionList.size())
-						m_currentCompletion = 0;
-				}
-				m_entry->SetText(m_precompletionStatement + m_completionList[m_currentCompletion]);
-			}
-			return true;
+
+	if (((sym->unicode == '\n') || (sym->unicode == '\r')) && ((sym->mod & KMOD_CTRL) == 0)) {
+=======
+	}
+
+	if (sym->sym == SDLK_RETURN && !(sym->mod & KMOD_CTRL)) {
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
+		ExecOrContinue();
 	}
 
 	return false;
@@ -233,14 +277,15 @@ void LuaConsole::OnChange(const std::string &text) {
 	m_completionList.clear();
 }
 
-void LuaConsole::OnEnter(const std::string &text) {
-	if (!text.empty())
-		ExecOrContinue(text);
+<<<<<<< HEAD
+=======
+void LuaConsole::OnTextChanged() {
 	m_completionList.clear();
 	Pi::ui->SelectWidget(m_entry);
 	m_scroller->SetScrollPosition(1.0f);
 }
 
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 void LuaConsole::UpdateCompletion(const std::string & statement) {
 	// First, split the statement into chunks.
 	m_completionList.clear();
@@ -279,7 +324,11 @@ void LuaConsole::UpdateCompletion(const std::string & statement) {
 
 	lua_State * l = Lua::manager->GetLuaState();
 	int stackheight = lua_gettop(l);
+<<<<<<< HEAD
+	lua_rawgeti(l, LUA_REGISTRYINDEX, LUA_RIDX_GLOBALS);
+=======
 	lua_getfield(l, LUA_REGISTRYINDEX, "ConsoleGlobal");
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	// Loading the tables in which to do the name lookup
 	while (chunks.size() > 1) {
 		if (!lua_istable(l, -1) && !lua_isuserdata(l, -1))
@@ -346,10 +395,13 @@ void LuaConsole::ExecOrContinue(const std::string &stmt) {
 		return;
 	}
 
+<<<<<<< HEAD
+=======
 	// set the global table
 	lua_getfield(L, LUA_REGISTRYINDEX, "ConsoleGlobal");
 	lua_setupvalue(L, -2, 1);
 
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	std::istringstream stmt_stream(stmt);
 	std::string string_buffer;
 

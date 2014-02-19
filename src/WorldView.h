@@ -1,4 +1,8 @@
+<<<<<<< HEAD
+// Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
 // Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #ifndef _WORLDVIEW_H
@@ -9,7 +13,10 @@
 #include "gui/GuiWidget.h"
 #include "UIView.h"
 #include "Serializer.h"
+<<<<<<< HEAD
+=======
 #include "SpeedLines.h"
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 #include "Background.h"
 #include "EquipType.h"
 #include "Camera.h"
@@ -113,10 +120,16 @@ private:
 	void OnPlayerChangeFlightControlState();
 	void SelectBody(Body *, bool reselectIsDeselect);
 	Body* PickBody(const double screenX, const double screenY) const;
+<<<<<<< HEAD
+	void MouseButtonDown(int button, int x, int y);
+
+	NavTunnelWidget *m_navTunnel;
+=======
 	void MouseWheel(bool up);
 
 	NavTunnelWidget *m_navTunnel;
 	std::unique_ptr<SpeedLines> m_speedLines;
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 	Gui::ImageButton *m_hyperspaceButton;
 
@@ -148,16 +161,26 @@ private:
 	sigc::connection m_onHyperspaceTargetChangedCon;
 	sigc::connection m_onPlayerChangeTargetCon;
 	sigc::connection m_onChangeFlightControlStateCon;
+<<<<<<< HEAD
+	sigc::connection m_onMouseButtonDown;
+=======
 	sigc::connection m_onMouseWheelCon;
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 	Gui::LabelSet *m_bodyLabels;
 	std::map<Body*,vector3d> m_projectedPos;
 
-	RefCountedPtr<CameraContext> m_cameraContext;
+<<<<<<< HEAD
+	ScopedPtr<Camera> m_camera;
+	ScopedPtr<InternalCameraController> m_internalCameraController;
+	ScopedPtr<ExternalCameraController> m_externalCameraController;
+	ScopedPtr<SiderealCameraController> m_siderealCameraController;
+=======
 	std::unique_ptr<Camera> m_camera;
 	std::unique_ptr<InternalCameraController> m_internalCameraController;
 	std::unique_ptr<ExternalCameraController> m_externalCameraController;
 	std::unique_ptr<SiderealCameraController> m_siderealCameraController;
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	CameraController *m_activeCameraController; //one of the above
 
 	Indicator m_velIndicator;
@@ -167,7 +190,11 @@ private:
 	Indicator m_targetLeadIndicator;
 	Indicator m_mouseDirIndicator;
 
+<<<<<<< HEAD
+	ScopedPtr<Gui::TexturedQuad> m_indicatorMousedir;
+=======
 	std::unique_ptr<Gui::TexturedQuad> m_indicatorMousedir;
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	vector2f m_indicatorMousedirSize;
 
 	Graphics::RenderState *m_blendState;

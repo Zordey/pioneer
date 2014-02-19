@@ -1,4 +1,8 @@
+<<<<<<< HEAD
+dnl Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
 dnl Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 dnl Licensed under the terms of the GPL v3. See COPYING.txt for details
 
 dnl Process this file with autoconf to create configure.
@@ -44,9 +48,15 @@ AC_DEFUN([MXE_SETUP], [
 ])
 
 MXE_SETUP
+<<<<<<< HEAD
 
 AM_INIT_AUTOMAKE([1.9 foreign dist-bzip2 dist-xz dist-zip subdir-objects])
 
+=======
+
+AM_INIT_AUTOMAKE([1.9 foreign dist-bzip2 dist-xz dist-zip])
+
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 AC_CANONICAL_HOST
 
 AC_PROG_CC
@@ -59,15 +69,22 @@ AC_PROG_STRIP
 
 #AC_PROG_LIBTOOL
 
+<<<<<<< HEAD
+m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES])
+=======
 dnl Silent compilation by default
 AM_SILENT_RULES([yes])
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 dnl ###########################################################################
 dnl Flags and options
 dnl ###########################################################################
 
+<<<<<<< HEAD
+=======
 STD_CXXFLAGS=
 
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 EXTRA_CFLAGS=
 EXTRA_CXXFLAGS=
 EXTRA_CPPFLAGS=
@@ -111,6 +128,8 @@ AC_DEFUN([PIONEER_WARN_CPPFLAG], [_PIONEER_COMPILER_FLAG([CPP], [WARN], [CPP], [
 AC_DEFUN([PIONEER_WARN_C_CXX_FLAG],
 	[_PIONEER_COMPILER_FLAG([C], [WARN], [C], [$1], [$CC/$CXX], [WARN_CXXFLAGS="$WARN_CXXFLAGS $1"])])
 
+<<<<<<< HEAD
+=======
 dnl Early check for C++11
 dnl     -std=c++11 defines __STRICT_ANSI__, which causes MinGW some problems so use gnu++11 on it instead
 case "$host" in
@@ -122,6 +141,7 @@ case "$host" in
 esac
 
 
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 dnl Always add -Wall, where supported
 PIONEER_WARN_C_CXX_FLAG([-Wall])
 
@@ -133,8 +153,11 @@ AC_SUBST([OPTIMISE])
 dnl Debug stuff
 AC_ARG_ENABLE([debug], AS_HELP_STRING([--enable-debug], [Enable debugging code (stack checks, debug tools features, etc)]), [EXTRA_CPPFLAGS="$EXTRA_CPPFLAGS -DDEBUG"])
 AC_ARG_ENABLE([ldb], AS_HELP_STRING([--enable-ldb], [Enable ldb support.]), [EXTRA_CPPFLAGS="$EXTRA_CPPFLAGS -DENABLE_LDB" ; EXTRA_LIBS="$EXTRA_LIBS -lldbcore"])
+<<<<<<< HEAD
+=======
 AC_ARG_ENABLE([profiler], AS_HELP_STRING([--enable-profiler], [Enable internal profiler]), [EXTRA_CPPFLAGS="$EXTRA_CPPFLAGS -DPIONEER_PROFILER"])
 
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 AC_ARG_WITH([fno-inline],  AS_HELP_STRING([--with-fno-inline], [Compile without inlining. Helps debugging segaults that occur in STL code]), [PIONEER_C_CXX_FLAG([-fno-inline])])
 AC_ARG_WITH([gprof],       AS_HELP_STRING([--with-gprof], [Compile with gprof profiler]), [PIONEER_C_CXX_FLAG([-pg])])
 
@@ -163,9 +186,13 @@ AC_ARG_WITH([extra-version], AS_HELP_STRING([--with-extra-version], [Additional 
 
 EXTRA_CPPFLAGS="$EXTRA_CPPFLAGS -DPIONEER_VERSION=\\\"$PIONEER_VERSION\\\" -DPIONEER_EXTRAVERSION=\\\"$PIONEER_EXTRAVERSION\\\""
 
+<<<<<<< HEAD
+
+=======
 EXTRA_CPPFLAGS="$EXTRA_CPPFLAGS -DGLEW_STATIC"
 
 
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 dnl Compiler warning options
 AC_ARG_WITH([extra-warnings], AS_HELP_STRING([--without-extra-warnings], [Disable lots of extra compiler warnings]), [], [with_extra_warnings=yes])
 if test "x$with_extra_warnings" != xno; then
@@ -199,6 +226,178 @@ if test "x$with_extra_warnings" != xno; then
   ; do
     PIONEER_WARN_CXXFLAG([$warn_opt])
   done
+<<<<<<< HEAD
+fi
+
+dnl Data files directory
+if test "$PIONEER_DATA_DIR" = ''; then
+  AC_MSG_WARN([Using the default value for PIONEER_DATA_DIR.])
+  AC_MSG_WARN([Installing is NOT recommended.])
+  AC_MSG_WARN([IF YOU ARE PACKAGING PIONEER, SET THIS VARIABLE!])
+  AC_MSG_WARN([To install: make install DESTDIR=/path/to/install/dir/])
+  AC_MSG_WARN([The trailing path separator is required.])
+  AC_MSG_WARN([The installed Pioneer is only runnable from that directory.])
+fi
+PIONEER_DATA_DIR=${PIONEER_DATA_DIR:-data}
+AC_ARG_VAR([PIONEER_DATA_DIR], [where Pioneer expects its data files to be [data]. Packagers MUST set this!])
+
+dnl ###########################################################################
+dnl Library checks
+dnl ###########################################################################
+
+dnl FIXME: should really check for headers (if no pkgconfig)
+AC_DEFUN([PIONEER_CHECK_LIB],
+    [PKG_CHECK_MODULES([$1], [$2], [],
+	[AC_CHECK_LIB([$3], [$4], [], [AC_MSG_ERROR([$1 is required])])
+	 ][$1][_CFLAGS=
+	 ][$1][_LIBS="-l$3"
+	 AC_SUBST([$1][_CFLAGS])
+	 AC_SUBST([$1][_LIBS])
+	])
+    ])
+
+AC_ARG_WITH([thirdparty], AS_HELP_STRING([--with-thirdparty], [Location of pioneer-thirdparty repository]), [
+	AC_MSG_NOTICE([using pioneer-thirdparty repository in $withval])
+    if test "x$MXE_CROSS" = "xyes" ; then
+	    PKG_CONFIG_PATH_i686_pc_mingw32="$withval/usr/lib/pkgconfig:$PKG_CONFIG_PATH"
+	    export PKG_CONFIG_PATH_i686_pc_mingw32
+    else
+	    PKG_CONFIG_PATH="$withval/usr/lib/pkgconfig:$PKG_CONFIG_PATH"
+	    export PKG_CONFIG_PATH
+    fi
+	CFLAGS="-isystem $withval/usr/include"
+	LIBS="-L$withval/usr/lib -Wl,-rpath,$withval/usr/lib"
+])
+
+dnl Check for sigc++
+PKG_CHECK_MODULES([SIGC], [sigc++-2.0])
+
+dnl Check for SDL
+PKG_CHECK_MODULES([SDL], [sdl SDL_image])
+
+dnl Check for Freetype
+PKG_CHECK_MODULES([FREETYPE], [freetype2])
+
+dnl Check for libvorbis
+PKG_CHECK_MODULES([VORBIS], [vorbisfile])
+
+dnl Check for libpng
+PKG_CHECK_MODULES([PNG], [libpng])
+
+dnl Check for assimp
+PKG_CHECK_MODULES([ASSIMP], [assimp])
+
+dnl assimp's pkg-config file has a broken include path. Until upstream fixes
+dnl it we work around it here
+ASSIMP_CFLAGS=`echo $ASSIMP_CFLAGS | sed -e 's/\/assimp$//'`
+
+if test "x$cross_compiling" = "xno" ; then
+
+	dnl Extra version checks for assimp. Last release was 2.0, we need 3.0+ (git
+	dnl version). Unfortunately the pkg-config version has not yet been updated
+	dnl upstream, so we have to test the library directly
+	AC_MSG_CHECKING(for ASSIMP version >= 3.0)
+	dnl Convert -Lfoo to -rpath=, as the wanted dir might not be visible to the dynamic linker
+	assimp_rpath=`echo $ASSIMP_LIBS | sed -e 's/-[^L] *[^ ]\+ *//g' | sed -e 's/-L */-Wl,-rpath,/g'`
+	old_cxxflags="$CXXFLAGS"
+	old_libs="$LIBS"
+	CXXFLAGS="$ASSIMP_CFLAGS"
+	LIBS="$ASSIMP_LIBS $assimp_rpath"
+	AC_LANG_PUSH([C++])
+	AC_RUN_IFELSE([AC_LANG_PROGRAM([[#include <assimp/defs.h>
+	                                 #include <assimp/version.h>]],
+	                            [[do {
+	                                if (aiGetVersionMajor() >= 3 && aiGetVersionMinor() >= 0)
+	                                    return 0;
+	                                return 1;
+	                              } while(0)]])],
+	                            [AC_MSG_RESULT(yes)
+	                                have_assimp_version=yes],
+	                            [AC_MSG_RESULT(no)])
+	AC_LANG_POP
+	if test "x$have_assimp_version" != "xyes" ; then
+		AC_MSG_ERROR("assimp version >= 3.0 not found. Get it from https://assimp.sourceforge.net/")
+	fi
+	CXXFLAGS="$old_cxxflags"
+	LIBS="$old_libs"
+
+fi
+
+dnl Optionally use external liblua
+AC_ARG_WITH([external-liblua], AS_HELP_STRING([--with-external-liblua], [Use external liblua in place of our internal copy]), [], [with_external_liblua=no; HAVE_LUA=no])
+if test "$with_external_liblua" = yes; then
+  PKG_CHECK_MODULES([LUA], [lua >= 5.2], [HAVE_LUA=yes], [foundlua=no])
+  if test "$foundlua" = no; then
+    PKG_CHECK_MODULES([LUA], [lua5.2 >= 5.2], [HAVE_LUA=yes], [AC_MSG_ERROR([External liblua was requested but is not available])])
+  fi
+fi
+AM_CONDITIONAL([HAVE_LUA], [test "$HAVE_LUA" = yes])
+case "$host" in
+  i686-pc-mingw32|x86_64-pc-mingw64)
+	;;
+  *)
+	LUA_CFLAGS="$LUA_CFLAGS -DLUA_USE_POSIX"
+esac
+
+dnl Check for OpenGL libs
+if test "x$MXE_CROSS" = "xyes" ; then
+	AC_SUBST([GL_CFLAGS], [])
+	AC_SUBST([GL_LIBS], [-lopengl32])
+	AC_SUBST([GLU_CFLAGS], [])
+	AC_SUBST([GLU_LIBS], [-lglu32])
+	AC_SUBST([GLEW_CFLAGS], [-DGLEW_BUILD])
+	AC_SUBST([GLEW_LIBS], [-lglew32s])
+else
+	PIONEER_CHECK_LIB([GL],   [gl],   [GL],   [glBegin])
+	PIONEER_CHECK_LIB([GLU],  [glu],  [GLU],  [gluSphere])
+	PIONEER_CHECK_LIB([GLEW], [glew], [GLEW], [glewInit])
+fi
+
+dnl ###########################################################################
+dnl Platform selection
+dnl ###########################################################################
+
+AC_MSG_CHECKING([platform type])
+case "$host" in
+  i686-pc-mingw32|x86_64-pc-mingw64)
+	PLATFORM=win32
+	;;
+  *)
+	PLATFORM=posix
+	;;
+esac
+AC_SUBST([PLATFORM])
+AC_MSG_RESULT($PLATFORM)
+
+AM_CONDITIONAL([BUILD_WIN32], [test "x-$PLATFORM" = "x-win32"])
+AM_CONDITIONAL([BUILD_POSIX], [test "x-$PLATFORM" = "x-posix"])
+
+dnl ###########################################################################
+dnl System-specific stuff not covered above
+dnl ###########################################################################
+
+case "$host" in
+  i686-pc-mingw32|x86_64-pc-mingw64)
+	MINGW_LIBS="-lshlwapi"
+	SDL_LIBS="$SDL_LIBS -ltiff -lpng -ljpeg -lz"
+	;;
+  *)
+	MINGW_LIBS=
+	;;
+esac
+AC_SUBST([MINGW_LIBS])
+
+dnl ###########################################################################
+dnl Finished :-)
+dnl ###########################################################################
+
+dnl if ccache was wanted, update the compiler vars to match
+dnl this is done late so that configure tests aren't run under ccache
+if test "x$CCACHE" != x; then
+    CC="$CCACHE $CC"
+    CXX="$CCACHE $CXX"
+fi
+=======
 fi
 
 dnl Add some useful args for clang under ccache
@@ -372,6 +571,7 @@ if test "x$CCACHE" != x; then
 fi
 
 AC_SUBST([STD_CXXFLAGS])
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 AC_SUBST([EXTRA_CFLAGS])
 AC_SUBST([EXTRA_CXXFLAGS])
@@ -401,11 +601,16 @@ AC_CONFIG_FILES([
 	contrib/lua/Makefile
 	contrib/miniz/Makefile
 	contrib/jenkins/Makefile
+<<<<<<< HEAD
+	contrib/PicoDDS/Makefile
+	contrib/vcacheopt/Makefile
+=======
 	contrib/json/Makefile
 	contrib/PicoDDS/Makefile
 	contrib/vcacheopt/Makefile
 	contrib/glew/Makefile
 	contrib/profiler/Makefile
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	osx/Makefile
 	win32/Makefile])
 AC_OUTPUT

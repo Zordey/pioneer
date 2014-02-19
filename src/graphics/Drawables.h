@@ -1,4 +1,8 @@
+<<<<<<< HEAD
+// Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
 // Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #ifndef _DRAWABLES_H
@@ -55,14 +59,22 @@ private:
 // Two-dimensional filled circle
 class Disk : public Drawable {
 public:
-	Disk(Graphics::Renderer *r, Graphics::RenderState*, const Color &c, float radius);
-	Disk(RefCountedPtr<Material> material, Graphics::RenderState*, const int numEdges=72, const float radius=1.0f);
+	Disk(Graphics::Renderer *r, const Color &c, float radius);
+<<<<<<< HEAD
+=======
+	Disk(RefCountedPtr<Material> material, const int numEdges=72, const float radius=1.0f);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
+	virtual ~Disk() { }
 	virtual void Draw(Graphics::Renderer *r);
 
 	void SetColor(const Color&);
 
 private:
+<<<<<<< HEAD
+	ScopedPtr<Graphics::VertexArray> m_vertices;
+=======
 	std::unique_ptr<Graphics::VertexArray> m_vertices;
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	RefCountedPtr<Material> m_material;
 };
 
@@ -91,7 +103,11 @@ public:
 	RefCountedPtr<Material> GetMaterial() const { return m_surface->GetMaterial(); }
 
 private:
+<<<<<<< HEAD
+	ScopedPtr<Surface> m_surface;
+=======
 	std::unique_ptr<Surface> m_surface;
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	//add a new vertex, return the index
 	int AddVertex(const vector3f &v, const vector3f &n);
 	//add three vertex indices to form a triangle
@@ -100,6 +116,8 @@ private:
 		int i1, int i2, int i3, int depth);
 };
 
+<<<<<<< HEAD
+=======
 // a textured quad with reversed winding
 class TexturedQuad : public Drawable {
 public:
@@ -115,6 +133,7 @@ private:
 	std::unique_ptr<Graphics::VertexArray> m_vertices;
 };
 
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 }
 
 }

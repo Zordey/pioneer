@@ -1,4 +1,8 @@
+<<<<<<< HEAD
+// Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
 // Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "TextureFont.h"
@@ -210,11 +214,18 @@ int TextureFont::PickCharacter(const char *str, float mouseX, float mouseY) cons
 
 void TextureFont::RenderString(const char *str, float x, float y, const Color &color)
 {
+<<<<<<< HEAD
+	m_renderer->SetBlendMode(Graphics::BLEND_ALPHA_PREMULT);
+	m_vertices.Clear();
+
+	const Color premult_color = Color(color.r * color.a, color.g * color.a, color.b * color.a, color.a);
+=======
 	PROFILE_SCOPED()
 	m_vertices.Clear();
 
 	float alpha_f = color.a / 255.0f;
 	const Color premult_color = Color(color.r * alpha_f, color.g * alpha_f, color.b * alpha_f, color.a);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 	float px = x;
 	float py = y;
@@ -250,26 +261,47 @@ void TextureFont::RenderString(const char *str, float x, float y, const Color &c
 		}
 	}
 
-	m_renderer->DrawTriangles(&m_vertices, m_renderState, m_mat.get());
+<<<<<<< HEAD
+	m_renderer->DrawTriangles(&m_vertices, m_mat.Get());
+=======
+	m_renderer->DrawTriangles(&m_vertices, m_mat.get());
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 }
 
 Color TextureFont::RenderMarkup(const char *str, float x, float y, const Color &color)
 {
+<<<<<<< HEAD
+=======
 	PROFILE_SCOPED()
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
+	m_renderer->SetBlendMode(Graphics::BLEND_ALPHA_PREMULT);
 	m_vertices.Clear();
 
 	float px = x;
 	float py = y;
 
 	Color c = color;
+<<<<<<< HEAD
+	Color premult_c = Color(c.r*c.a, c.g*c.a, c.b*c.a, c.a);
+=======
 	float alpha_f = c.a / 255.0f;
 	Color premult_c = Color(c.r * alpha_f, c.g * alpha_f, c.b * alpha_f, c.a);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 	int i = 0;
 	while (str[i]) {
 		if (str[i] == '#') {
 			int hexcol;
 			if (sscanf(str+i, "#%3x", &hexcol)==1) {
+<<<<<<< HEAD
+				c.r = float((hexcol&0xf00)>>4)/255.0f;
+				c.g = float((hexcol&0xf0))/255.0f;
+				c.b = float((hexcol&0xf)<<4)/255.0f;
+				// retain alpha value from RenderMarkup color parameter
+				premult_c.r = c.r * c.a;
+				premult_c.g = c.g * c.a;
+				premult_c.b = c.b * c.a;
+=======
 				c.r = float((hexcol&0xf00)>>4);
 				c.g = float((hexcol&0xf0));
 				c.b = float((hexcol&0xf)<<4);
@@ -277,6 +309,7 @@ Color TextureFont::RenderMarkup(const char *str, float x, float y, const Color &
 				premult_c.r = c.r * alpha_f;
 				premult_c.g = c.g * alpha_f;
 				premult_c.b = c.b * alpha_f;
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 				i+=4;
 				continue;
 			}
@@ -312,7 +345,11 @@ Color TextureFont::RenderMarkup(const char *str, float x, float y, const Color &
 		}
 	}
 
-	m_renderer->DrawTriangles(&m_vertices, m_renderState, m_mat.get());
+<<<<<<< HEAD
+	m_renderer->DrawTriangles(&m_vertices, m_mat.Get());
+=======
+	m_renderer->DrawTriangles(&m_vertices, m_mat.get());
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	return c;
 }
 
@@ -571,7 +608,11 @@ TextureFont::TextureFont(const FontDescriptor &descriptor, Graphics::Renderer *r
 	Graphics::MaterialDescriptor desc;
 	desc.vertexColors = true; //to allow per-character colors
 	desc.textures = 1;
+<<<<<<< HEAD
+	m_mat.Reset(m_renderer->CreateMaterial(desc));
+=======
 	m_mat.reset(m_renderer->CreateMaterial(desc));
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	Graphics::TextureDescriptor textureDescriptor(tex_format, tex_size, Graphics::NEAREST_CLAMP, false, false);
 	m_texture.Reset(m_renderer->CreateTexture(textureDescriptor));
 	m_mat->texture0 = m_texture.Get();

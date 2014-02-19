@@ -1,4 +1,8 @@
+<<<<<<< HEAD
+// Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
 // Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #ifndef UI_TABLE_H
@@ -6,7 +10,10 @@
 
 #include "Container.h"
 #include "Slider.h"
+<<<<<<< HEAD
+=======
 #include "Event.h"
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 namespace UI {
 
@@ -21,6 +28,12 @@ public:
 
 	Table *SetHeadingRow(const WidgetSet &set);
 	Table *AddRow(const WidgetSet &set);
+<<<<<<< HEAD
+
+	Table *SetRowSpacing(int spacing);
+	Table *SetColumnSpacing(int spacing);
+	Table *SetSpacing(int spacing);
+=======
 	void ClearRows();
 
 	Table *SetRowSpacing(int spacing);
@@ -42,11 +55,24 @@ public:
 
 protected:
 	virtual void HandleInvisible();
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 private:
 
 	class LayoutAccumulator {
 	public:
+<<<<<<< HEAD
+		void AddRow(const std::vector<Widget*> &widgets);
+		void Clear();
+
+		void SetSpacing(int h, int v);
+
+		const std::vector<int> &ColumnWidths() const { return m_columnWidths; }
+		const Point &GetSize() const { return m_size; }
+	private:
+		std::vector<int> m_columnWidths;
+		Point m_size;
+=======
 		LayoutAccumulator() : m_columnSpacing(0) {}
 
 		void AddRow(const std::vector<Widget*> &widgets);
@@ -63,6 +89,7 @@ private:
 		void UpdateColumns();
 		std::vector<int> m_columnLeft;
 		int m_columnSpacing;
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	};
 
 
@@ -72,7 +99,10 @@ private:
 
 		virtual Point PreferredSize();
 		virtual void Layout();
+<<<<<<< HEAD
+=======
 		virtual void Draw();
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 		void AddRow(const std::vector<Widget*> &widgets);
 		void Clear();
@@ -81,6 +111,18 @@ private:
 
 		void SetRowSpacing(int spacing);
 		void SetColumnSpacing(int spacing);
+<<<<<<< HEAD
+		void SetSpacing(int spacing);
+
+	private:
+		LayoutAccumulator &m_layout;
+		std::vector< std::vector<Widget*> > m_rows;
+		std::vector< std::vector<Point> > m_preferredSizes;
+		Point m_preferredSize;
+		int m_rowSpacing;
+		int m_columnSpacing;
+		bool m_dirty;
+=======
 
 		void SetRowAlignment(RowAlignDirection dir);
 
@@ -103,6 +145,7 @@ private:
 		bool m_dirty;
 
 		bool m_mouseEnabled;
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	};
 
 	LayoutAccumulator m_layout;

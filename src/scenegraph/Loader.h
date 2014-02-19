@@ -1,4 +1,8 @@
+<<<<<<< HEAD
+// Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
 // Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #ifndef _SCENEGRAPH_ASSIMPLOADER_H
@@ -47,8 +51,14 @@ protected:
 	void ConvertAnimations(const aiScene *, const AnimList &, Node *meshRoot);
 	void ConvertNodes(aiNode *node, Group *parent, std::vector<RefCountedPtr<StaticGeometry> >& meshes, const matrix4x4f&);
 	void CreateLabel(Group *parent, const matrix4x4f&);
+<<<<<<< HEAD
+	void CreateThruster(const std::string &name, const matrix4x4f& nodeTrans, const matrix4x4f &accum);
+	void CreateNavlight(const std::string &name, const matrix4x4f& nodeTrans, const matrix4x4f &accum);
+=======
 	void CreateThruster(const std::string &name, const matrix4x4f& nodeTrans);
 	void CreateNavlight(const std::string &name, const matrix4x4f& nodeTrans);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
+	void FindPatterns(PatternContainer &output); //find pattern texture files from the model directory
 	void LoadCollision(const std::string &filename);
 
 	unsigned int GetGeomFlagForNodeName(const std::string&);

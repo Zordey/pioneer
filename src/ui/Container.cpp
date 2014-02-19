@@ -1,4 +1,8 @@
+<<<<<<< HEAD
+// Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
 // Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "Container.h"
@@ -16,11 +20,15 @@ Container::~Container()
 
 void Container::Update()
 {
+<<<<<<< HEAD
+	for (std::vector< RefCountedPtr<Widget> >::iterator i = m_widgets.begin(); i != m_widgets.end(); ++i)
+=======
 	// widgets can add/remove other widgets during Update. that screws up the
 	// iterators when traversing the widget list.  rather than try and detect
 	// it, we just take a copy of the list
 	std::vector< RefCountedPtr<Widget> > widgets = m_widgets;
 	for (std::vector< RefCountedPtr<Widget> >::iterator i = widgets.begin(); i != widgets.end(); ++i)
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		(*i)->Update();
 }
 
@@ -93,6 +101,8 @@ void Container::Enable()
 	Widget::Enable();
 }
 
+<<<<<<< HEAD
+=======
 void Container::NotifyVisible(bool visible)
 {
 	if (m_visible != visible) {
@@ -106,14 +116,20 @@ void Container::NotifyVisible(bool visible)
 	}
 }
 
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 void Container::DisableChildren()
 {
 	for (std::vector< RefCountedPtr<Widget> >::iterator i = m_widgets.begin(); i != m_widgets.end(); ++i) {
 		Widget *w = (*i).Get();
 		w->SetDisabled(true);
+<<<<<<< HEAD
+		Container *c = dynamic_cast<Container*>(w);
+		if (c) c->DisableChildren();
+=======
 		if (w->IsContainer()) {
 			static_cast<Container*>(w)->DisableChildren();
 		}
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	}
 }
 
@@ -122,9 +138,14 @@ void Container::EnableChildren()
 	for (std::vector< RefCountedPtr<Widget> >::iterator i = m_widgets.begin(); i != m_widgets.end(); ++i) {
 		Widget *w = (*i).Get();
 		w->SetDisabled(false);
+<<<<<<< HEAD
+		Container *c = dynamic_cast<Container*>(w);
+		if (c) c->EnableChildren();
+=======
 		if (w->IsContainer()) {
 			static_cast<Container*>(w)->EnableChildren();
 		}
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	}
 }
 

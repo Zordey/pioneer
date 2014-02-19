@@ -11,7 +11,10 @@ uniform vec3 geosphereCenter;
 uniform float geosphereAtmosFogDensity;
 uniform float geosphereAtmosInvScaleHeight;
 
+<<<<<<< HEAD
+=======
 #ifdef ECLIPSE
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 uniform int shadows;
 uniform ivec3 occultedLight;
 uniform vec3 shadowCentreX;
@@ -20,7 +23,10 @@ uniform vec3 shadowCentreZ;
 uniform vec3 srad;
 uniform vec3 lrad;
 uniform vec3 sdivlrad;
+<<<<<<< HEAD
+=======
 #endif // ECLIPSE
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 varying vec4 varyingEyepos;
 
@@ -78,7 +84,10 @@ void main(void)
 		vec3 lightDir = normalize(vec3(gl_LightSource[i].position));
 
 		float uneclipsed = 1.0;
+<<<<<<< HEAD
+=======
 #ifdef ECLIPSE
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		for (int j=0; j<shadows; j++) {
 			if (i != occultedLight[j])
 				continue;
@@ -119,7 +128,10 @@ void main(void)
 
 			uneclipsed -= maxOcclusion * shadow / (bd-ad);
 		}
+<<<<<<< HEAD
+=======
 #endif // ECLIPSE
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		uneclipsed = clamp(uneclipsed, 0.0, 1.0);
 
 		float nDotVP =  max(0.0, dot(surfaceNorm, lightDir));

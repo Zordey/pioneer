@@ -1,4 +1,8 @@
+<<<<<<< HEAD
+// Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
 // Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "CameraController.h"
@@ -15,12 +19,15 @@ CameraController::CameraController(RefCountedPtr<CameraContext> camera, const Sh
 {
 }
 
+<<<<<<< HEAD
+=======
 void CameraController::Reset()
 {
 	m_pos = vector3d(0.0);
 	m_orient = matrix3x3d::Identity();
 }
 
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 void CameraController::Update()
 {
 	m_camera->SetFrame(m_ship->GetFrame());
@@ -32,6 +39,12 @@ void CameraController::Update()
 	m_camera->SetPosition(m * m_pos + m_ship->GetInterpPosition());
 }
 
+<<<<<<< HEAD
+InternalCameraController::InternalCameraController(Camera *camera, const Ship *ship) :
+	CameraController(camera, ship)
+{
+	SetMode(MODE_FRONT);
+=======
 
 InternalCameraController::InternalCameraController(RefCountedPtr<CameraContext> camera, const Ship *ship) :
 	CameraController(camera, ship),
@@ -87,6 +100,7 @@ void InternalCameraController::Reset()
 	FillCameraPosOrient(m, "tag_camera_bottom", m_bottomPos, m_bottomOrient, fallbackTransform, matrix3x3d::RotateX(M_PI/2));
 
 	SetMode(m_mode);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 }
 
 void InternalCameraController::SetMode(Mode m)
@@ -95,6 +109,29 @@ void InternalCameraController::SetMode(Mode m)
 	switch (m_mode) {
 		case MODE_FRONT:
 			m_name = Lang::CAMERA_FRONT_VIEW;
+<<<<<<< HEAD
+			SetOrient(matrix3x3d::RotateY(M_PI*2));
+			break;
+		case MODE_REAR:
+			m_name = Lang::CAMERA_REAR_VIEW;
+			SetOrient(matrix3x3d::RotateY(M_PI));
+			break;
+		case MODE_LEFT:
+			m_name = Lang::CAMERA_LEFT_VIEW;
+			SetOrient(matrix3x3d::RotateY((M_PI/2)*3));
+			break;
+		case MODE_RIGHT:
+			m_name = Lang::CAMERA_RIGHT_VIEW;
+			SetOrient(matrix3x3d::RotateY(M_PI/2));
+			break;
+		case MODE_TOP:
+			m_name = Lang::CAMERA_TOP_VIEW;
+			SetOrient(matrix3x3d::RotateX((M_PI/2)*3));
+			break;
+		case MODE_BOTTOM:
+			m_name = Lang::CAMERA_BOTTOM_VIEW;
+			SetOrient(matrix3x3d::RotateX(M_PI/2));
+=======
 			SetPosition(m_frontPos);
 			SetOrient(m_frontOrient);
 			break;
@@ -122,6 +159,7 @@ void InternalCameraController::SetMode(Mode m)
 			m_name = Lang::CAMERA_BOTTOM_VIEW;
 			SetPosition(m_bottomPos);
 			SetOrient(m_bottomOrient);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 			break;
 	}
 }
@@ -136,6 +174,16 @@ void InternalCameraController::Load(Serializer::Reader &rd)
 	SetMode(static_cast<Mode>(rd.Int32()));
 }
 
+<<<<<<< HEAD
+void InternalCameraController::Update()
+{
+	SetPosition(GetShip()->GetShipType()->cameraOffset);
+
+	CameraController::Update();
+}
+
+=======
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 ExternalCameraController::ExternalCameraController(RefCountedPtr<CameraContext> camera, const Ship *ship) :
 	MoveableCameraController(camera, ship),

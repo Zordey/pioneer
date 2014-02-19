@@ -1,4 +1,8 @@
+<<<<<<< HEAD
+/* Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details */
+=======
 /* Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details */
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 /* Licensed under the terms of the GPL v3. See licenses/GPL-3.txt        */
 
 /* THIS FILE IS AUTO-GENERATED, CHANGES WILL BE OVERWRITTEN */
@@ -6,7 +10,10 @@
 
 #include "enum_table.h"
 #include "EquipType.h"
+<<<<<<< HEAD
+=======
 #include "LuaEngine.h"
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 #include "LuaFileSystem.h"
 #include "Polit.h"
 #include "Ship.h"
@@ -20,7 +27,10 @@
 #include "ui/Gradient.h"
 #include "ui/Margin.h"
 #include "ui/NumberLabel.h"
+<<<<<<< HEAD
+=======
 #include "ui/Table.h"
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 #include "ui/Widget.h"
 
 const struct EnumItem ENUM_EquipSlot[] = {
@@ -124,6 +134,8 @@ const struct EnumItem ENUM_EquipType[] = {
 	{ 0, 0 },
 };
 
+<<<<<<< HEAD
+=======
 const struct EnumItem ENUM_DetailLevel[] = {
 	{ "VERY_LOW", LuaEngine::DETAIL_VERY_LOW },
 	{ "LOW", LuaEngine::DETAIL_LOW },
@@ -133,6 +145,7 @@ const struct EnumItem ENUM_DetailLevel[] = {
 	{ 0, 0 },
 };
 
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 const struct EnumItem ENUM_FileSystemRoot[] = {
 	{ "USER", LuaFileSystem::ROOT_USER },
 	{ "DATA", LuaFileSystem::ROOT_DATA },
@@ -338,6 +351,11 @@ const struct EnumItem ENUM_UIAlignDirection[] = {
 
 const struct EnumItem ENUM_UIEventType[] = {
 	{ "KEYBOARD", UI::Event::KEYBOARD },
+<<<<<<< HEAD
+	{ "MOUSE_BUTTON", UI::Event::MOUSE_BUTTON },
+	{ "MOUSE_MOTION", UI::Event::MOUSE_MOTION },
+	{ "MOUSE_WHEEL", UI::Event::MOUSE_WHEEL },
+=======
 	{ "TEXT_INPUT", UI::Event::TEXT_INPUT },
 	{ "MOUSE_BUTTON", UI::Event::MOUSE_BUTTON },
 	{ "MOUSE_MOTION", UI::Event::MOUSE_MOTION },
@@ -345,12 +363,17 @@ const struct EnumItem ENUM_UIEventType[] = {
 	{ "JOYSTICK_AXIS_MOTION", UI::Event::JOYSTICK_AXIS_MOTION },
 	{ "JOYSTICK_HAT_MOTION", UI::Event::JOYSTICK_HAT_MOTION },
 	{ "JOYSTICK_BUTTON", UI::Event::JOYSTICK_BUTTON },
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	{ 0, 0 },
 };
 
 const struct EnumItem ENUM_UIKeyboardAction[] = {
 	{ "DOWN", UI::KeyboardEvent::KEY_DOWN },
 	{ "UP", UI::KeyboardEvent::KEY_UP },
+<<<<<<< HEAD
+	{ "PRESS", UI::KeyboardEvent::KEY_PRESS },
+=======
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	{ 0, 0 },
 };
 
@@ -373,6 +396,8 @@ const struct EnumItem ENUM_UIMouseWheelDirection[] = {
 	{ 0, 0 },
 };
 
+<<<<<<< HEAD
+=======
 const struct EnumItem ENUM_UIJoystickHatDirection[] = {
 	{ "CENTRE", UI::JoystickHatMotionEvent::HAT_CENTRE },
 	{ "UP", UI::JoystickHatMotionEvent::HAT_UP },
@@ -392,6 +417,7 @@ const struct EnumItem ENUM_UIJoystickButtonAction[] = {
 	{ 0, 0 },
 };
 
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 const struct EnumItem ENUM_UIExpandDirection[] = {
 	{ "BOTH", UI::Expand::BOTH },
 	{ "HORIZONTAL", UI::Expand::HORIZONTAL },
@@ -422,6 +448,8 @@ const struct EnumItem ENUM_UINumberLabelFormat[] = {
 	{ "INTEGER", UI::NumberLabel::FORMAT_INTEGER },
 	{ "PERCENT", UI::NumberLabel::FORMAT_PERCENT },
 	{ "PERCENT_INTEGER", UI::NumberLabel::FORMAT_PERCENT_INTEGER },
+<<<<<<< HEAD
+=======
 	{ "MONEY", UI::NumberLabel::FORMAT_MONEY },
 	{ "MASS_TONNES", UI::NumberLabel::FORMAT_MASS_TONNES },
 	{ 0, 0 },
@@ -431,6 +459,7 @@ const struct EnumItem ENUM_UITableRowAlignDirection[] = {
 	{ "TOP", UI::Table::TOP },
 	{ "CENTER", UI::Table::CENTER },
 	{ "BOTTOM", UI::Table::BOTTOM },
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	{ 0, 0 },
 };
 
@@ -466,7 +495,10 @@ const struct EnumItem ENUM_UIFont[] = {
 const struct EnumTable ENUM_TABLES[] = {
 	{ "EquipSlot", ENUM_EquipSlot },
 	{ "EquipType", ENUM_EquipType },
+<<<<<<< HEAD
+=======
 	{ "DetailLevel", ENUM_DetailLevel },
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	{ "FileSystemRoot", ENUM_FileSystemRoot },
 	{ "PolitCrime", ENUM_PolitCrime },
 	{ "PolitEcon", ENUM_PolitEcon },
@@ -490,13 +522,19 @@ const struct EnumTable ENUM_TABLES[] = {
 	{ "UIMouseButtonAction", ENUM_UIMouseButtonAction },
 	{ "UIMouseButtonType", ENUM_UIMouseButtonType },
 	{ "UIMouseWheelDirection", ENUM_UIMouseWheelDirection },
+<<<<<<< HEAD
+=======
 	{ "UIJoystickHatDirection", ENUM_UIJoystickHatDirection },
 	{ "UIJoystickButtonAction", ENUM_UIJoystickButtonAction },
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	{ "UIExpandDirection", ENUM_UIExpandDirection },
 	{ "UIGradientDirection", ENUM_UIGradientDirection },
 	{ "UIMarginDirection", ENUM_UIMarginDirection },
 	{ "UINumberLabelFormat", ENUM_UINumberLabelFormat },
+<<<<<<< HEAD
+=======
 	{ "UITableRowAlignDirection", ENUM_UITableRowAlignDirection },
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	{ "UISizeControl", ENUM_UISizeControl },
 	{ "UIFont", ENUM_UIFont },
 	{ 0, 0 },
@@ -505,7 +543,10 @@ const struct EnumTable ENUM_TABLES[] = {
 const struct EnumTable ENUM_TABLES_PUBLIC[] = {
 	{ "EquipSlot", ENUM_EquipSlot },
 	{ "EquipType", ENUM_EquipType },
+<<<<<<< HEAD
+=======
 	{ "DetailLevel", ENUM_DetailLevel },
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	{ "FileSystemRoot", ENUM_FileSystemRoot },
 	{ "PolitCrime", ENUM_PolitCrime },
 	{ "PolitEcon", ENUM_PolitEcon },
@@ -529,12 +570,18 @@ const struct EnumTable ENUM_TABLES_PUBLIC[] = {
 	{ "UIMouseButtonAction", ENUM_UIMouseButtonAction },
 	{ "UIMouseButtonType", ENUM_UIMouseButtonType },
 	{ "UIMouseWheelDirection", ENUM_UIMouseWheelDirection },
+<<<<<<< HEAD
+	{ "UIExpandDirection", ENUM_UIExpandDirection },
+	{ "UIGradientDirection", ENUM_UIGradientDirection },
+	{ "UIMarginDirection", ENUM_UIMarginDirection },
+=======
 	{ "UIJoystickHatDirection", ENUM_UIJoystickHatDirection },
 	{ "UIJoystickButtonAction", ENUM_UIJoystickButtonAction },
 	{ "UIExpandDirection", ENUM_UIExpandDirection },
 	{ "UIGradientDirection", ENUM_UIGradientDirection },
 	{ "UIMarginDirection", ENUM_UIMarginDirection },
 	{ "UITableRowAlignDirection", ENUM_UITableRowAlignDirection },
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	{ "UISizeControl", ENUM_UISizeControl },
 	{ "UIFont", ENUM_UIFont },
 	{ 0, 0 },

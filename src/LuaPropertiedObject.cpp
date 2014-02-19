@@ -1,9 +1,15 @@
+<<<<<<< HEAD
+// Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
 // Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "LuaObject.h"
 #include "PropertiedObject.h"
 
+<<<<<<< HEAD
+=======
 /*
  * Class: PropertiedObject
  *
@@ -122,10 +128,14 @@ public:
 
 };
 
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 template <> const char *LuaObject<PropertiedObject>::s_type = "PropertiedObject";
 
 template <> void LuaObject<PropertiedObject>::RegisterClass()
 {
+<<<<<<< HEAD
+	LuaObjectBase::CreateClass(s_type, 0, 0, 0, 0);
+=======
 	static const luaL_Reg l_methods[] = {
 		{ "Connect", LuaPropertiedObject::l_connect },
 		{ 0, 0 }
@@ -134,4 +144,5 @@ template <> void LuaObject<PropertiedObject>::RegisterClass()
 	LuaObjectBase::CreateClass(s_type, 0, l_methods, 0, 0);
 
 	LuaObject<PropertyConnection>::RegisterClass();
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 }

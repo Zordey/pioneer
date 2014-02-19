@@ -1,4 +1,8 @@
+<<<<<<< HEAD
+// Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
 // Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "libs.h"
@@ -49,18 +53,22 @@ GalacticView::GalacticView() : UIView(),
 	Add(m_labels, 0, 0);
 	Gui::Screen::PopFont();
 
+<<<<<<< HEAD
+	m_onMouseButtonDown =
+		Pi::onMouseButtonDown.connect(sigc::mem_fun(this, &GalacticView::MouseButtonDown));
+=======
 	m_onMouseWheelCon =
 		Pi::onMouseWheel.connect(sigc::mem_fun(this, &GalacticView::MouseWheel));
-
-	Graphics::RenderStateDesc rsd;
-	rsd.depthTest  = false;
-	rsd.depthWrite = false;
-	m_renderState = Gui::Screen::GetRenderer()->CreateRenderState(rsd);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 }
 
 GalacticView::~GalacticView()
 {
+<<<<<<< HEAD
+	m_onMouseButtonDown.disconnect();
+=======
 	m_onMouseWheelCon.disconnect();
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 }
 
 void GalacticView::Save(Serializer::Writer &wr)
@@ -104,13 +112,20 @@ void GalacticView::PutLabels(vector3d offset)
 
 void GalacticView::Draw3D()
 {
+<<<<<<< HEAD
+=======
 	PROFILE_SCOPED()
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	vector3f pos = Pi::sectorView->GetPosition();
 	float offset_x = (pos.x*Sector::SIZE + Galaxy::SOL_OFFSET_X)/Galaxy::GALAXY_RADIUS;
 	float offset_y = (-pos.y*Sector::SIZE + Galaxy::SOL_OFFSET_Y)/Galaxy::GALAXY_RADIUS;
 
+<<<<<<< HEAD
+	m_renderer->SetOrthographicProjection(-Pi::GetScrAspect(), Pi::GetScrAspect(), 1.f, -1.f, -1.f, 1.f);
+=======
 	const float aspect = m_renderer->GetDisplayAspect();
 	m_renderer->SetOrthographicProjection(-aspect, aspect, 1.f, -1.f, -1.f, 1.f);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	m_renderer->ClearScreen();
 
 	//apply zoom
@@ -123,6 +138,15 @@ void GalacticView::Draw3D()
 	m_quad.Draw(m_renderer, vector2f(-1.0f), vector2f(2.0f));
 
 	// "you are here" dot
+<<<<<<< HEAD
+	Color green(0.f, 1.f, 0.f, 1.f);
+	vector3f offs(offset_x, offset_y, 0.f);
+	m_renderer->DrawPoints(1, &offs, &green, 3.f);
+
+	// scale at the top
+	m_renderer->SetTransform(matrix4x4f::Identity());
+	Color white(1.f);
+=======
 	//Color green(0, 255, 0, 255);
 	vector3f offs(offset_x, offset_y, 0.f);
 	m_renderer->DrawPoints(1, &offs, &Color::GREEN, m_renderState, 3.f);
@@ -130,13 +154,18 @@ void GalacticView::Draw3D()
 	// scale at the top
 	m_renderer->SetTransform(matrix4x4f::Identity());
 	//Color white(255);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	const vector2f vts[] = {
 		vector2f(-0.25f,-0.93f),
 		vector2f(-0.25f,-0.94f),
 		vector2f(0.25f,-0.94f),
 		vector2f(0.25f,-0.93f)
 	};
-	m_renderer->DrawLines2D(4, vts, Color::WHITE, m_renderState, LINE_STRIP);
+<<<<<<< HEAD
+	m_renderer->DrawLines2D(4, vts, white, LINE_STRIP);
+=======
+	m_renderer->DrawLines2D(4, vts, Color::WHITE, LINE_STRIP);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 	m_labels->Clear();
 	PutLabels(-vector3d(offset_x, offset_y, 0.0));
@@ -167,9 +196,15 @@ void GalacticView::Update()
 void GalacticView::MouseWheel(bool up)
 {
 	if (this == Pi::GetView()) {
+<<<<<<< HEAD
+		if (Pi::MouseButtonState(SDL_BUTTON_WHEELDOWN))
+			m_zoomTo *= ((ZOOM_OUT_SPEED-1) * WHEEL_SENSITIVITY+1) / Pi::GetMoveSpeedShiftModifier();
+		else if (Pi::MouseButtonState(SDL_BUTTON_WHEELUP))
+=======
         if (!up)
 			m_zoomTo *= ((ZOOM_OUT_SPEED-1) * WHEEL_SENSITIVITY+1) / Pi::GetMoveSpeedShiftModifier();
 		else
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 			m_zoomTo *= ((ZOOM_IN_SPEED-1) * WHEEL_SENSITIVITY+1) * Pi::GetMoveSpeedShiftModifier();
 	}
 }

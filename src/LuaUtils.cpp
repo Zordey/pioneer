@@ -1,4 +1,8 @@
+<<<<<<< HEAD
+// Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
 // Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "LuaUtils.h"
@@ -96,6 +100,9 @@ static int l_hash_random(lua_State *L)
 	}
 }
 
+<<<<<<< HEAD
+static const luaL_Reg UTIL_FUNCTIONS[] = {
+=======
 /*
  * Function: trim
  *
@@ -137,6 +144,7 @@ static int l_trim(lua_State *l)
 
 static const luaL_Reg UTIL_FUNCTIONS[] = {
 	{ "trim", l_trim },
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	{ "hash_random", l_hash_random },
 	{ 0, 0 }
 };
@@ -147,6 +155,8 @@ static int luaopen_utils(lua_State *L)
 	return 1;
 }
 
+<<<<<<< HEAD
+=======
 static void pi_lua_dofile(lua_State *l, const FileSystem::FileData &code, int nret = 0);
 
 static bool _import_core(lua_State *L, const std::string &importName)
@@ -319,6 +329,7 @@ static int l_base_import_core(lua_State *L)
 	return 1;
 }
 
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 static const luaL_Reg STANDARD_LIBS[] = {
 	{ "_G", luaopen_base },
 	{ LUA_COLIBNAME, luaopen_coroutine },
@@ -352,8 +363,11 @@ static const luaL_Reg STANDARD_LIBS[] = {
 //  - dofile(), loadfile(), load(): same reason as the package library
 
 // extra/custom functionality:
+<<<<<<< HEAD
+=======
 //  - import(): library/dependency loader
 //  - import_core(): lowlevel library/dependency loader
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 //  - math.rad is aliased as math.deg2rad: I prefer the explicit name
 //  - util.hash_random(): a repeatable, safe, hash function based source of
 //    variation
@@ -375,6 +389,8 @@ void pi_lua_open_standard_base(lua_State *L)
 	lua_pushnil(L);
 	lua_setglobal(L, "loadstring");
 
+<<<<<<< HEAD
+=======
 
 	// import table and function
 	lua_newtable(L);
@@ -389,6 +405,7 @@ void pi_lua_open_standard_base(lua_State *L)
 	lua_setglobal(L, "import_core");
 
 
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	// standard library adjustments (math library)
 	lua_getglobal(L, LUA_MATHLIBNAME);
 
@@ -520,6 +537,55 @@ void pi_lua_protected_call(lua_State* L, int nargs, int nresults) {
 	}
 }
 
+<<<<<<< HEAD
+static void pi_lua_dofile(lua_State *l, const FileSystem::FileData &code)
+{
+	assert(l);
+	LUA_DEBUG_START(l);
+	// XXX make this a proper protected call (after working out the implications -- *sigh*)
+	lua_pushcfunction(l, &pi_lua_panic);
+
+	const StringRange source = code.AsStringRange().StripUTF8BOM();
+
+	const std::string &path(code.GetInfo().GetPath());
+	if (path.at(0) == '[') {
+		fprintf(stderr, "Paths starting with '[' are reserved in pi_lua_dofile('%s'\n",
+		        code.GetInfo().GetAbsolutePath().c_str());
+		lua_pop(l, 1);
+		return;
+	}
+
+	bool trusted = code.GetInfo().GetSource().IsTrusted();
+	const std::string chunkName = (trusted ? "[T] @" : "@") + path;
+
+	if (luaL_loadbuffer(l, source.begin, source.Size(), chunkName.c_str())) {
+		pi_lua_panic(l);
+	} else {
+		int ret = lua_pcall(l, 0, 0, -2);
+		if (ret) {
+			const char *emsg = lua_tostring(l, -1);
+			if (emsg) { fprintf(stderr, "lua error: %s\n", emsg); }
+			switch (ret) {
+				case LUA_ERRRUN:
+					fprintf(stderr, "Lua runtime error in pi_lua_dofile('%s')\n",
+							code.GetInfo().GetAbsolutePath().c_str());
+					break;
+				case LUA_ERRMEM:
+					fprintf(stderr, "Memory allocation error in Lua pi_lua_dofile('%s')\n",
+							code.GetInfo().GetAbsolutePath().c_str());
+					break;
+				case LUA_ERRERR:
+					fprintf(stderr, "Error running error handler in pi_lua_dofile('%s')\n",
+							code.GetInfo().GetAbsolutePath().c_str());
+					break;
+				default: abort();
+			}
+			lua_pop(l, 1);
+		}
+	}
+	lua_pop(l, 1);
+	LUA_DEBUG_END(l, 0);
+=======
 int pi_lua_loadfile(lua_State *l, const FileSystem::FileData &code)
 {
 	assert(l);
@@ -580,6 +646,7 @@ static void pi_lua_dofile(lua_State *l, const FileSystem::FileData &code, int nr
 
 	lua_remove(l, panicidx);
 	LUA_DEBUG_END(l, nret);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 }
 
 void pi_lua_dofile(lua_State *l, const std::string &path)
@@ -589,8 +656,11 @@ void pi_lua_dofile(lua_State *l, const std::string &path)
 
 	RefCountedPtr<FileSystem::FileData> code = FileSystem::gameDataFiles.ReadFile(path);
 	if (!code) {
-		Output("could not read Lua file '%s'\n", path.c_str());
+		fprintf(stderr, "could not read Lua file '%s'\n", path.c_str());
+<<<<<<< HEAD
+=======
 		return;
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	}
 
 	pi_lua_dofile(l, *code);
@@ -610,7 +680,11 @@ void pi_lua_dofile_recursive(lua_State *l, const std::string &basepath)
 			pi_lua_dofile_recursive(l, fpath);
 		} else {
 			assert(info.IsFile());
+<<<<<<< HEAD
+			if (ends_with(fpath, ".lua")) {
+=======
 			if (ends_with_ci(fpath, ".lua")) {
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 				RefCountedPtr<FileSystem::FileData> code = info.Read();
 				pi_lua_dofile(l, *code);
 			}
@@ -640,6 +714,8 @@ void pi_lua_warn(lua_State *l, const char *format, ...)
 		++level;
 	}
 }
+<<<<<<< HEAD
+=======
 
 // drill down from global looking for the appropriate table for the given
 // path. returns with the table and the last fragment on the stack, ready for
@@ -697,3 +773,4 @@ bool pi_lua_split_table_path(lua_State *l, const std::string &path)
 
 	return true;
 }
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755

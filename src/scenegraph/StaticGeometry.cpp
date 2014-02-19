@@ -1,4 +1,8 @@
+<<<<<<< HEAD
+// Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
 // Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "StaticGeometry.h"
@@ -15,7 +19,10 @@ namespace SceneGraph {
 StaticGeometry::StaticGeometry(Graphics::Renderer *r)
 : Node(r, NODE_SOLID)
 , m_blendMode(Graphics::BLEND_SOLID)
-, m_renderState(nullptr)
+<<<<<<< HEAD
+=======
+, m_bDisableDepthWrite(false)
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 {
 }
 
@@ -28,7 +35,10 @@ StaticGeometry::StaticGeometry(const StaticGeometry &sg, NodeCopyCache *cache)
 , m_boundingBox(sg.m_boundingBox)
 , m_blendMode(sg.m_blendMode)
 , m_meshes(sg.m_meshes)
-, m_renderState(sg.m_renderState)
+<<<<<<< HEAD
+=======
+, m_bDisableDepthWrite(sg.m_bDisableDepthWrite)
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 {
 }
 
@@ -44,11 +54,18 @@ void StaticGeometry::Accept(NodeVisitor &nv)
 
 void StaticGeometry::Render(const matrix4x4f &trans, const RenderData *rd)
 {
-	SDL_assert(m_renderState);
+<<<<<<< HEAD
+=======
+	assert(rd);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	Graphics::Renderer *r = GetRenderer();
 	r->SetTransform(trans);
-	for (auto& it : m_meshes)
-		r->DrawStaticMesh(it.Get(), m_renderState);
+	if (m_blendMode != Graphics::BLEND_SOLID)
+		r->SetBlendMode(m_blendMode);
+<<<<<<< HEAD
+	for (MeshContainer::iterator it = m_meshes.begin(), itEnd=m_meshes.end(); it != itEnd; ++it)
+		r->DrawStaticMesh(it->Get());
+=======
 
 	//DrawBoundingBox(m_boundingBox);
 }
@@ -152,7 +169,9 @@ StaticGeometry *StaticGeometry::Load(NodeDatabase &db)
 		}
 		sg->AddMesh(smesh);
 	}
-	return sg;
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
+
+	//DrawBoundingBox(r, m_boundingBox);
 }
 
 void StaticGeometry::AddMesh(RefCountedPtr<Graphics::StaticMesh> mesh)
@@ -162,7 +181,10 @@ void StaticGeometry::AddMesh(RefCountedPtr<Graphics::StaticMesh> mesh)
 
 void StaticGeometry::DrawBoundingBox(const Aabb &bb)
 {
+<<<<<<< HEAD
+=======
 	// TODO check entire function, because Color is now Color4ub
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	vector3f min(bb.min.x, bb.min.y, bb.min.z);
 	vector3f max(bb.max.x, bb.max.y, bb.max.z);
 	vector3f fbl(min.x, min.y, min.z); //front bottom left

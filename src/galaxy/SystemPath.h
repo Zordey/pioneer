@@ -1,4 +1,8 @@
+<<<<<<< HEAD
+// Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
 // Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #ifndef _SYSTEMPATH_H
@@ -115,6 +119,8 @@ public:
 		Sint32 bi = Sint32(rd.Int32());
 		return SystemPath(x, y, z, si, bi);
 	}
+<<<<<<< HEAD
+=======
 
 	// sometimes it's useful to be able to get the SystemPath data as a blob
 	// (for example, to be used for hashing)
@@ -130,6 +136,7 @@ public:
 		memcpy(blob + 3*sizeof(Uint32), &systemIndex, sizeof(Uint32));
 		memcpy(blob + 4*sizeof(Uint32), &bodyIndex, sizeof(Uint32));
 	}
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 };
 
 #endif

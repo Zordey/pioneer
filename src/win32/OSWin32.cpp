@@ -1,10 +1,18 @@
+<<<<<<< HEAD
+// Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
 // Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "Win32Setup.h"
 
 #include "OS.h"
 #include "FileSystem.h"
+<<<<<<< HEAD
+#include "SDLWrappers.h"
+=======
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 #include "TextUtils.h"
 #include <SDL.h>
 #include <stdio.h>
@@ -28,10 +36,49 @@ void NotifyLoadEnd()
 {
 }
 
+// Call MessageBox with error icon and abort
+void Error(const char *format, ...)
+{
+	char buf[1024];
+	va_list ap;
+	va_start(ap, format);
+	vsnprintf(buf, sizeof(buf), format, ap);
+	va_end(ap);
+	fprintf(stderr, "Error: %s\n", buf);
+	MessageBoxW(0, transcode_utf8_to_utf16(buf, strlen(buf)).c_str(), L"Error", MB_ICONERROR|MB_OK);
+#ifndef NDEBUG
+	abort();
+#else
+	exit(-1);
+#endif
+}
+
+// Call MessageBox with warning icon
+void Warning(const char *format, ...)
+{
+	char buf[1024];
+	va_list ap;
+	va_start(ap, format);
+	vsnprintf(buf, sizeof(buf), format, ap);
+	va_end(ap);
+	fprintf(stderr, "Warning: %s\n", buf);
+	MessageBoxW(0, transcode_utf8_to_utf16(buf, strlen(buf)).c_str(), L"Warning", MB_ICONWARNING|MB_OK);
+}
+
+<<<<<<< HEAD
+void LoadWindowIcon()
+{
+	// SDL doc says "Win32 icons must be 32x32".
+	SDLSurfacePtr surface = LoadSurfaceFromFile("icons/badge32-8b.png");
+	if (surface) {
+		SDL_WM_SetIcon(surface.Get(), 0);
+	}
+=======
 const char *GetIconFilename()
 {
 	// SDL doc says "Win32 icons must be 32x32".
 	return "icons/badge32-8b.png";
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 }
 
 void RedirectStdio()

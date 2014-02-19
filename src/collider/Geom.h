@@ -1,4 +1,8 @@
+<<<<<<< HEAD
+// Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
 // Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #ifndef _GEOM_H
@@ -34,9 +38,12 @@ public:
 	int GetMailboxIndex() const { return m_mailboxIndex; }
 	void SetGroup(int g) { m_group = g; }
 	int GetGroup() const { return m_group; }
+<<<<<<< HEAD
+=======
 
 	matrix4x4d m_animTransform;
 
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 private:
 	void CollideEdgesWithTrisOf(int &maxContacts, Geom *b, const matrix4x4d &transTo, void (*callback)(CollisionContact*));
 	void CollideEdgesTris(int &maxContacts, const BVHNode *edgeNode, const matrix4x4d &transToB,

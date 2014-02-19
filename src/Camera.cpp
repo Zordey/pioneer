@@ -1,4 +1,8 @@
+<<<<<<< HEAD
+// Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
 // Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "Camera.h"
@@ -16,8 +20,11 @@
 #include "graphics/Material.h"
 #include "graphics/TextureBuilder.h"
 
+<<<<<<< HEAD
+=======
 #include <SDL_stdinc.h>
 
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 using namespace Graphics;
 
 // if a body would render smaller than this many pixels, just ignore it
@@ -93,7 +100,10 @@ Camera::Camera(RefCountedPtr<CameraContext> context, Graphics::Renderer *rendere
 
 static void position_system_lights(Frame *camFrame, Frame *frame, std::vector<Camera::LightSource> &lights)
 {
+<<<<<<< HEAD
+=======
 	PROFILE_SCOPED()
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	if (lights.size() > 3) return;
 
 	SystemBody *body = frame->GetSystemBody();
@@ -103,9 +113,15 @@ static void position_system_lights(Frame *camFrame, Frame *frame, std::vector<Ca
 		const double dist = lpos.Length() / AU;
 		lpos *= 1.0/dist; // normalize
 
+<<<<<<< HEAD
+		const float *col = StarSystem::starRealColors[body->type];
+
+		const Color lightCol(col[0], col[1], col[2], 0.f);
+=======
 		const Uint8 *col = StarSystem::starRealColors[body->type];
 
 		const Color lightCol(col[0], col[1], col[2], 0);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		vector3f lightpos(lpos.x, lpos.y, lpos.z);
 		lights.push_back(Camera::LightSource(frame->GetBody(), Graphics::Light(Graphics::Light::LIGHT_DIRECTIONAL, lightpos, lightCol, lightCol)));
 	}
@@ -117,7 +133,22 @@ static void position_system_lights(Frame *camFrame, Frame *frame, std::vector<Ca
 
 void Camera::Update()
 {
-	Frame *camFrame = m_context->GetCamFrame();
+	if (!m_frame) return;
+
+	// make temporary camera frame
+	m_camFrame = new Frame(m_frame, "camera", Frame::FLAG_ROTATING);
+
+	// move and orient it to the camera position
+<<<<<<< HEAD
+	m_camFrame->SetOrient(m_orient);
+=======
+	m_camFrame->SetOrient(m_orient, Pi::game ? Pi::game->GetTime() : 0.0);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
+	m_camFrame->SetPosition(m_pos);
+
+	// make sure old orient and interpolated orient (rendering orient) are not rubbish
+	m_camFrame->ClearMovement();
+	m_camFrame->UpdateInterpTransform(1.0);			// update root-relative pos/orient
 
 	// evaluate each body and determine if/where/how to draw it
 	m_sortedBodies.clear();
@@ -177,12 +208,29 @@ void Camera::Update()
 	m_sortedBodies.sort();
 }
 
-void Camera::Draw(const Body *excludeBody, ShipCockpit* cockpit)
+<<<<<<< HEAD
+void Camera::Draw(Renderer *renderer, const Body *excludeBody)
+{
+=======
+void Camera::Draw(Graphics::Renderer *renderer, const Body *excludeBody, ShipCockpit* cockpit)
 {
 	PROFILE_SCOPED()
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
+	if (!m_camFrame) return;
+	if (!renderer) return;
 
 	Frame *camFrame = m_context->GetCamFrame();
 
+<<<<<<< HEAD
+=======
+	m_renderer->SetDepthWrite(true);
+	m_renderer->SetDepthTest(true);
+
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
+	glPushAttrib(GL_ALL_ATTRIB_BITS & (~GL_POINT_BIT));
+
+	m_renderer->SetPerspectiveProjection(m_fovAng, m_width/m_height, m_zNear, m_zFar);
+	m_renderer->SetTransform(matrix4x4f::Identity());
 	m_renderer->ClearScreen();
 
 	matrix4x4d trans2bg;
@@ -196,7 +244,11 @@ void Camera::Draw(const Body *excludeBody, ShipCockpit* cockpit)
 
 	if (m_lightSources.empty()) {
 		// no lights means we're somewhere weird (eg hyperspace). fake one
+<<<<<<< HEAD
+		const Color col(1.f);
+=======
 		const Color col(255);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		m_lightSources.push_back(LightSource(0, Graphics::Light(Graphics::Light::LIGHT_DIRECTIONAL, vector3f(0.f), col, col)));
 	}
 
@@ -218,7 +270,11 @@ void Camera::Draw(const Body *excludeBody, ShipCockpit* cockpit)
 				for(std::vector<LightSource>::const_iterator it = m_lightSources.begin();
 					it != m_lightSources.end(); ++it) {
 					const vector3f lightDir(it->GetLight().GetPosition().Normalized());
+<<<<<<< HEAD
+					angle += std::max(0.f, lightDir.Dot(-relpos.Normalized())) * it->GetLight().GetDiffuse().GetLuminance();
+=======
 					angle += std::max(0.f, lightDir.Dot(-relpos.Normalized())) * (it->GetLight().GetDiffuse().GetLuminance() / 255.0f);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 				}
 				//calculate background intensity with some hand-tweaked fuzz applied
 				bgIntensity = Clamp(1.f - std::min(1.f, powf(density, 0.25f)) * (0.3f + powf(angle, 0.25f)), 0.f, 1.f);
@@ -231,7 +287,10 @@ void Camera::Draw(const Body *excludeBody, ShipCockpit* cockpit)
 
 	{
 		std::vector<Graphics::Light> rendererLights;
+<<<<<<< HEAD
+=======
 		rendererLights.reserve(m_lightSources.size());
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		for (size_t i = 0; i < m_lightSources.size(); i++)
 			rendererLights.push_back(m_lightSources[i].GetLight());
 		m_renderer->SetLights(rendererLights.size(), &rendererLights[0]);
@@ -257,6 +316,8 @@ void Camera::Draw(const Body *excludeBody, ShipCockpit* cockpit)
 
 	Sfx::RenderAll(m_renderer, Pi::game->GetSpace()->GetRootFrame(), camFrame);
 
+<<<<<<< HEAD
+=======
 	// NB: Do any screen space rendering after here:
 	// Things like the cockpit and AR features like hudtrails, space dust etc.
 
@@ -264,7 +325,103 @@ void Camera::Draw(const Body *excludeBody, ShipCockpit* cockpit)
 	// XXX only here because it needs a frame for lighting calc
 	// should really be in WorldView, immediately after camera draw
 	if(cockpit)
-		cockpit->RenderCockpit(m_renderer, this, camFrame);
+		cockpit->RenderCockpit(renderer, this, m_camFrame);
+
+
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
+	m_frame->RemoveChild(m_camFrame);
+	delete m_camFrame;
+	m_camFrame = 0;
+
+	glPopAttrib();
+}
+
+void Camera::DrawSpike(double rad, const vector3d &viewCoords, const matrix4x4d &viewTransform)
+{
+<<<<<<< HEAD
+=======
+	PROFILE_SCOPED()
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
+	// draw twinkly star-thing on faraway objects
+	// XXX this seems like a good case for drawing in 2D - use projected position, then the
+	// "face the camera dammit" bits can be skipped
+	if (!m_renderer) return;
+
+	const double newdist = m_zNear + 0.5f * (m_zFar - m_zNear);
+	const double scale = newdist / viewCoords.Length();
+
+	matrix4x4d trans = matrix4x4d::Identity();
+	trans.Translate(scale*viewCoords.x, scale*viewCoords.y, scale*viewCoords.z);
+
+	// face the camera dammit
+	vector3d zaxis = viewCoords.Normalized();
+	vector3d xaxis = vector3d(0,1,0).Cross(zaxis).Normalized();
+	vector3d yaxis = zaxis.Cross(xaxis);
+	matrix4x4d rot = matrix4x4d::MakeInvRotMatrix(xaxis, yaxis, zaxis);
+	trans = trans * rot;
+
+	m_renderer->SetDepthTest(false);
+	m_renderer->SetBlendMode(BLEND_ALPHA_ONE);
+
+	// XXX this is supposed to pick a correct light colour for the object twinkle.
+	// Not quite correct, since it always uses the first light
+	GLfloat col[4];
+	glGetLightfv(GL_LIGHT0, GL_DIFFUSE, col);
+<<<<<<< HEAD
+	col[3] = 1.f;
+=======
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
+
+	static VertexArray va(ATTRIB_POSITION | ATTRIB_DIFFUSE);
+	va.Clear();
+
+<<<<<<< HEAD
+	const Color center(col[0], col[1], col[2], col[2]);
+	const Color edges(col[0], col[1], col[2], 0.f);
+=======
+	const Color center(col[0]*255, col[1]*255, col[2]*255, 255);
+	const Color edges(col[0]*255, col[1]*255, col[2]*255, 0);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
+
+	//center
+	va.Add(vector3f(0.f), center);
+
+	const float spikerad = float(scale*rad);
+
+	// bezier with (0,0,0) control points
+	{
+		const vector3f p0(0,spikerad,0), p1(spikerad,0,0);
+		float t=0.1f; for (int i=1; i<10; i++, t+= 0.1f) {
+			const vector3f p = (1-t)*(1-t)*p0 + t*t*p1;
+			va.Add(p, edges);
+		}
+	}
+	{
+		const vector3f p0(spikerad,0,0), p1(0,-spikerad,0);
+		float t=0.1f; for (int i=1; i<10; i++, t+= 0.1f) {
+			const vector3f p = (1-t)*(1-t)*p0 + t*t*p1;
+			va.Add(p, edges);
+		}
+	}
+	{
+		const vector3f p0(0,-spikerad,0), p1(-spikerad,0,0);
+		float t=0.1f; for (int i=1; i<10; i++, t+= 0.1f) {
+			const vector3f p = (1-t)*(1-t)*p0 + t*t*p1;
+			va.Add(p, edges);
+		}
+	}
+	{
+		const vector3f p0(-spikerad,0,0), p1(0,spikerad,0);
+		float t=0.1f; for (int i=1; i<10; i++, t+= 0.1f) {
+			const vector3f p = (1-t)*(1-t)*p0 + t*t*p1;
+			va.Add(p, edges);
+		}
+	}
+
+	m_renderer->SetTransform(trans);
+	m_renderer->DrawTriangles(&va, Graphics::vtxColorMaterial, TRIANGLE_FAN);
+	m_renderer->SetBlendMode(BLEND_SOLID);
+	m_renderer->SetDepthTest(true);
 }
 
 void Camera::CalcShadows(const int lightNum, const Body *b, std::vector<Shadow> &shadowsOut) const {

@@ -1,4 +1,8 @@
+<<<<<<< HEAD
+// Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
 // Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "libs.h"
@@ -6,7 +10,10 @@
 #include "Polit.h"
 #include "galaxy/StarSystem.h"
 #include "galaxy/Sector.h"
+<<<<<<< HEAD
+=======
 #include "galaxy/SectorCache.h"
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 #include "Factions.h"
 #include "Space.h"
 #include "Ship.h"
@@ -192,13 +199,22 @@ void GetSysPolitStarSystem(const StarSystem *s, const fixed human_infestedness, 
 	const Uint32 _init[5] = { Uint32(path.sectorX), Uint32(path.sectorY), Uint32(path.sectorZ), path.systemIndex, POLIT_SEED };
 	Random rand(_init, 5);
 
-	RefCountedPtr<const Sector> sec = Sector::cache.GetCached(path);
+<<<<<<< HEAD
+	Sector sec(path.sectorX, path.sectorY, path.sectorZ);
+=======
+	const Sector* sec = Sector::cache.GetCached(path);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 	GovType a = GOV_INVALID;
 
 	/* from custom system definition */
+<<<<<<< HEAD
+	if (sec.m_systems[path.systemIndex].customSys) {
+		Polit::GovType t = sec.m_systems[path.systemIndex].customSys->govType;
+=======
 	if (sec->m_systems[path.systemIndex].customSys) {
 		Polit::GovType t = sec->m_systems[path.systemIndex].customSys->govType;
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		a = t;
 	}
 	if (a == GOV_INVALID) {

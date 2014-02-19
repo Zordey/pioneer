@@ -1,3 +1,5 @@
+<<<<<<< HEAD
+=======
 -- Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
 -- Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
@@ -11,6 +13,7 @@ local Lang = import("Lang")
 
 local l = Lang.GetResource("ui-core")
 
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 -- Temporary mapping while waiting for new-equipment to embed this information.
 local missile_names = {
 	MISSILE_UNGUIDED="missile_unguided",
@@ -24,6 +27,8 @@ local missile_names = {
 -- Class representing a ship. Inherits from <Body>.
 --
 
+<<<<<<< HEAD
+=======
 -- class method
 function Ship.MakeRandomLabel ()
 	local letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -32,6 +37,7 @@ function Ship.MakeRandomLabel ()
 	return string.format("%s%s-%04d", letters:sub(a,a), letters:sub(b,b), Engine.rand:Integer(10000))
 end
 
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 -- This is a protected table (accessors only) in which details of each ship's crew
 -- will be stored.
 local CrewRoster = {}
@@ -135,6 +141,18 @@ end
 --   experimental
 --
 Ship.Refuel = function (self,amount)
+<<<<<<< HEAD
+	local t = Translate:GetTranslator()
+    local currentFuel = self.fuel
+    if currentFuel == 100 then
+		Comms.Message(t('Fuel tank full.'))
+        return 0
+    end
+    local ship_stats = self:GetStats()
+    local needed = math.clamp(math.ceil(ship_stats.maxFuelTankMass - ship_stats.fuelMassLeft),0, amount)
+    local removed = self:RemoveEquip('WATER', needed)
+    self:SetFuelPercent(math.clamp(self.fuel + removed * 100 / ship_stats.maxFuelTankMass, 0, 100))
+=======
     local currentFuel = self.fuel
     if currentFuel == 100 then
         Comms.Message(l.FUEL_TANK_FULL) -- XXX don't translate in libs
@@ -144,6 +162,7 @@ Ship.Refuel = function (self,amount)
     local needed = math.clamp(math.ceil(fuelTankMass - self.fuelMassLeft),0, amount)
     local removed = self:RemoveEquip('WATER', needed)
     self:SetFuelPercent(math.clamp(self.fuel + removed * 100 / fuelTankMass, 0, 100))
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
     return removed
 end
 
@@ -238,7 +257,11 @@ Ship.Enroll = function (self,newCrewMember)
 		error("Ship:Enroll: newCrewMember must be a Character object")
 	end
 	if not CrewRoster[self] then CrewRoster[self] = {} end
+<<<<<<< HEAD
+	if #CrewRoster[self] < ShipType.GetShipType(self.shipId).maxCrew
+=======
 	if #CrewRoster[self] < ShipDef[self.shipId].maxCrew
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	and isNotAlreadyEnrolled(newCrewMember)
 	then
 		newCrewMember:CheckOut() -- Don't want other scripts using our crew for missions etc
@@ -318,7 +341,11 @@ end
 --
 Ship.GenerateCrew = function (self)
 	if CrewRoster[self] then return end -- Bottle out if there's ever been a crew
+<<<<<<< HEAD
+	for i = 1, ShipType.GetShipType(self.shipId).maxCrew do
+=======
 	for i = 1, ShipDef[self.shipId].maxCrew do
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		local newCrew = Character.New()
 		newCrew:RollNew(true)
 		self:Enroll(newCrew)
@@ -376,8 +403,13 @@ end
 --
 Ship.HasCorrectCrew = function (self)
 	return (CrewRoster[self] and (
+<<<<<<< HEAD
+		#CrewRoster[self] >= ShipType.GetShipType(self.shipId).minCrew and
+		#CrewRoster[self] <= ShipType.GetShipType(self.shipId).maxCrew
+=======
 		#CrewRoster[self] >= ShipDef[self.shipId].minCrew and
 		#CrewRoster[self] <= ShipDef[self.shipId].maxCrew
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	))
 end
 
@@ -434,5 +466,8 @@ Event.Register("onEnterSystem", onEnterSystem)
 Event.Register("onShipDestroyed", onShipDestroyed)
 Event.Register("onGameStart", onGameStart)
 Serializer:Register("ShipClass", serialize, unserialize)
+<<<<<<< HEAD
+=======
 
 return Ship
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755

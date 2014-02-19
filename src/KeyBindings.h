@@ -1,4 +1,8 @@
+<<<<<<< HEAD
+// Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
 // Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #ifndef KEYBINDINGS_H
@@ -9,13 +13,54 @@
 
 namespace KeyBindings {
 	enum Type {
+<<<<<<< HEAD
+=======
 		BINDING_DISABLED,
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		KEYBOARD_KEY,
 		JOYSTICK_BUTTON,
 		JOYSTICK_HAT
 	};
 
 	struct KeyBinding {
+<<<<<<< HEAD
+		Type type;
+
+		union {
+			struct {
+				SDLKey key;
+				SDLMod mod;
+			} keyboard;
+
+			struct {
+				Uint8 joystick;
+				Uint8 button;
+			} joystickButton;
+
+			struct {
+				Uint8 joystick;
+				Uint8 hat;
+				Uint8 direction;
+			} joystickHat;
+		} u;
+
+		std::string Description() const;
+		bool Matches(const SDL_keysym *sym) const;
+
+		static KeyBinding keyboardBinding(SDLKey key, SDLMod mod);
+	};
+
+	struct KeyAction {
+		KeyBinding binding;
+
+		sigc::signal<void> onPress;
+		sigc::signal<void> onRelease;
+
+		bool IsActive() const;
+		void CheckSDLEventAndDispatch(const SDL_Event *event);
+	};
+
+=======
 		public:
 			// constructors
 			static bool FromString(const char *str, KeyBinding &binding);
@@ -80,6 +125,7 @@ namespace KeyBindings {
 		bool Matches(const SDL_Keysym *sym) const;
 	};
 
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	enum AxisDirection {
 		POSITIVE,
 		NEGATIVE
@@ -94,6 +140,8 @@ namespace KeyBindings {
 		AxisBinding(Uint8 joystick, Uint8 axis, AxisDirection direction);
 		float GetValue();
 		std::string Description() const;
+<<<<<<< HEAD
+=======
 
 		void Clear() {
 			memset(this, 0, sizeof(*this));
@@ -102,6 +150,7 @@ namespace KeyBindings {
 		static bool FromString(const char *str, AxisBinding &binding);
 		static AxisBinding FromString(const char *str);
 		std::string ToString() const;
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	};
 
 	struct BindingPrototype {
@@ -113,9 +162,22 @@ namespace KeyBindings {
 	void InitBindings();
 	void UpdateBindings();
 
+<<<<<<< HEAD
+	bool KeyBindingFromString(const std::string &str, KeyBinding *kb);
+	KeyBinding KeyBindingFromString(const std::string &str);
+	std::string KeyBindingToString(const KeyBinding &kb);
+	bool AxisBindingFromString(const std::string &str, AxisBinding *ab);
+	AxisBinding AxisBindingFromString(const std::string &str);
+	std::string AxisBindingToString(const AxisBinding &ab);
+
+	void DispatchSDLEvent(const SDL_Event *event);
+
+#define KEY_BINDING(name,a,b,c) extern KeyAction name;
+=======
 	void DispatchSDLEvent(const SDL_Event *event);
 
 #define KEY_BINDING(name,a,b,c,d) extern KeyAction name;
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 #define AXIS_BINDING(name,a,b,c) extern AxisBinding name;
 #include "KeyBindings.inc.h"
 

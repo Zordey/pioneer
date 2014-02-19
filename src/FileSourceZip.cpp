@@ -1,4 +1,8 @@
+<<<<<<< HEAD
+// Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
 // Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "FileSourceZip.h"
@@ -17,7 +21,11 @@ namespace FileSystem {
 
 FileSourceZip::FileSourceZip(FileSourceFS &fs, const std::string &zipPath) : FileSource(zipPath), m_archive(0)
 {
+<<<<<<< HEAD
+	mz_zip_archive *zip = reinterpret_cast<mz_zip_archive*>(std::calloc(1, sizeof(mz_zip_archive)));
+=======
 	mz_zip_archive *zip = static_cast<mz_zip_archive*>(std::calloc(1, sizeof(mz_zip_archive)));
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	FILE *file = fs.OpenReadStream(zipPath);
 	if (!mz_zip_reader_init_file_stream(zip, file, 0)) {
 		Output("FileSourceZip: unable to open '%s'\n", zipPath.c_str());
@@ -42,13 +50,21 @@ FileSourceZip::FileSourceZip(FileSourceFS &fs, const std::string &zipPath) : Fil
 		}
 	}
 
+<<<<<<< HEAD
+	m_archive = reinterpret_cast<void*>(zip);
+=======
 	m_archive = static_cast<void*>(zip);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 }
 
 FileSourceZip::~FileSourceZip()
 {
 	if (!m_archive) return;
+<<<<<<< HEAD
+	mz_zip_archive *zip = reinterpret_cast<mz_zip_archive*>(m_archive);
+=======
 	mz_zip_archive *zip = static_cast<mz_zip_archive*>(m_archive);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	mz_zip_reader_end(zip);
 }
 
@@ -112,7 +128,11 @@ FileInfo FileSourceZip::Lookup(const std::string &path)
 RefCountedPtr<FileData> FileSourceZip::ReadFile(const std::string &path)
 {
 	if (!m_archive) return RefCountedPtr<FileData>();
+<<<<<<< HEAD
+	mz_zip_archive *zip = reinterpret_cast<mz_zip_archive*>(m_archive);
+=======
 	mz_zip_archive *zip = static_cast<mz_zip_archive*>(m_archive);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 	const Directory *dir;
 	std::string filename;
@@ -125,7 +145,11 @@ RefCountedPtr<FileData> FileSourceZip::ReadFile(const std::string &path)
 
 	const FileStat &st = (*i).second;
 
+<<<<<<< HEAD
+	char *data = reinterpret_cast<char*>(std::malloc(st.size));
+=======
 	char *data = static_cast<char*>(std::malloc(st.size));
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	if (!mz_zip_reader_extract_to_mem(zip, st.index, data, st.size, 0)) {
 		Output("FileSourceZip::ReadFile: couldn't extract '%s'\n", path.c_str());
 		return RefCountedPtr<FileData>();

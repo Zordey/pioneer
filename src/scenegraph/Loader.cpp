@@ -1,4 +1,8 @@
+<<<<<<< HEAD
+// Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
 // Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "Loader.h"
@@ -21,6 +25,10 @@
 #include <assimp/material.h>
 
 namespace {
+<<<<<<< HEAD
+
+=======
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	class AssimpFileReadStream : public Assimp::IOStream
 	{
 	public:
@@ -111,9 +119,17 @@ namespace {
 	private:
 		FileSystem::FileSource &m_fs;
 	};
+<<<<<<< HEAD
+
 } // anonymous namespace
 
 namespace SceneGraph {
+
+=======
+} // anonymous namespace
+
+namespace SceneGraph {
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 Loader::Loader(Graphics::Renderer *r, bool logWarnings)
 : BaseLoader(r)
 , m_doLog(logWarnings)
@@ -138,7 +154,11 @@ Model *Loader::LoadModel(const std::string &shortname, const std::string &basepa
 		const std::string &fpath = info.GetPath();
 
 		//check it's the expected type
+<<<<<<< HEAD
+		if (info.IsFile() && ends_with(fpath, ".model")) {
+=======
 		if (info.IsFile() && ends_with_ci(fpath, ".model")) {
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 			//check it's the wanted name & load it
 			const std::string name = info.GetName();
 
@@ -163,6 +183,10 @@ Model *Loader::LoadModel(const std::string &shortname, const std::string &basepa
 				return CreateModel(modelDefinition);
 			}
 		}
+<<<<<<< HEAD
+
+=======
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	}
 	throw (LoadingError("File not found"));
 }
@@ -184,8 +208,60 @@ Model *Loader::CreateModel(ModelDefinition &def)
 	for(std::vector<MaterialDefinition>::const_iterator it = def.matDefs.begin();
 		it != def.matDefs.end(); ++it)
 	{
-		if (it->use_pattern) patternsUsed = true;
-		ConvertMaterialDefinition(*it);
+		//Build material descriptor
+		assert(!(*it).name.empty());
+		const std::string &diffTex = (*it).tex_diff;
+		const std::string &specTex = (*it).tex_spec;
+		const std::string &glowTex = (*it).tex_glow;
+
+		Graphics::MaterialDescriptor matDesc;
+		matDesc.lighting = !it->unlit;
+		matDesc.alphaTest = it->alpha_test;
+		matDesc.twoSided = it->two_sided;
+
+		if ((*it).use_pattern) {
+			patternsUsed = true;
+			matDesc.usePatterns = true;
+		}
+
+		//diffuse texture is a must. Will create a white dummy texture if one is not supplied
+		matDesc.textures = 1;
+		matDesc.specularMap = !specTex.empty();
+		matDesc.glowMap = !glowTex.empty();
+<<<<<<< HEAD
+=======
+		matDesc.quality = Graphics::HAS_HEAT_GRADIENT;
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
+
+		//Create material and set parameters
+		RefCountedPtr<Material> mat(m_renderer->CreateMaterial(matDesc));
+		mat->diffuse = (*it).diffuse;
+		mat->specular = (*it).specular;
+		mat->emissive = (*it).emissive;
+		mat->shininess = (*it).shininess;
+
+		//semitransparent material
+		//the node must be marked transparent when using this material
+		//and should not be mixed with opaque materials
+		if ((*it).opacity < 100)
+<<<<<<< HEAD
+			mat->diffuse.a = float((*it).opacity) / 100.f;
+=======
+			mat->diffuse.a = (float((*it).opacity) / 100.f) * 255;
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
+
+		if (!diffTex.empty())
+			mat->texture0 = Graphics::TextureBuilder::Model(diffTex).GetOrCreateTexture(m_renderer, "model");
+		else
+			mat->texture0 = Graphics::TextureBuilder::GetWhiteTexture(m_renderer);
+		if (!specTex.empty())
+			mat->texture1 = Graphics::TextureBuilder::Model(specTex).GetOrCreateTexture(m_renderer, "model");
+		if (!glowTex.empty())
+			mat->texture2 = Graphics::TextureBuilder::Model(glowTex).GetOrCreateTexture(m_renderer, "model");
+		//texture3 is reserved for pattern
+		//texture4 is reserved for color gradient
+
+		model->m_materials.push_back(std::make_pair((*it).name, mat));
 	}
 	//Output("Loaded %d materials\n", int(model->m_materials.size()));
 
@@ -271,14 +347,56 @@ Model *Loader::CreateModel(ModelDefinition &def)
 	// If no collision mesh is defined, a simple bounding box will be generated
 	m_model->CreateCollisionMesh();
 
+<<<<<<< HEAD
+=======
 	// Do an initial animation update to get all the animation transforms correct
 	m_model->UpdateAnimations();
 
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	//find usable pattern textures from the model directory
-	if (patternsUsed)
-		SetUpPatterns();
+	if (patternsUsed) {
+		FindPatterns(model->m_patterns);
+
+		if (model->m_patterns.empty()) {
+			model->m_patterns.push_back(Pattern());
+			Pattern &dumpat = m_model->m_patterns.back();
+			dumpat.name = "Dummy";
+			dumpat.texture = RefCountedPtr<Graphics::Texture>(Graphics::TextureBuilder::GetWhiteTexture(m_renderer));
+		}
+
+		//set up some noticeable default colors
+<<<<<<< HEAD
+		std::vector<Color4ub> colors;
+		colors.push_back(Color4ub::RED);
+		colors.push_back(Color4ub::GREEN);
+		colors.push_back(Color4ub::BLUE);
+=======
+		std::vector<Color> colors;
+		colors.push_back(Color::RED);
+		colors.push_back(Color::GREEN);
+		colors.push_back(Color::BLUE);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
+		model->SetColors(colors);
+		model->SetPattern(0);
+	}
 
 	return model;
+}
+
+void Loader::FindPatterns(PatternContainer &output)
+{
+	for (FileSystem::FileEnumerator files(FileSystem::gameDataFiles, m_curPath); !files.Finished(); files.Next()) {
+		const FileSystem::FileInfo &info = files.Current();
+		if (info.IsFile()) {
+			const std::string &name = info.GetName();
+<<<<<<< HEAD
+			if (ends_with(name, ".png") && starts_with(name, "pattern"))
+=======
+			if (ends_with_ci(name, ".png") && starts_with(name, "pattern"))
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
+				output.push_back(Pattern(name, m_curPath, m_renderer));
+		}
+	}
 }
 
 RefCountedPtr<Node> Loader::LoadMesh(const std::string &filename, const AnimList &animDefs)
@@ -421,7 +539,11 @@ void Loader::ConvertAiMeshes(std::vector<RefCountedPtr<StaticGeometry> > &geoms,
 		Graphics::RenderStateDesc rsd;
 		//turn on alpha blending and mark entire node as transparent
 		//(all importers split by material so far)
+<<<<<<< HEAD
+		if (mat->diffuse.a < 0.99f) {
+=======
 		if (mat->diffuse.a < 255) {
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 			geom->SetNodeMask(NODE_TRANSPARENT);
 			geom->m_blendMode = Graphics::BLEND_ALPHA;
 			rsd.blendMode = Graphics::BLEND_ALPHA;
@@ -641,13 +763,21 @@ void Loader::CreateLabel(Group *parent, const matrix4x4f &m)
 	parent->AddChild(trans);
 }
 
+<<<<<<< HEAD
+void Loader::CreateThruster(const std::string &name, const matrix4x4f &m, const matrix4x4f& accum)
+=======
 void Loader::CreateThruster(const std::string &name, const matrix4x4f &m)
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 {
 	if (!m_mostDetailedLod) return AddLog("Thruster outside highest LOD, ignored");
 
 	const bool linear = starts_with(name, "thruster_linear");
 
+<<<<<<< HEAD
+	matrix4x4f transform = accum * m;
+=======
 	matrix4x4f transform = m;
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 	MatrixTransform *trans = new MatrixTransform(m_renderer, transform);
 
@@ -665,14 +795,22 @@ void Loader::CreateThruster(const std::string &name, const matrix4x4f &m)
 	m_thrustersRoot->AddChild(trans);
 }
 
+<<<<<<< HEAD
+void Loader::CreateNavlight(const std::string &name, const matrix4x4f &m, const matrix4x4f& accum)
+=======
 void Loader::CreateNavlight(const std::string &name, const matrix4x4f &m)
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 {
 	if (!m_mostDetailedLod) return AddLog("Navlight outside highest LOD, ignored");
 
 	//Create a MT, lights are attached by client
 	//we only really need the final position, so this is
 	//a waste of transform
+<<<<<<< HEAD
+	const matrix4x4f lightPos = matrix4x4f::Translation(accum * m.GetTranslate());
+=======
 	const matrix4x4f lightPos = matrix4x4f::Translation(m.GetTranslate());
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	MatrixTransform *lightPoint = new MatrixTransform(m_renderer, lightPos);
 	lightPoint->SetNodeMask(0x0); //don't render
 	lightPoint->SetName(name);
@@ -690,6 +828,17 @@ void Loader::ConvertNodes(aiNode *node, Group *_parent, std::vector<RefCountedPt
 	//lights, and possibly other special nodes should be leaf nodes (without meshes)
 	if (node->mNumChildren == 0 && node->mNumMeshes == 0) {
 		if (starts_with(nodename, "navlight_")) {
+<<<<<<< HEAD
+			CreateNavlight(nodename, m, accum);
+		} else if (starts_with(nodename, "thruster_")) {
+			CreateThruster(nodename, m, accum);
+		} else if (starts_with(nodename, "label_")) {
+			CreateLabel(parent, m);
+		} else if (starts_with(nodename, "tag_")) {
+			vector3f tagpos = accum * m.GetTranslate();
+			MatrixTransform *tagMt = new MatrixTransform(m_renderer, matrix4x4f::Translation(tagpos));
+			m_model->AddTag(nodename, tagMt);
+=======
 			CreateNavlight(nodename, accum*m);
 		} else if (starts_with(nodename, "thruster_")) {
 			CreateThruster(nodename, accum*m);
@@ -697,6 +846,7 @@ void Loader::ConvertNodes(aiNode *node, Group *_parent, std::vector<RefCountedPt
 			CreateLabel(parent, m);
 		} else if (starts_with(nodename, "tag_")) {
 			m_model->AddTag(nodename, new MatrixTransform(m_renderer, accum*m));
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		} else if (starts_with(nodename, "docking_")) {
 			m_model->AddTag(nodename, new MatrixTransform(m_renderer, m));
 		} else if (starts_with(nodename, "leaving_")) {
@@ -719,7 +869,10 @@ void Loader::ConvertNodes(aiNode *node, Group *_parent, std::vector<RefCountedPt
 		RefCountedPtr<Graphics::Surface> surf = geoms.at(node->mMeshes[0])->GetMesh(0)->GetSurface(0);
 		RefCountedPtr<CollisionGeometry> cgeom(new CollisionGeometry(m_renderer, surf.Get(), collflag));
 		cgeom->SetName(nodename + "_cgeom");
+<<<<<<< HEAD
+=======
 		cgeom->SetDynamic(starts_with(nodename, "collision_d"));
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		parent->AddChild(cgeom.Get());
 		return;
 	}
@@ -822,6 +975,18 @@ void Loader::LoadCollision(const std::string &filename)
 
 unsigned int Loader::GetGeomFlagForNodeName(const std::string &nodename)
 {
+<<<<<<< HEAD
+	if (nodename.length() >= 14) {
+		const std::string pad = nodename.substr(13);
+		const int padID = atoi(pad.c_str())-1;
+		if(padID<240) {
+			return 0x10 + padID;
+		}
+	}
+	return 0x0;
+}
+
+=======
 	//special names after collision_
 	if (nodename.length() > 10) {
 		//landing pads
@@ -836,5 +1001,5 @@ unsigned int Loader::GetGeomFlagForNodeName(const std::string &nodename)
 	//anything else is static collision
 	return 0x0;
 }
-
-} //namespace
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
+}

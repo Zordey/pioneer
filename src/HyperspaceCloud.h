@@ -1,4 +1,8 @@
+<<<<<<< HEAD
+// Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
 // Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #ifndef _HYPERSPACECLOUD_H
@@ -49,9 +53,13 @@ private:
 	bool m_isArrival;
 
 	struct Graphic {
+<<<<<<< HEAD
+		ScopedPtr<Graphics::VertexArray> vertices;
+		ScopedPtr<Graphics::Material> material;
+=======
 		std::unique_ptr<Graphics::VertexArray> vertices;
 		std::unique_ptr<Graphics::Material> material;
-		Graphics::RenderState *renderState;
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	};
 	Graphic m_graphic;
 };

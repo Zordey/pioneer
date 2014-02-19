@@ -1,4 +1,8 @@
+<<<<<<< HEAD
+// Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
 // Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #ifndef UI_CONTAINER_H
@@ -35,7 +39,11 @@ public:
 
 	virtual bool IsContainer() const { return true; }
 
+<<<<<<< HEAD
+	Widget *GetWidgetAtAbsolute(const Point &pos) { return GetWidgetAt(pos - GetAbsolutePosition()); }
+=======
 	// widget at pos relative to this widget
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	virtual Widget *GetWidgetAt(const Point &pos);
 
 	virtual void Disable();
@@ -61,7 +69,10 @@ private:
 	friend class EventDispatcher;
 	void CollectShortcuts(std::map<KeySym,Widget*> &shortcuts);
 
+<<<<<<< HEAD
+=======
 	virtual void NotifyVisible(bool visible);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 	void EnableChildren();
 	void DisableChildren();

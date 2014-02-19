@@ -5,7 +5,11 @@
   <PropertyGroup />
   <ItemDefinitionGroup>
     <Link>
+<<<<<<< HEAD
+      <AdditionalDependencies>collider.lib;galaxy.lib;gameui.lib;graphics.lib;gui.lib;jenkins.lib;lua.lib;miniz.lib;scenegraph.lib;terrain.lib;text.lib;ui.lib;%(AdditionalDependencies)</AdditionalDependencies>
+=======
       <AdditionalDependencies>glew.lib;collider.lib;galaxy.lib;gameui.lib;graphics.lib;gui.lib;jenkins.lib;json.lib;lua.lib;scenegraph.lib;terrain.lib;text.lib;ui.lib;%(AdditionalDependencies)</AdditionalDependencies>
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup />

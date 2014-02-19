@@ -11,7 +11,10 @@ uniform vec3 geosphereCenter;
 uniform float geosphereAtmosFogDensity;
 uniform float geosphereAtmosInvScaleHeight;
 
+<<<<<<< HEAD
+=======
 #ifdef ECLIPSE
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 uniform int shadows;
 uniform ivec3 occultedLight;
 uniform vec3 shadowCentreX;
@@ -20,7 +23,10 @@ uniform vec3 shadowCentreZ;
 uniform vec3 srad;
 uniform vec3 lrad;
 uniform vec3 sdivlrad;
+<<<<<<< HEAD
+=======
 #endif // ECLIPSE
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 uniform Material material;
 uniform Scene scene;
@@ -33,7 +39,10 @@ varying vec4 vertexColor;
 varying vec4 varyingEmission;
 #endif
 
+<<<<<<< HEAD
+=======
 #ifdef ECLIPSE
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 #define PI 3.141592653589793
 
 float discCovered(const in float dist, const in float rad) {
@@ -62,7 +71,10 @@ float discCovered(const in float dist, const in float rad) {
 	// discs plus/minus some triangles, and it works out as follows:
 	return clamp((th + radsq*th2 - dist*d)/PI, 0.0, 1.0);
 }
+<<<<<<< HEAD
+=======
 #endif // ECLIPSE
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 void main(void)
 {
@@ -82,7 +94,10 @@ void main(void)
 	for (int i=0; i<NUM_LIGHTS; ++i) {
 		vec3 lightDir = normalize(vec3(gl_LightSource[i].position));
 		float unshadowed = 1.0;
+<<<<<<< HEAD
+=======
 #ifdef ECLIPSE
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		for (int j=0; j<shadows; j++) {
 			if (i != occultedLight[j])
 				continue;
@@ -97,7 +112,10 @@ void main(void)
 			float dist = length(projectedPoint - centre);
 			unshadowed *= 1.0 - discCovered(dist/lrad[j], sdivlrad[j]);
 		}
+<<<<<<< HEAD
+=======
 #endif // ECLIPSE
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		unshadowed = clamp(unshadowed, 0.0, 1.0);
 		nDotVP  = max(0.0, dot(tnorm, normalize(vec3(gl_LightSource[i].position))));
 		nnDotVP = max(0.0, dot(tnorm, normalize(-vec3(gl_LightSource[i].position)))); //need backlight to increase horizon

@@ -1,4 +1,8 @@
+<<<<<<< HEAD
+// Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
 // Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #ifndef _GUISCREEN_H
@@ -23,16 +27,25 @@ namespace Gui {
 		static void RemoveBaseWidget(Widget *w);
 		static void OnMouseMotion(SDL_MouseMotionEvent *e);
 		static void OnClick(SDL_MouseButtonEvent *e);
+<<<<<<< HEAD
+		static void OnKeyDown(const SDL_keysym *sym);
+		static void OnKeyUp(const SDL_keysym *sym);
+=======
 		static void OnKeyDown(const SDL_Keysym *sym);
 		static void OnKeyUp(const SDL_Keysym *sym);
 		static void OnTextInput(const SDL_TextInputEvent *e);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		static void EnterOrtho();
 		static void LeaveOrtho();
 		static int GetWidth() { return width; }
 		static int GetHeight() { return height; }
 		// gluProject but fixes UI/screen size mismatch
 		static bool Project(const vector3d &in, vector3d &out);
+<<<<<<< HEAD
+		friend void Widget::SetShortcut(SDLKey key, SDLMod mod);
+=======
 		friend void Widget::SetShortcut(SDL_Keycode key, SDL_Keymod mod);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		friend Widget::~Widget();
 		static bool IsBaseWidget(const Widget *);
 		static void GetCoords2Pixels(float scale[2]) {
@@ -81,8 +94,13 @@ namespace Gui {
 		static Gui::Fixed *baseContainer;
 		static Gui::Widget *focusedWidget;
 		static void OnDeleteFocusedWidget();
+<<<<<<< HEAD
+		static GLdouble modelMatrix[16];
+		static GLdouble projMatrix[16];
+=======
 		static matrix4x4f modelMatrix;
 		static matrix4x4f projMatrix;
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		static GLint viewport[4];
 
 		static FontCache s_fontCache;

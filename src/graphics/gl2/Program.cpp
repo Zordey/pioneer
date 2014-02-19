@@ -1,4 +1,8 @@
+<<<<<<< HEAD
+// Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
 // Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "Program.h"
@@ -36,8 +40,21 @@ static bool check_glsl_errors(const char *filename, GLuint obj)
 		glGetProgramiv(obj, GL_LINK_STATUS, &status);
 
 	if (status == GL_FALSE) {
-		Error("Error compiling shader: %s:\n%sOpenGL vendor: %s\nOpenGL renderer string: %s",
+<<<<<<< HEAD
+#ifndef NDEBUG
+		OS::Error("Error compiling shader: %s:\n%sOpenGL vendor: %s\nOpenGL renderer string: %s",
 			filename, infoLog, glGetString(GL_VENDOR), glGetString(GL_RENDERER));
+#else
+		OS::Warning("Error compiling shader: %s:\n%sOpenGL vendor: %s\nOpenGL renderer string: %s\n\n"
+			"Pioneer will not work as intended. Try disabling shaders in the options or the config file.\n",
+			filename, infoLog, glGetString(GL_VENDOR), glGetString(GL_RENDERER));
+#endif
+		shadersAvailable = false;
+		shadersEnabled = false;
+=======
+		OS::Error("Error compiling shader: %s:\n%sOpenGL vendor: %s\nOpenGL renderer string: %s",
+			filename, infoLog, glGetString(GL_VENDOR), glGetString(GL_RENDERER));
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		return false;
 	}
 
@@ -76,6 +93,8 @@ struct Shader {
 		AppendSource(logzCode->AsStringRange().StripUTF8BOM());
 		AppendSource(libsCode->AsStringRange().StripUTF8BOM());
 		AppendSource(code->AsStringRange().StripUTF8BOM());
+<<<<<<< HEAD
+=======
 #if 0
 		static bool s_bDumpShaderSource = true;
 		if (s_bDumpShaderSource) {
@@ -92,6 +111,7 @@ struct Shader {
 			fclose(tmp);
 		}
 #endif
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		shader = glCreateShader(type);
 		Compile(shader);
 
@@ -205,10 +225,13 @@ void Program::InitUniforms()
 	texture2.Init("texture2", m_program);
 	texture3.Init("texture3", m_program);
 	texture4.Init("texture4", m_program);
+<<<<<<< HEAD
+=======
 	heatGradient.Init("heatGradient", m_program);
 	heatingMatrix.Init("heatingMatrix", m_program);
 	heatingNormal.Init("heatingNormal", m_program);
 	heatingAmount.Init("heatingAmount", m_program);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	sceneAmbient.Init("scene.ambient", m_program);
 }
 

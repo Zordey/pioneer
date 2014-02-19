@@ -1,10 +1,17 @@
+<<<<<<< HEAD
+// Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
 // Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "Table.h"
 #include "Lua.h"
+<<<<<<< HEAD
+=======
 #include "LuaConstants.h"
 #include "LuaSignal.h"
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 namespace UI {
 
@@ -83,12 +90,15 @@ public:
 		return 1;
 	}
 
+<<<<<<< HEAD
+=======
 	static int l_clear_rows(lua_State *l) {
 		UI::Table *t = LuaObject<UI::Table>::CheckFromLua(1);
 		t->ClearRows();
 		return 0;
 	}
 
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	static int l_set_row_spacing(lua_State *l) {
 		UI::Table *t = LuaObject<UI::Table>::CheckFromLua(1);
 		int spacing = luaL_checkinteger(l, 2);
@@ -105,14 +115,23 @@ public:
 		return 1;
 	}
 
+<<<<<<< HEAD
+	static int l_set_spacing(lua_State *l) {
+		UI::Table *t = LuaObject<UI::Table>::CheckFromLua(1);
+		int spacing = luaL_checkinteger(l, 2);
+		t->SetSpacing(spacing);
+=======
 	static int l_set_row_alignment(lua_State *l) {
 		UI::Table *t = LuaObject<UI::Table>::CheckFromLua(1);
 		UI::Table::RowAlignDirection dir = static_cast<UI::Table::RowAlignDirection>(LuaConstants::GetConstantFromArg(l, "UITableRowAlignDirection", 2));
 		t->SetRowAlignment(dir);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		lua_pushvalue(l, 1);
 		return 1;
 	}
 
+<<<<<<< HEAD
+=======
 	static int l_set_heading_font(lua_State *l) {
 		UI::Table *t = LuaObject<UI::Table>::CheckFromLua(1);
 		UI::Widget::Font font = static_cast<UI::Widget::Font>(LuaConstants::GetConstantFromArg(l, "UIFont", 2));
@@ -135,6 +154,7 @@ public:
 		return 1;
 	}
 
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 };
 
 }
@@ -151,6 +171,15 @@ template <> void LuaObject<UI::Table>::RegisterClass()
 		{ "SetHeadingRow",    UI::LuaTable::l_set_heading_row    },
 		{ "AddRow",           UI::LuaTable::l_add_row            },
 		{ "AddRows",          UI::LuaTable::l_add_rows           },
+<<<<<<< HEAD
+		{ "SetRowSpacing",    UI::LuaTable::l_set_row_spacing    },
+		{ "SetColumnSpacing", UI::LuaTable::l_set_column_spacing },
+		{ "SetSpacing",       UI::LuaTable::l_set_spacing        },
+		{ 0, 0 }
+	};
+
+	LuaObjectBase::CreateClass(s_type, l_parent, l_methods, 0, 0);
+=======
 		{ "ClearRows",        UI::LuaTable::l_clear_rows         },
 		{ "SetRowSpacing",    UI::LuaTable::l_set_row_spacing    },
 		{ "SetColumnSpacing", UI::LuaTable::l_set_column_spacing },
@@ -166,5 +195,6 @@ template <> void LuaObject<UI::Table>::RegisterClass()
 	};
 
 	LuaObjectBase::CreateClass(s_type, l_parent, l_methods, l_attrs, 0);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	LuaObjectBase::RegisterPromotion(l_parent, s_type, LuaObject<UI::Table>::DynamicCastPromotionTest);
 }

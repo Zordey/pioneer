@@ -1,4 +1,8 @@
+<<<<<<< HEAD
+// Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
 // Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "libs.h"
@@ -149,13 +153,26 @@ bool Tabbed::IsLabelWidget(const Widget *w)
 
 void Tabbed::Draw()
 {
+<<<<<<< HEAD
+=======
 	PROFILE_SCOPED()
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	float size[2];
 	GetSize(size);
 	float xpos = 0;
 	unsigned int index = 0;
 
-	Theme::DrawRect(vector2f(0.f), vector2f(size[0], TAB_BAR_HEIGHT), Theme::Colors::bgShadow, Screen::alphaBlendState);
+<<<<<<< HEAD
+	glColor4fv(Theme::Colors::bgShadow);
+=======
+	glColor4ubv(Theme::Colors::bgShadow);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
+	glBegin(GL_QUADS);
+		glVertex2f(0, TAB_BAR_HEIGHT);
+		glVertex2f(size[0], TAB_BAR_HEIGHT);
+		glVertex2f(size[0], 0);
+		glVertex2f(0, 0);
+	glEnd();
 
 	for (pagecontainer_t::iterator i = m_pages.begin(); i!=m_pages.end();
 			++i, index++) {
@@ -163,7 +180,17 @@ void Tabbed::Draw()
 		(*i).first->GetSize(csize);
 		csize[0] += 2*LABEL_PADDING;
 		if (index == m_page) {
-			Theme::DrawRect(vector2f(xpos, 0.f), vector2f(xpos+csize[0], TAB_BAR_HEIGHT), Theme::Colors::bg, Screen::alphaBlendState);
+<<<<<<< HEAD
+			glColor4fv(Theme::Colors::bg);
+=======
+			glColor4ubv(Theme::Colors::bg);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
+			glBegin(GL_QUADS);
+				glVertex2f(xpos, TAB_BAR_HEIGHT);
+				glVertex2f(xpos+csize[0], TAB_BAR_HEIGHT);
+				glVertex2f(xpos+csize[0], 0);
+				glVertex2f(xpos, 0);
+			glEnd();
 		}
 		xpos += csize[0];
 	}

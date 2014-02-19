@@ -2,7 +2,11 @@ include $(top_srcdir)/Makefile.common
 
 AM_CFLAGS += $(WARN_CFLAGS)
 AM_CPPFLAGS += $(WARN_CPPFLAGS)
+<<<<<<< HEAD
+AM_CXXFLAGS += $(WARN_CXXFLAGS)
+=======
 AM_CXXFLAGS += $(STD_CXXFLAGS) $(WARN_CXXFLAGS)
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 AM_CPPFLAGS += -I$(srcdir)/..
 
@@ -48,7 +52,10 @@ libterrain_a_SOURCES = \
 	TerrainColorDeadWithWater.cpp \
 	TerrainColorDesert.cpp \
 	TerrainColorEarthLike.cpp \
+<<<<<<< HEAD
+=======
 	TerrainColorEarthLikeHeightmapped.cpp \
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	TerrainColorGGJupiter.cpp \
 	TerrainColorGGNeptune2.cpp \
 	TerrainColorGGNeptune.cpp \

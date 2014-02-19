@@ -1,4 +1,8 @@
+<<<<<<< HEAD
+// Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
 // Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "GeoSphereMaterial.h"
@@ -53,14 +57,21 @@ Program *GeoSphereSurfaceMaterial::CreateProgram(const MaterialDescriptor &desc)
 		const float invNumLights = 1.0f / float(desc.dirLights);
 		ss << stringf("#define INV_NUM_LIGHTS %0{f}\n", invNumLights);
 	}
+<<<<<<< HEAD
+	if (desc.atmosphere)
+=======
 	if (desc.quality & HAS_ATMOSPHERE)
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		ss << "#define ATMOSPHERE\n";
 	if (desc.effect == EFFECT_GEOSPHERE_TERRAIN_WITH_LAVA)
 		ss << "#define TERRAIN_WITH_LAVA\n";
 	if (desc.effect == EFFECT_GEOSPHERE_TERRAIN_WITH_WATER)
 		ss << "#define TERRAIN_WITH_WATER\n";
+<<<<<<< HEAD
+=======
 	if (desc.quality & HAS_ECLIPSES)
 		ss << "#define ECLIPSE\n";
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	return new Graphics::GL2::GeoSphereProgram("geosphere_terrain", ss.str());
 }
 
@@ -129,8 +140,11 @@ Program *GeoSphereSkyMaterial::CreateProgram(const MaterialDescriptor &desc)
 		ss << stringf("#define INV_NUM_LIGHTS %0{f}\n", invNumLights);
 	}
 	ss << "#define ATMOSPHERE\n";
+<<<<<<< HEAD
+=======
 	if (desc.quality & HAS_ECLIPSES)
 		ss << "#define ECLIPSE\n";
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	return new Graphics::GL2::GeoSphereProgram("geosphere_sky", ss.str());
 }
 

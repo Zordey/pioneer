@@ -1,8 +1,19 @@
+<<<<<<< HEAD
+// Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
 // Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "RendererGL2.h"
 #include "Graphics.h"
+<<<<<<< HEAD
+#include "Material.h"
+#include "RendererGLBuffers.h"
+#include "Texture.h"
+#include "TextureGL.h"
+#include "VertexArray.h"
+=======
 #include "Light.h"
 #include "Material.h"
 #include "OS.h"
@@ -14,6 +25,7 @@
 #include "TextureGL.h"
 #include "VertexArray.h"
 #include "GLDebug.h"
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 #include "gl2/GeoSphereMaterial.h"
 #include "gl2/GL2Material.h"
 #include "gl2/GL2RenderState.h"
@@ -22,6 +34,11 @@
 #include "gl2/Program.h"
 #include "gl2/RingMaterial.h"
 #include "gl2/StarfieldMaterial.h"
+<<<<<<< HEAD
+
+namespace Graphics {
+
+=======
 #include "gl2/FresnelColourMaterial.h"
 #include "gl2/ShieldMaterial.h"
 #include "gl2/SkyboxMaterial.h"
@@ -59,12 +76,25 @@ struct SurfaceRenderInfo : public RenderInfo {
 	int glAmount; //index count OR vertex amount
 };
 
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 typedef std::vector<std::pair<MaterialDescriptor, GL2::Program*> >::const_iterator ProgramIterator;
 
 // for material-less line and point drawing
 GL2::MultiProgram *vtxColorProg;
 GL2::MultiProgram *flatColorProg;
 
+<<<<<<< HEAD
+RendererGL2::RendererGL2(const Graphics::Settings &vs)
+: RendererLegacy(vs)
+, m_invLogZfarPlus1(0.f)
+, m_activeRenderTarget(0)
+{
+	//the range is very large due to a "logarithmic z-buffer" trick used
+	//http://outerra.blogspot.com/2009/08/logarithmic-z-buffer.html
+	//http://www.gamedev.net/blog/73/entry-2006307-tip-of-the-day-logarithmic-zbuffer-artifacts-fix/
+	m_minZNear = 0.0001f;
+	m_maxZFar = 10000000.0f;
+=======
 RendererGL2::RendererGL2(WindowSDL *window, const Graphics::Settings &vs)
 : Renderer(window, window->GetWidth(), window->GetHeight())
 , m_numDirLights(0)
@@ -103,6 +133,7 @@ RendererGL2::RendererGL2(WindowSDL *window, const Graphics::Settings &vs)
 
 	if (vs.enableDebugMessages)
 		GLDebug::Enable();
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 	MaterialDescriptor desc;
 	flatColorProg = new GL2::MultiProgram(desc);
@@ -119,6 +150,10 @@ RendererGL2::~RendererGL2()
 		delete state.second;
 }
 
+<<<<<<< HEAD
+bool RendererGL2::BeginFrame()
+{
+=======
 bool RendererGL2::GetNearFarRange(float &near, float &far) const
 {
 	near = m_minZNear;
@@ -129,11 +164,16 @@ bool RendererGL2::GetNearFarRange(float &near, float &far) const
 bool RendererGL2::BeginFrame()
 {
 	PROFILE_SCOPED()
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	glClearColor(0,0,0,0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	return true;
 }
 
+<<<<<<< HEAD
+bool RendererGL2::SetRenderTarget(RenderTarget *rt)
+{
+=======
 bool RendererGL2::EndFrame()
 {
 	return true;
@@ -198,6 +238,7 @@ bool RendererGL2::SetRenderState(RenderState *rs)
 bool RendererGL2::SetRenderTarget(RenderTarget *rt)
 {
 	PROFILE_SCOPED()
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	if (rt)
 		static_cast<GL2::RenderTarget*>(rt)->Bind();
 	else if (m_activeRenderTarget)
@@ -208,6 +249,14 @@ bool RendererGL2::SetRenderTarget(RenderTarget *rt)
 	return true;
 }
 
+<<<<<<< HEAD
+bool RendererGL2::SetPerspectiveProjection(float fov, float aspect, float near, float far)
+{
+	// update values for log-z hack
+	m_invLogZfarPlus1 = 1.0f / (log(far+1.0f)/log(2.0f));
+
+	return RendererLegacy::SetPerspectiveProjection(fov, aspect, near, far);
+=======
 bool RendererGL2::ClearScreen()
 {
 	m_activeRenderState = nullptr;
@@ -340,6 +389,7 @@ bool RendererGL2::SetLights(int numlights, const Light *lights)
 	}
 
 	return true;
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 }
 
 bool RendererGL2::SetAmbientColor(const Color &c)
@@ -348,6 +398,10 @@ bool RendererGL2::SetAmbientColor(const Color &c)
 	return true;
 }
 
+<<<<<<< HEAD
+bool RendererGL2::DrawLines(int count, const vector3f *v, const Color *c, LineType t)
+{
+=======
 bool RendererGL2::SetScissor(bool enabled, const vector2f &pos, const vector2f &size)
 {
 	if (enabled) {
@@ -362,6 +416,7 @@ bool RendererGL2::SetScissor(bool enabled, const vector2f &pos, const vector2f &
 bool RendererGL2::DrawLines(int count, const vector3f *v, const Color *c, RenderState* state, LineType t)
 {
 	PROFILE_SCOPED()
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	if (count < 2 || !v) return false;
 
 	SetRenderState(state);
@@ -372,7 +427,11 @@ bool RendererGL2::DrawLines(int count, const vector3f *v, const Color *c, Render
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_COLOR_ARRAY);
 	glVertexPointer(3, GL_FLOAT, sizeof(vector3f), v);
+<<<<<<< HEAD
+	glColorPointer(4, GL_FLOAT, sizeof(Color), c);
+=======
 	glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(Color), c);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	glDrawArrays(t, 0, count);
 	glDisableClientState(GL_VERTEX_ARRAY);
 	glDisableClientState(GL_COLOR_ARRAY);
@@ -382,7 +441,10 @@ bool RendererGL2::DrawLines(int count, const vector3f *v, const Color *c, Render
 
 bool RendererGL2::DrawLines(int count, const vector3f *v, const Color &c, RenderState *state, LineType t)
 {
+<<<<<<< HEAD
+=======
 	PROFILE_SCOPED()
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	if (count < 2 || !v) return false;
 
 	SetRenderState(state);
@@ -399,7 +461,11 @@ bool RendererGL2::DrawLines(int count, const vector3f *v, const Color &c, Render
 	return true;
 }
 
-bool RendererGL2::DrawLines2D(int count, const vector2f *v, const Color &c, Graphics::RenderState* state, LineType t)
+<<<<<<< HEAD
+Material *RendererGL2::CreateMaterial(const MaterialDescriptor &d)
+{
+=======
+bool RendererGL2::DrawLines2D(int count, const vector2f *v, const Color &c, LineType t)
 {
 	if (count < 2 || !v) return false;
 
@@ -691,6 +757,7 @@ bool RendererGL2::BufferStaticMesh(StaticMesh *mesh)
 Material *RendererGL2::CreateMaterial(const MaterialDescriptor &d)
 {
 	PROFILE_SCOPED()
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	MaterialDescriptor desc = d;
 
 	GL2::Material *mat = 0;
@@ -717,18 +784,15 @@ Material *RendererGL2::CreateMaterial(const MaterialDescriptor &d)
 	case EFFECT_GEOSPHERE_SKY:
 		mat = new GL2::GeoSphereSkyMaterial();
 		break;
+<<<<<<< HEAD
+=======
 	case EFFECT_FRESNEL_SPHERE:
 		mat = new GL2::FresnelColourMaterial();
 		break;
 	case EFFECT_SHIELD:
 		mat = new GL2::ShieldMaterial();
 		break;
-	case EFFECT_SKYBOX:
-		mat = new GL2::SkyboxMaterial();
-		break;
-	case EFFECT_SPHEREIMPOSTOR:
-		mat = new GL2::SphereImpostorMaterial();
-		break;
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	default:
 		if (desc.lighting)
 			mat = new GL2::LitMultiMaterial();
@@ -739,12 +803,24 @@ Material *RendererGL2::CreateMaterial(const MaterialDescriptor &d)
 	mat->m_renderer = this;
 	mat->m_descriptor = desc;
 
+<<<<<<< HEAD
+	try {
+		p = GetOrCreateProgram(mat);
+	} catch (GL2::ShaderException &) {
+		// in release builds, the game does not quit instantly but attempts to revert
+		// to a 'shaderless' state
+		return RendererLegacy::CreateMaterial(desc);
+	}
+=======
 	p = GetOrCreateProgram(mat); // XXX throws ShaderException on compile/link failure
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 	mat->SetProgram(p);
 	return mat;
 }
 
+<<<<<<< HEAD
+=======
 bool RendererGL2::ReloadShaders()
 {
 	Output("Reloading " SIZET_FMT " programs...\n", m_programs.size());
@@ -783,19 +859,7 @@ Texture *RendererGL2::CreateTexture(const TextureDescriptor &descriptor)
 	return new TextureGL(descriptor, m_useCompressedTextures);
 }
 
-RenderState *RendererGL2::CreateRenderState(const RenderStateDesc &desc)
-{
-	const uint32_t hash = lookup3_hashlittle(&desc, sizeof(RenderStateDesc), 0);
-	auto it = m_renderStates.find(hash);
-	if (it != m_renderStates.end())
-		return it->second;
-	else {
-		auto *rs = new GL2::RenderState(desc);
-		m_renderStates[hash] = rs;
-		return rs;
-	}
-}
-
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 RenderTarget *RendererGL2::CreateRenderTarget(const RenderTargetDesc &desc)
 {
 	GL2::RenderTarget* rt = new GL2::RenderTarget(desc);
@@ -831,6 +895,15 @@ RenderTarget *RendererGL2::CreateRenderTarget(const RenderTargetDesc &desc)
 	return rt;
 }
 
+<<<<<<< HEAD
+bool RendererGL2::ReloadShaders()
+{
+	printf("Reloading " SIZET_FMT " programs...\n", m_programs.size());
+	for (ProgramIterator it = m_programs.begin(); it != m_programs.end(); ++it) {
+		it->second->Reload();
+	}
+	printf("Done.\n");
+=======
 // XXX very heavy. in the future when all GL calls are made through the
 // renderer, we can probably do better by trackingn current state and
 // only restoring the things that have changed
@@ -957,10 +1030,33 @@ bool RendererGL2::PrintDebugInfo(std::ostream &out)
 
 #undef DUMP_GL_VALUE
 #undef DUMP_GL_VALUE2
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 	return true;
 }
 
+<<<<<<< HEAD
+GL2::Program* RendererGL2::GetOrCreateProgram(GL2::Material *mat)
+{
+	const MaterialDescriptor &desc = mat->GetDescriptor();
+	GL2::Program *p = 0;
+
+	// Find an existing program...
+	for (ProgramIterator it = m_programs.begin(); it != m_programs.end(); ++it) {
+		if ((*it).first == desc) {
+			p = (*it).second;
+			break;
+		}
+	}
+
+	// ...or create a new one
+	if (!p) {
+		p = mat->CreateProgram(desc);
+		m_programs.push_back(std::make_pair(desc, p));
+	}
+
+	return p;
+=======
 void RendererGL2::SetMatrixMode(MatrixMode mm)
 {
 	PROFILE_SCOPED()
@@ -1062,6 +1158,7 @@ void RendererGL2::Scale( const float x, const float y, const float z )
 			m_modelViewStack.top().Scale(x,y,z);
 			break;
 	}
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 }
 
 }

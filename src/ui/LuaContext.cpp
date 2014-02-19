@@ -1,4 +1,8 @@
+<<<<<<< HEAD
+// Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
 // Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "Context.h"
@@ -10,11 +14,26 @@ namespace UI {
 class LuaContext {
 public:
 
+<<<<<<< HEAD
+	static inline UI::Widget *_get_implicit_widget(lua_State *l)
+=======
 	static inline UI::Widget *_get_implicit_widget(lua_State *l, int idx)
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	{
 		UI::Context *c = LuaObject<UI::Context>::GetFromLua(1);
 		assert(c);
 
+<<<<<<< HEAD
+		const int top = lua_gettop(l);
+		if (top == 1) return 0; // no extra args
+
+		return UI::Lua::GetWidget(c, l, top);
+	}
+
+	static inline void _implicit_set_inner_widget(lua_State *l, UI::Single *s)
+	{
+		UI::Widget *w = _get_implicit_widget(l);
+=======
 		if (lua_isnoneornil(l, idx)) return 0;
 		return UI::Lua::GetWidget(c, l, idx);
 	}
@@ -29,13 +48,20 @@ public:
 	static inline void _implicit_set_inner_widget(lua_State *l, UI::Single *s, int idx)
 	{
 		UI::Widget *w = _get_implicit_widget(l, idx);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		if (!w) return;
 		s->SetInnerWidget(w);
 	}
 
+<<<<<<< HEAD
+	static inline void _implicit_set_inner_widget(lua_State *l, UI::Scroller *s)
+	{
+		UI::Widget *w = _get_implicit_widget(l);
+=======
 	static inline void _implicit_set_inner_widget(lua_State *l, UI::Scroller *s, int idx)
 	{
 		UI::Widget *w = _get_implicit_widget(l, idx);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		if (!w) return;
 		s->SetInnerWidget(w);
 	}
@@ -107,7 +133,11 @@ public:
 	static int l_background(lua_State *l) {
 		UI::Context *c = LuaObject<UI::Context>::CheckFromLua(1);
 		UI::Background *b = c->Background();
+<<<<<<< HEAD
+		_implicit_set_inner_widget(l, b);
+=======
 		_implicit_set_inner_widget(l, b, 2);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		LuaObject<UI::Background>::PushToLua(b);
 		return 1;
 	}
@@ -118,6 +148,12 @@ public:
 		float g = luaL_checknumber(l, 3);
 		float b = luaL_checknumber(l, 4);
 		float a = 1.0f;
+<<<<<<< HEAD
+		if (lua_gettop(l) > 4)
+			a = luaL_checknumber(l, 5);
+		UI::ColorBackground *cb = c->ColorBackground(Color(r,g,b,a));
+		_implicit_set_inner_widget(l, cb);
+=======
 		int implicit = 5;
 		if (lua_gettop(l) > 4) {
 			a = luaL_checknumber(l, 5);
@@ -125,6 +161,7 @@ public:
 		}
 		UI::ColorBackground *cb = c->ColorBackground(Color(r*255,g*255,b*255,a*255));
 		_implicit_set_inner_widget(l, cb, implicit);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		LuaObject<UI::ColorBackground>::PushToLua(cb);
 		return 1;
 	}
@@ -135,7 +172,11 @@ public:
 		Color endColor = Color::FromLuaTable(l, 3);
 		UI::Gradient::Direction direction = static_cast<UI::Gradient::Direction>(LuaConstants::GetConstantFromArg(l, "UIGradientDirection", 4));
 		UI::Gradient *g = c->Gradient(beginColor, endColor, direction);
+<<<<<<< HEAD
+		_implicit_set_inner_widget(l, g);
+=======
 		_implicit_set_inner_widget(l, g, 4);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		LuaObject<UI::Gradient>::PushToLua(g);
 		return 1;
 	}
@@ -146,7 +187,11 @@ public:
 		if (lua_gettop(l) > 1)
 			direction = static_cast<UI::Expand::Direction>(LuaConstants::GetConstantFromArg(l, "UIExpandDirection", 2));
 		UI::Expand *e = c->Expand(direction);
+<<<<<<< HEAD
+		_implicit_set_inner_widget(l, e);
+=======
 		_implicit_set_inner_widget(l, e, 3);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		LuaObject<UI::Expand>::PushToLua(e);
 		return 1;
 	}
@@ -158,7 +203,11 @@ public:
 		if (lua_gettop(l) > 2)
 			dir = static_cast<UI::Margin::Direction>(LuaConstants::GetConstantFromArg(l, "UIMarginDirection", 3));
 		UI::Margin *m = c->Margin(margin, dir);
+<<<<<<< HEAD
+		_implicit_set_inner_widget(l, m);
+=======
 		_implicit_set_inner_widget(l, m, 4);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		LuaObject<UI::Margin>::PushToLua(m);
 		return 1;
 	}
@@ -167,7 +216,11 @@ public:
 		UI::Context *c = LuaObject<UI::Context>::CheckFromLua(1);
 		UI::Align::Direction dir = static_cast<UI::Align::Direction>(LuaConstants::GetConstantFromArg(l, "UIAlignDirection", 2));
 		UI::Align *a = c->Align(dir);
+<<<<<<< HEAD
+		_implicit_set_inner_widget(l, a);
+=======
 		_implicit_set_inner_widget(l, a, 3);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		LuaObject<UI::Align>::PushToLua(a);
 		return 1;
 	}
@@ -175,7 +228,11 @@ public:
 	static int l_scroller(lua_State *l) {
 		UI::Context *c = LuaObject<UI::Context>::CheckFromLua(1);
 		UI::Scroller *s = c->Scroller();
+<<<<<<< HEAD
+		_implicit_set_inner_widget(l, s);
+=======
 		_implicit_set_inner_widget(l, s, 2);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		LuaObject<UI::Scroller>::PushToLua(s);
 		return 1;
 	}
@@ -219,7 +276,11 @@ public:
 	static int l_button(lua_State *l) {
 		UI::Context *c = LuaObject<UI::Context>::CheckFromLua(1);
 		UI::Button *b = c->Button();
+<<<<<<< HEAD
+		_implicit_set_inner_widget(l, b);
+=======
 		_implicit_set_inner_widget(l, b, 2);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		LuaObject<UI::Button>::PushToLua(b);
 		return 1;
 	}
@@ -280,6 +341,8 @@ public:
 		c->GetTemplateStore().PushCopyToStack();
 		return 1;
 	}
+<<<<<<< HEAD
+=======
 
 	static int l_new_layer(lua_State *l) {
 		UI::Context *c = LuaObject<UI::Context>::CheckFromLua(1);
@@ -300,6 +363,7 @@ public:
 		LuaObject<UI::Layer>::PushToLua(c->GetTopLayer());
 		return 1;
 	}
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 };
 
 }
@@ -310,7 +374,11 @@ template <> const char *LuaObject<UI::Context>::s_type = "UI.Context";
 
 template <> void LuaObject<UI::Context>::RegisterClass()
 {
+<<<<<<< HEAD
+	static const char *l_parent = "UI.Single";
+=======
 	static const char *l_parent = "UI.Container";
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 	static const luaL_Reg l_methods[] = {
 		{ "HBox",            LuaContext::l_hbox            },
@@ -338,15 +406,21 @@ template <> void LuaObject<UI::Context>::RegisterClass()
 		{ "DropDown",        LuaContext::l_dropdown        },
 		{ "Gauge",           LuaContext::l_gauge           },
 		{ "TextEntry",       LuaContext::l_textentry       },
+<<<<<<< HEAD
+=======
 
 		{ "NewLayer",        LuaContext::l_new_layer       },
 		{ "DropLayer",       LuaContext::l_drop_layer      },
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		{ 0, 0 }
 	};
 
 	static const luaL_Reg l_attrs[] = {
 		{ "templates", LuaContext::l_attr_templates },
+<<<<<<< HEAD
+=======
 		{ "layer",     LuaContext::l_attr_layer     },
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		{ 0, 0 }
 	};
 

@@ -1,4 +1,8 @@
+<<<<<<< HEAD
+// Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
 // Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "MatrixTransform.h"
@@ -30,6 +34,27 @@ void MatrixTransform::Accept(NodeVisitor &nv)
 	nv.ApplyMatrixTransform(*this);
 }
 
+<<<<<<< HEAD
+=======
+Node* MatrixTransform::GatherTransforms(const std::string &name, const matrix4x4f &accum, matrix4x4f &outMat)
+{
+	const matrix4x4f t = accum * m_transform;
+	if (m_name == name) {
+		outMat = t;
+		return this;
+	}
+
+	Node* result = 0;
+	for (std::vector<Node*>::iterator itr = m_children.begin(), itEnd = m_children.end(); itr != itEnd; ++itr)
+	{
+		result = (*itr)->GatherTransforms(name, t, outMat);
+		if (result) break;
+	}
+
+	return result;
+}
+
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 void MatrixTransform::Render(const matrix4x4f &trans, const RenderData *rd)
 {
 	const matrix4x4f t = trans * m_transform;

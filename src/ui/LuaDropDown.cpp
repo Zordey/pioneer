@@ -1,13 +1,24 @@
+<<<<<<< HEAD
+// Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
 // Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "DropDown.h"
 #include "LuaObject.h"
+<<<<<<< HEAD
+
+=======
 #include "LuaSignal.h"
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 namespace UI {
 
 class LuaDropDown {
 public:
+<<<<<<< HEAD
+
+=======
 	static int l_add_option(lua_State *l) {
 		UI::DropDown *dropDown = LuaObject<UI::DropDown>::CheckFromLua(1);
 		dropDown->AddOption(luaL_checkstring(l, 2));
@@ -64,6 +75,7 @@ public:
 		LuaSignal<unsigned int,const std::string &>().Wrap(l, dropDown->onOptionSelected);
 		return 1;
 	}
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 };
 
 }
@@ -77,6 +89,13 @@ template <> void LuaObject<UI::DropDown>::RegisterClass()
 	static const char *l_parent = "UI.Widget";
 
 	static const luaL_Reg l_methods[] = {
+<<<<<<< HEAD
+
+		{ 0, 0 }
+	};
+
+	LuaObjectBase::CreateClass(s_type, l_parent, l_methods, 0, 0);
+=======
 		{ "AddOption",         LuaDropDown::l_add_option          },
 		{ "SetSelectedOption", LuaDropDown::l_set_selected_option },
 		{ "SetSelectedIndex",  LuaDropDown::l_set_selected_index  },
@@ -91,5 +110,6 @@ template <> void LuaObject<UI::DropDown>::RegisterClass()
 	};
 
 	LuaObjectBase::CreateClass(s_type, l_parent, l_methods, l_attrs, 0);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	LuaObjectBase::RegisterPromotion(l_parent, s_type, LuaObject<UI::DropDown>::DynamicCastPromotionTest);
 }

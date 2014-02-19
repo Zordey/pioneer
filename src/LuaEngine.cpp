@@ -1,9 +1,21 @@
+<<<<<<< HEAD
+// Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
 // Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "LuaEngine.h"
 #include "LuaObject.h"
 #include "LuaUtils.h"
+<<<<<<< HEAD
+#include "Random.h"
+#include "Pi.h"
+#include "utils.h"
+#include "FileSystem.h"
+#include "ui/Context.h"
+#include "GameMenuView.h"
+=======
 #include "LuaConstants.h"
 #include "EnumStrings.h"
 #include "Random.h"
@@ -19,6 +31,7 @@
 #include "Lang.h"
 #include "Player.h"
 #include "scenegraph/Model.h"
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 /*
  * Interface: Engine
@@ -134,6 +147,25 @@ static int l_engine_quit(lua_State *l)
 	return 0;
 }
 
+<<<<<<< HEAD
+// XXX hack to allow the new UI to activate the old settings view
+//     remove once its been converted
+static int l_engine_settings_view(lua_State *l)
+{
+	if (Pi::game || Pi::GetView() == Pi::gameMenuView)
+		return 0;
+	Pi::SetView(Pi::gameMenuView);
+	while (Pi::GetView() == Pi::gameMenuView) Gui::MainLoopIteration();
+	Pi::SetView(0);
+	return 0;
+}
+
+void LuaEngine::Register()
+{
+	static const luaL_Reg l_methods[] = {
+		{ "Quit", l_engine_quit },
+		{ "SettingsView", l_engine_settings_view },
+=======
 static int l_engine_get_video_mode_list(lua_State *l)
 {
 	LUA_DEBUG_START(l);
@@ -780,6 +812,7 @@ void LuaEngine::Register()
 
 		{ "GetModel", l_engine_get_model },
 
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		{ 0, 0 }
 	};
 
@@ -791,10 +824,15 @@ void LuaEngine::Register()
 		{ 0, 0 }
 	};
 
+<<<<<<< HEAD
+	LuaObjectBase::CreateObject(l_methods, l_attrs, 0);
+	lua_setglobal(Lua::manager->GetLuaState(), "Engine");
+=======
 	lua_getfield(l, LUA_REGISTRYINDEX, "CoreImports");
 	LuaObjectBase::CreateObject(l_methods, l_attrs, 0);
 	lua_setfield(l, -2, "Engine");
 	lua_pop(l, 1);
 
 	LUA_DEBUG_END(l, 0);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 }

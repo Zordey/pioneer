@@ -1,4 +1,8 @@
+<<<<<<< HEAD
+// Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
 // Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "TextureGL.h"
@@ -81,6 +85,10 @@ TextureGL::TextureGL(const TextureDescriptor &descriptor, const bool useCompress
 	glGenTextures(1, &m_texture);
 	glBindTexture(m_target, m_texture);
 
+<<<<<<< HEAD
+	glEnable(m_target); //XXX legacy only
+=======
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 	// useCompressed is the global scope flag whereas descriptor.allowCompression is the local texture mode flag
 	// either both or neither might be true however only compress the texture when both are true.
@@ -189,8 +197,11 @@ TextureGL::TextureGL(const TextureDescriptor &descriptor, const bool useCompress
 
 	GLenum magFilter, minFilter, wrapS, wrapT;
 	switch (descriptor.sampleMode) {
+<<<<<<< HEAD
+=======
 		default:	// safe default will fall through to LINEAR_CLAMP when run in release builds without assert
 			assert(0);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		case LINEAR_CLAMP:
 			magFilter = GL_LINEAR;
 			minFilter = descriptor.generateMipmaps ? GL_LINEAR_MIPMAP_LINEAR : GL_LINEAR;
@@ -214,6 +225,12 @@ TextureGL::TextureGL(const TextureDescriptor &descriptor, const bool useCompress
 			minFilter = descriptor.generateMipmaps ? GL_NEAREST_MIPMAP_NEAREST : GL_NEAREST;
 			wrapS = wrapT = GL_REPEAT;
 			break;
+<<<<<<< HEAD
+
+		default:
+			assert(0);
+=======
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	}
 
 	glTexParameteri(m_target, GL_TEXTURE_WRAP_S, wrapS);
@@ -221,6 +238,10 @@ TextureGL::TextureGL(const TextureDescriptor &descriptor, const bool useCompress
 	glTexParameteri(m_target, GL_TEXTURE_MAG_FILTER, magFilter);
 	glTexParameteri(m_target, GL_TEXTURE_MIN_FILTER, minFilter);
 
+<<<<<<< HEAD
+	glDisable(m_target);  //XXX legacy only
+=======
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 }
 
 TextureGL::~TextureGL()
@@ -230,7 +251,10 @@ TextureGL::~TextureGL()
 
 void TextureGL::Update(const void *data, const vector2f &dataSize, TextureFormat format, const unsigned int numMips)
 {
-	assert(m_target == GL_TEXTURE_2D);
+<<<<<<< HEAD
+	glEnable(m_target);  //XXX legacy only
+=======
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	glBindTexture(m_target, m_texture);
 
 	switch (m_target) {
@@ -263,6 +287,10 @@ void TextureGL::Update(const void *data, const vector2f &dataSize, TextureFormat
 	}
 
 	glBindTexture(m_target, 0);
+<<<<<<< HEAD
+	glDisable(m_target);  //XXX legacy only
+=======
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 }
 
 void TextureGL::Update(const TextureCubeData &data, const vector2f &dataSize, TextureFormat format, const unsigned int numMips)
@@ -320,12 +348,20 @@ void TextureGL::Update(const TextureCubeData &data, const vector2f &dataSize, Te
 
 void TextureGL::Bind()
 {
+<<<<<<< HEAD
+	glEnable(m_target);  //XXX legacy only
+=======
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	glBindTexture(m_target, m_texture);
 }
 
 void TextureGL::Unbind()
 {
 	glBindTexture(m_target, 0);
+<<<<<<< HEAD
+	glDisable(m_target);  //XXX legacy only
+=======
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 }
 
 void TextureGL::SetSampleMode(TextureSampleMode mode)
@@ -333,8 +369,11 @@ void TextureGL::SetSampleMode(TextureSampleMode mode)
 	GLenum magFilter, minFilter;
 	const bool mipmaps = GetDescriptor().generateMipmaps;
 	switch (mode) {
+<<<<<<< HEAD
+=======
 		default:	// safe default will fall through to LINEAR_CLAMP when run in release builds without assert
 			assert(0);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		case LINEAR_CLAMP:
 			magFilter = GL_LINEAR;
 			minFilter = mipmaps ? GL_LINEAR_MIPMAP_LINEAR : GL_LINEAR;
@@ -354,6 +393,12 @@ void TextureGL::SetSampleMode(TextureSampleMode mode)
 			magFilter = GL_NEAREST;
 			minFilter =mipmaps ? GL_NEAREST_MIPMAP_NEAREST : GL_NEAREST;
 			break;
+<<<<<<< HEAD
+
+		default:
+			assert(0);
+=======
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	}
 	glBindTexture(m_target, m_texture);
 	glTexParameteri(m_target, GL_TEXTURE_MAG_FILTER, magFilter);

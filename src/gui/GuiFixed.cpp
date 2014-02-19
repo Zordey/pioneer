@@ -1,4 +1,8 @@
+<<<<<<< HEAD
+// Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
 // Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "libs.h"
@@ -45,7 +49,11 @@ void Fixed::GetSizeRequested(float size[2])
 	} else {
 		float wanted[2];
 		wanted[0] = wanted[1] = 0;
+<<<<<<< HEAD
+		for (std::list<widget_pos>::iterator i = m_children.begin(); i != m_children.end(); ++i) {
+=======
 		for (WidgetList::iterator i = m_children.begin(), itEnd = m_children.end(); i != itEnd; ++i) {
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 			float rsize[2] = { size[0] - (*i).pos[0],
 					   size[1] - (*i).pos[1] };
 			(*i).w->GetSizeRequested(rsize);
@@ -67,7 +75,11 @@ void Fixed::UpdateAllChildSizes()
 {
 	float size[2];
 	GetSize(size);
+<<<<<<< HEAD
+	for (std::list<widget_pos>::iterator i = m_children.begin(); i != m_children.end(); ++i) {
+=======
 	for (WidgetList::iterator i = m_children.begin(), itEnd = m_children.end(); i != itEnd; ++i) {
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		float rsize[2] = { size[0] - (*i).pos[0],
 				   size[1] - (*i).pos[1] };
 		(*i).w->GetSizeRequested(rsize);
@@ -81,7 +93,11 @@ void Fixed::OnChildResizeRequest(Widget *child)
 {
 	float size[2];
 	GetSize(size);
+<<<<<<< HEAD
+	for (std::list<widget_pos>::iterator i = m_children.begin(); i != m_children.end(); ++i) {
+=======
 	for (WidgetList::iterator i = m_children.begin(), itEnd = m_children.end(); i != itEnd; ++i) {
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		if ((*i).w == child) {
 			float rsize[2] = { size[0] - (*i).pos[0],
 					   size[1] - (*i).pos[1] };

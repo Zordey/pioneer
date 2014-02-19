@@ -1,4 +1,8 @@
+<<<<<<< HEAD
+// Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
 // Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "Lua.h"
@@ -28,22 +32,36 @@ void LuaEquipDef::Register()
 
 		lua_newtable(l);
 
+<<<<<<< HEAD
+		pi_lua_settable(l, "id",        id);
+		pi_lua_settable(l, "name",      et->name);
+		pi_lua_settable(l, "slot",      EnumStrings::GetString("EquipSlot", et->slot));
+		pi_lua_settable(l, "basePrice", double(et->basePrice)*0.01);
+		pi_lua_settable(l, "mass",      et->mass);
+=======
 		pi_lua_settable(l, "id",          id);
 		pi_lua_settable(l, "name",        et->name);
 		pi_lua_settable(l, "slot",        EnumStrings::GetString("EquipSlot", et->slot));
 		pi_lua_settable(l, "basePrice",   double(et->basePrice)*0.01);
 		pi_lua_settable(l, "mass",        et->mass);
 		pi_lua_settable(l, "purchasable", et->purchasable);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 		pi_lua_readonly_table_proxy(l, -1);
 		lua_setfield(l, -3, id);
 		lua_pop(l, 1);
 	}
 
+<<<<<<< HEAD
+	pi_lua_readonly_table_proxy(l, -1);
+	lua_setglobal(l, "EquipDef");
+	lua_pop(l, 1);
+=======
 	lua_getfield(l, LUA_REGISTRYINDEX, "CoreImports");
 	pi_lua_readonly_table_proxy(l, -2);
 	lua_setfield(l, -2, "EquipDef");
 	lua_pop(l, 2);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 	LUA_DEBUG_END(l, 0);
 }

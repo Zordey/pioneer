@@ -1,4 +1,8 @@
+<<<<<<< HEAD
+// Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
 // Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "LuaTimer.h"
@@ -248,20 +252,27 @@ template <> const char *LuaObject<LuaTimer>::s_type = "Timer";
 
 template <> void LuaObject<LuaTimer>::RegisterClass()
 {
+<<<<<<< HEAD
+=======
 	lua_State *l = Lua::manager->GetLuaState();
 
 	LUA_DEBUG_START(l);
 
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	static const luaL_Reg l_methods[] = {
 		{ "CallAt",    l_timer_call_at    },
 		{ "CallEvery", l_timer_call_every },
 		{ 0, 0 }
 	};
 
+<<<<<<< HEAD
+	LuaObjectBase::CreateClass(s_type, 0, l_methods, 0, 0);
+=======
 	lua_getfield(l, LUA_REGISTRYINDEX, "CoreImports");
 	LuaObjectBase::CreateObject(l_methods, 0, 0);
 	lua_setfield(l, -2, "Timer");
 	lua_pop(l, 1);
 
 	LUA_DEBUG_END(l, 0);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 }

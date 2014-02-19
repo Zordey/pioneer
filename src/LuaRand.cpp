@@ -1,4 +1,8 @@
+<<<<<<< HEAD
+// Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
 // Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "LuaObject.h"
@@ -15,13 +19,21 @@
  *
  * Creates a new random number generator.
  *
+<<<<<<< HEAD
+ * > rand = Rand:New(seed)
+=======
  * > rand = Rand.New(seed)
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
  *
  * Parameters:
  *
  *   seed - optional, the value to seed the generator with. If omitted it will
+<<<<<<< HEAD
+ *          be set to the current system (not game) time
+=======
  *          be set to the current system (not game) time. seed must be numeric
  *          if given.
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
  *
  * Return:
  *
@@ -38,12 +50,17 @@
 static int l_rand_new(lua_State *l)
 {
 	int seed = int(time(0));
+<<<<<<< HEAD
+	if (lua_isnumber(l, 1))
+		seed = lua_tointeger(l, 1);
+=======
 	if (!lua_isnoneornil(l, 1)) {
 		if (lua_isnumber(l, 1))
 			seed = lua_tointeger(l, 1);
 		else
 			luaL_error(l, "seed must be numeric if given");
 	}
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	LuaObject<Random>::PushToLua(new Random(seed));
 	return 1;
 }
@@ -103,6 +120,8 @@ static int l_rand_number(lua_State *l)
 }
 
 /*
+<<<<<<< HEAD
+=======
  * Method: Normal
  *
  * Generates a random number drawn from a Gaussian distribution.
@@ -156,6 +175,7 @@ static int l_rand_normal(lua_State *l)
 }
 
 /*
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
  * Method: Integer
  *
  * Generates an integer number
@@ -216,7 +236,10 @@ template <> void LuaObject<Random>::RegisterClass()
 	static const luaL_Reg l_methods[] = {
 		{ "New",     l_rand_new     },
 		{ "Number",  l_rand_number  },
+<<<<<<< HEAD
+=======
 		{ "Normal",  l_rand_normal  },
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		{ "Integer", l_rand_integer },
 		{ 0, 0 }
 	};

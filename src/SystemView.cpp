@@ -1,4 +1,8 @@
+<<<<<<< HEAD
+// Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
 // Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "SystemView.h"
@@ -22,7 +26,11 @@ static const float MIN_ZOOM = 1e-30f;		// Just to avoid having 0
 static const float MAX_ZOOM = 1e30f;
 static const float ZOOM_IN_SPEED = 2;
 static const float ZOOM_OUT_SPEED = 1.f/ZOOM_IN_SPEED;
+<<<<<<< HEAD
+static const float WHEEL_SENSITIVITY = .2f;		// Should be a variable in user settings.
+=======
 static const float WHEEL_SENSITIVITY = .1f;		// Should be a variable in user settings.
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // i don't know how to name it
 static const double ROUGH_SIZE_OF_TURD = 10.0;
 
@@ -40,6 +48,15 @@ SystemView::SystemView() : UIView()
 	Add(m_objectLabels, 0, 0);
 	Gui::Screen::PopFont();
 
+<<<<<<< HEAD
+	m_timePoint = (new Gui::Label(""))->Color(0.7f, 0.7f, 0.7f);
+	Add(m_timePoint, 2, Gui::Screen::GetHeight()-Gui::Screen::GetFontHeight()-66);
+
+	m_infoLabel = (new Gui::Label(""))->Color(0.7f, 0.7f, 0.7f);
+	Add(m_infoLabel, 2, 0);
+
+	m_infoText = (new Gui::Label(""))->Color(0.7f, 0.7f, 0.7f);
+=======
 	m_timePoint = (new Gui::Label(""))->Color(178, 178, 178);
 	Add(m_timePoint, 2, Gui::Screen::GetHeight()-Gui::Screen::GetFontHeight()-66);
 
@@ -47,6 +64,7 @@ SystemView::SystemView() : UIView()
 	Add(m_infoLabel, 2, 0);
 
 	m_infoText = (new Gui::Label(""))->Color(178, 178, 178);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	Add(m_infoText, 200, 0);
 
 	m_zoomInButton = new Gui::ImageButton("icons/zoom_in.png");
@@ -103,8 +121,13 @@ SystemView::SystemView() : UIView()
 	b->SetRenderDimensions(26, 17);
 	Add(b, time_controls_left + 121, time_controls_top);
 
+<<<<<<< HEAD
+	m_onMouseButtonDown =
+		Pi::onMouseButtonDown.connect(sigc::mem_fun(this, &SystemView::MouseButtonDown));
+=======
 	m_onMouseWheelCon =
 		Pi::onMouseWheel.connect(sigc::mem_fun(this, &SystemView::MouseWheel));
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 	ResetViewpoint();
 }
@@ -164,7 +187,11 @@ void SystemView::OnClickObject(const SystemBody *b)
 	std::string desc;
 	std::string data;
 
+<<<<<<< HEAD
+	desc += std::string(Lang::NAME);
+=======
 	desc += std::string(Lang::NAME_OBJECT);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	desc += ":\n";
 	data += b->name+"\n";
 
@@ -217,10 +244,13 @@ void SystemView::PutBody(const SystemBody *b, const vector3d &offset, const matr
 	if (b->type == SystemBody::TYPE_STARPORT_SURFACE) return;
 	if (b->type != SystemBody::TYPE_GRAVPOINT) {
 
+<<<<<<< HEAD
+		if (!m_bodyIcon.Valid()) {
+			m_bodyIcon.Reset(new Graphics::Drawables::Disk(m_renderer, Color::WHITE, 1.0f));
+=======
 		if (!m_bodyIcon) {
-			Graphics::RenderStateDesc rsd;
-			auto solidState = m_renderer->CreateRenderState(rsd);
-			m_bodyIcon.reset(new Graphics::Drawables::Disk(m_renderer, solidState, Color::WHITE, 1.0f));
+			m_bodyIcon.reset(new Graphics::Drawables::Disk(m_renderer, Color::WHITE, 1.0f));
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		}
 
 		const double radius = b->GetRadius() * m_zoom;
@@ -245,15 +275,24 @@ void SystemView::PutBody(const SystemBody *b, const vector3d &offset, const matr
 	if(frame->GetSystemBody() == b && frame->GetSystemBody()->GetMass() > 0) {
 		const double t0 = Pi::game->GetTime();
 		Orbit playerOrbit = Pi::player->ComputeOrbit();
+<<<<<<< HEAD
+		PutOrbit(&playerOrbit, offset, Color(1.0f, 0.0f, 0.0f), b->GetRadius());
+		PutSelectionBox(offset + playerOrbit.OrbitalPosAtTime(m_time - t0)* double(m_zoom), Color(1.0f, 0.0f, 0.0f));
+=======
 		PutOrbit(&playerOrbit, offset, Color::RED, b->GetRadius());
 		PutSelectionBox(offset + playerOrbit.OrbitalPosAtTime(m_time - t0)* double(m_zoom), Color::RED);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	}
 
 	if (b->children.size()) {
 		for(std::vector<SystemBody*>::const_iterator kid = b->children.begin(); kid != b->children.end(); ++kid) {
 			if (is_zero_general((*kid)->orbit.GetSemiMajorAxis())) continue;
 			if ((*kid)->orbit.GetSemiMajorAxis() * m_zoom < ROUGH_SIZE_OF_TURD) {
+<<<<<<< HEAD
+				PutOrbit(&((*kid)->orbit), offset, Color(0.f, 1.f, 0.f, 1.f));
+=======
 				PutOrbit(&((*kid)->orbit), offset, Color(0, 255, 0, 255));
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 			}
 
 			// not using current time yet
@@ -320,8 +359,13 @@ void SystemView::GetTransformTo(const SystemBody *b, vector3d &pos)
 
 void SystemView::Draw3D()
 {
+<<<<<<< HEAD
+	m_renderer->SetPerspectiveProjection(50.f, Pi::GetScrAspect(), 1.f, 1000.f);
+=======
 	PROFILE_SCOPED()
 	m_renderer->SetPerspectiveProjection(50.f, m_renderer->GetDisplayAspect(), 1.f, 1000.f);
+	m_renderer->SetDepthWrite(true);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	m_renderer->ClearScreen();
 
 	SystemPath path = Pi::sectorView->GetSelected().SystemOnly();
@@ -361,7 +405,11 @@ void SystemView::Draw3D()
 			const Body *navTarget = Pi::player->GetNavTarget();
 			const SystemBody *navTargetSystemBody = navTarget ? navTarget->GetSystemBody() : 0;
 			if (navTargetSystemBody)
+<<<<<<< HEAD
+				PutSelectionBox(navTargetSystemBody, pos, Color(0.0, 1.0, 0.0, 1.0));
+=======
 				PutSelectionBox(navTargetSystemBody, pos, Color::GREEN);
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 		}
 	}
 
@@ -398,9 +446,15 @@ void SystemView::Update()
 void SystemView::MouseWheel(bool up)
 {
 	if (this == Pi::GetView()) {
+<<<<<<< HEAD
+		if (Pi::MouseButtonState(SDL_BUTTON_WHEELDOWN))
+			m_zoomTo *= ((ZOOM_OUT_SPEED-1) * WHEEL_SENSITIVITY+1) / Pi::GetMoveSpeedShiftModifier();
+		else if (Pi::MouseButtonState(SDL_BUTTON_WHEELUP))
+=======
 		if (!up)
 			m_zoomTo *= ((ZOOM_OUT_SPEED-1) * WHEEL_SENSITIVITY+1) / Pi::GetMoveSpeedShiftModifier();
 		else
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 			m_zoomTo *= ((ZOOM_IN_SPEED-1) * WHEEL_SENSITIVITY+1) * Pi::GetMoveSpeedShiftModifier();
 	}
 }

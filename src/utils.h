@@ -1,4 +1,8 @@
+<<<<<<< HEAD
+// Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
 // Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #ifndef _UTILS_H
@@ -8,6 +12,10 @@
 #include <vector>
 #include <stdio.h>
 #include <stdarg.h>
+<<<<<<< HEAD
+#include <GL/glew.h>
+=======
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 #include "libs.h"
 
 #ifndef __GNUC__
@@ -77,6 +85,19 @@ inline bool ends_with(const char *s, size_t ns, const char *t, size_t nt) {
 inline bool ends_with(const char *s, const char *t) {
 	return ends_with(s, strlen(s), t, strlen(t));
 }
+<<<<<<< HEAD
+
+inline bool ends_with(const std::string &s, const char *t) {
+	return ends_with(s.c_str(), s.size(), t, strlen(t));
+}
+
+inline bool ends_with(const std::string &s, const std::string &t) {
+	return ends_with(s.c_str(), s.size(), t.c_str(), t.size());
+}
+
+// add a few things that MSVC is missing
+#ifdef _MSC_VER
+=======
 
 inline bool ends_with(const std::string &s, const char *t) {
 	return ends_with(s.c_str(), s.size(), t, strlen(t));
@@ -108,6 +129,7 @@ inline bool ends_with_ci(const std::string &s, const std::string &t) {
 
 // add a few things that MSVC is missing
 #if defined(_MSC_VER) && (_MSC_VER < 1800)
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 // round & roundf. taken from http://cgit.freedesktop.org/mesa/mesa/tree/src/gallium/auxiliary/util/u_math.h
 static inline double round(double x)
@@ -119,7 +141,11 @@ static inline float roundf(float x)
 {
    return x >= 0.0f ? floorf(x + 0.5f) : ceilf(x - 0.5f);
 }
+<<<<<<< HEAD
+#endif /* _MSC_VER */
+=======
 #endif /* _MSC_VER < 1800 */
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 static inline Uint32 ceil_pow2(Uint32 v)
 {

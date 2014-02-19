@@ -1,3 +1,33 @@
+<<<<<<< HEAD
+material Hull-material
+diffuse 1.0 1.0 1.0
+specular 1.0 1.0 1.0
+shininess 80
+tex_diff shipHullMap.png
+tex_spec shipHullMap.png
+tex_glow shipHullMapglow.png
+
+material Cockpit-material
+diffuse 1.0 1.0 1.0
+specular 1.0 1.0 1.0
+tex_diff win.png
+tex_glow win.png
+shininess 8
+
+material Thrusters-material
+diffuse 1.0 1.0 1.0
+specular 1.0 1.0 1.0
+tex_diff thrus.png
+shininess 128
+
+lod 1000
+mesh kanara.dae
+
+lod 20
+mesh kanara-low.dae
+
+collision kanara_collision.obj
+=======
 material fuselage-material
 diffuse 1.0 1.0 1.0
 specular 0.9 0.9 0.9
@@ -21,3 +51,4 @@ mesh kanara_low.dae
 collision kanara_col.dae
 
 anim gear_down 0 108
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755

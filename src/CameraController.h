@@ -1,4 +1,8 @@
+<<<<<<< HEAD
+// Copyright © 2008-2013 Pioneer Developers. See AUTHORS.txt for details
+=======
 // Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #ifndef CAMERACONTROLLER_H
@@ -24,8 +28,11 @@ public:
 	CameraController(RefCountedPtr<CameraContext> camera, const Ship *ship);
 	virtual ~CameraController() {}
 
+<<<<<<< HEAD
+=======
 	virtual void Reset();
 
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 	virtual Type GetType() const = 0;
 	virtual const char *GetName() const { return ""; }
 	virtual void Save(Serializer::Writer &wr) { }
@@ -51,7 +58,10 @@ private:
 	matrix3x3d m_orient;
 };
 
+<<<<<<< HEAD
+=======
 
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 class InternalCameraController : public CameraController {
 public:
 	enum Mode {
@@ -63,8 +73,11 @@ public:
 		MODE_BOTTOM
 	};
 
-	InternalCameraController(RefCountedPtr<CameraContext> camera, const Ship *ship);
+	InternalCameraController(Camera *camera, const Ship *ship);
+<<<<<<< HEAD
+=======
 	virtual void Reset();
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 	Type GetType() const { return INTERNAL; }
 	const char *GetName() const { return m_name; }
@@ -73,6 +86,15 @@ public:
 	void Save(Serializer::Writer &wr);
 	void Load(Serializer::Reader &rd);
 
+<<<<<<< HEAD
+	virtual void Update();
+
+private:
+	Mode m_mode;
+	const char *m_name;
+};
+
+=======
 private:
 	Mode m_mode;
 	const char *m_name;
@@ -86,11 +108,15 @@ private:
 };
 
 
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 class MoveableCameraController : public CameraController {
 public:
 	MoveableCameraController(RefCountedPtr<CameraContext> camera, const Ship *ship) :
 		CameraController(camera, ship) {}
+<<<<<<< HEAD
+=======
 	virtual void Reset() { }
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 
 	virtual void RollLeft(float frameTime) { }
 	virtual void RollRight(float frameTime) { }
@@ -107,9 +133,15 @@ public:
 	virtual void ZoomEvent(float amount) { }
 	/// Animated zoom update (on each frame), primarily designed for mouse wheel.
 	virtual void ZoomEventUpdate(float frameTime) { }
+<<<<<<< HEAD
+	virtual void Reset() { }
+};
+
+=======
 };
 
 
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Zoomable, rotatable orbit camera, always looks at the ship
 class ExternalCameraController : public MoveableCameraController {
 public:
@@ -145,7 +177,10 @@ private:
 	matrix3x3d m_extOrient;
 };
 
+<<<<<<< HEAD
+=======
 
+>>>>>>> 16a7bbac5db66645663dbc7deb29f65b5d4fe755
 // Much like external camera, but does not turn when the ship turns
 class SiderealCameraController : public MoveableCameraController {
 public:
