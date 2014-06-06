@@ -1,4 +1,4 @@
--- Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+﻿-- Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
 -- Licensed under the terms of CC-BY-SA 3.0. See licenses/CC-BY-SA-3.0.txt
 
 define_ship {
@@ -16,16 +16,16 @@ define_ship {
 		
 	max_cargo = 3000,
 	max_laser = 1,
-	max_missile = 12,
-	max_cargoscoop = 1,
-	max_fuelscoop = 1,
+	max_missile = 16,
+	max_cargoscoop = 0,
+	max_fuelscoop = 0,
 	min_crew = 3,
 	max_crew = 5,
 	capacity = 3000,
 	hull_mass = 1150,
 	fuel_tank_mass = 250,
 	effective_exhaust_velocity = 91784e3,
-	price = 800000,
+	price = 5500e3,
 	hyperdrive_class = 4,
 
 }
