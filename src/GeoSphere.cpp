@@ -1,4 +1,4 @@
-// Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+// Copyright © 2008-2015 Pioneer Developers. See AUTHORS.txt for details
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "libs.h"
@@ -282,6 +282,8 @@ void GeoSphere::BuildFirstPatches()
 	if(m_patches[0])
 		return;
 
+	CalculateMaxPatchDepth();
+
 	// generate root face patches of the cube/sphere
 	static const vector3d p1 = (vector3d( 1, 1, 1)).Normalized();
 	static const vector3d p2 = (vector3d(-1, 1, 1)).Normalized();
@@ -346,7 +348,7 @@ void GeoSphere::Update()
 	case eReceivedFirstPatches:
 		{
 			for (int i=0; i<NUM_PATCHES; i++) {
-				m_patches[i]->UpdateVBOs();
+				m_patches[i]->NeedToUpdateVBOs();
 			}
 			m_initStage = eDefaultUpdateState;
 		} break;
@@ -420,9 +422,7 @@ void GeoSphere::Render(Graphics::Renderer *renderer, const matrix4x4d &modelView
 		// stars should emit light and terrain should be visible from distance
 		ambient.r = ambient.g = ambient.b = 51;
 		ambient.a = 255;
-		emission.r = StarSystem::starRealColors[GetSystemBody()->GetType()][0];
-		emission.g = StarSystem::starRealColors[GetSystemBody()->GetType()][1];
-		emission.b = StarSystem::starRealColors[GetSystemBody()->GetType()][2];
+		emission = StarSystem::starRealColors[GetSystemBody()->GetType()];
 		emission.a = 255;
 	}
 
@@ -446,6 +446,8 @@ void GeoSphere::Render(Graphics::Renderer *renderer, const matrix4x4d &modelView
 	}
 
 	renderer->SetAmbientColor(oldAmbient);
+
+	renderer->GetStats().AddToStatCount(Graphics::Stats::STAT_PLANETS, 1);
 }
 
 void GeoSphere::SetUpMaterials()

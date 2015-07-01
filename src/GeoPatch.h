@@ -1,4 +1,4 @@
-// Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+// Copyright © 2008-2015 Pioneer Developers. See AUTHORS.txt for details
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #ifndef _GEOPATCH_H
@@ -61,11 +61,11 @@ public:
 
 	~GeoPatch();
 
-	inline void UpdateVBOs() {
+	inline void NeedToUpdateVBOs() {
 		m_needUpdateVBOs = (nullptr != heights);
 	}
 
-	void _UpdateVBOs(Graphics::Renderer *renderer);
+	void UpdateVBOs(Graphics::Renderer *renderer);
 
 	inline int GetEdgeIdxOf(const GeoPatch *e) const {
 		for (int i=0; i<NUM_KIDS; i++) {if (edgeFriend[i] == e) {return i;}}

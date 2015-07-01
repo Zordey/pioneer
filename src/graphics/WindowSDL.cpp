@@ -1,4 +1,4 @@
-// Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+// Copyright © 2008-2015 Pioneer Developers. See AUTHORS.txt for details
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "WindowSDL.h"
@@ -14,7 +14,7 @@ bool WindowSDL::CreateWindowAndContext(const char *name, int w, int h, bool full
 	if (!hidden && fullscreen) winFlags |= SDL_WINDOW_FULLSCREEN;
 
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
 	// cannot initialise 3.x content on OSX with anything but CORE profile
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
 	// OSX also forces us to use this for 3.2 onwards
@@ -46,8 +46,19 @@ bool WindowSDL::CreateWindowAndContext(const char *name, int w, int h, bool full
 	return true;
 }
 
-WindowSDL::WindowSDL(const Graphics::Settings &vs, const std::string &name)
-{
+WindowSDL::WindowSDL(const Graphics::Settings &vs, const std::string &name) {
+
+	// XXX horrible hack. if we don't want a renderer, we might be in an
+	// environment that doesn't actually have graphics available. since we're
+	// not going to draw anything anyway, there's not much point initialising a
+	// window (which will fail in aforementioned headless environment)
+	//
+	// the "right" way would be to have a dummy window class as well, and move
+	// a lot of this initialisation into the GL renderer. this is much easier
+	// right now though
+	if (vs.rendererType == Graphics::RENDERER_DUMMY)
+		return;
+
 	bool ok;
 
 	// attempt sequence is:
@@ -85,6 +96,8 @@ WindowSDL::WindowSDL(const Graphics::Settings &vs, const std::string &name)
 
 	SDL_SetWindowTitle(m_window, vs.title);
 	SDL_ShowCursor(0);
+
+	SDL_GL_SetSwapInterval((vs.vsync!=0) ? 1 : 0);
 }
 
 WindowSDL::~WindowSDL()

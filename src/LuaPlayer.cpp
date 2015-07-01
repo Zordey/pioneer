@@ -1,4 +1,4 @@
-// Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+// Copyright © 2008-2015 Pioneer Developers. See AUTHORS.txt for details
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "LuaObject.h"
@@ -260,7 +260,7 @@ static int l_set_hyperspace_target(lua_State *l)
 			// (note: this may change if it becomes possible to remove systems during the game)
 			assert(path.bodyIndex < sys->GetNumBodies());
 			SystemBody *sbody = sys->GetBodyByPath(path);
-			if (!sbody->GetSuperType() == SystemBody::SUPERTYPE_STAR)
+			if (sbody->GetSuperType() != SystemBody::SUPERTYPE_STAR)
 				return luaL_error(l, "Player:SetHyperspaceTarget() -- second parameter is not a system path or the path of a star");
 		}
 		Pi::game->GetSectorView()->SetHyperspaceTarget(path);
