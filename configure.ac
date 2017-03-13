@@ -1,4 +1,4 @@
-dnl Copyright © 2008-2016 Pioneer Developers. See AUTHORS.txt for details
+dnl Copyright © 2008-2017 Pioneer Developers. See AUTHORS.txt for details
 dnl Licensed under the terms of the GPL v3. See COPYING.txt for details
 
 dnl Process this file with autoconf to create configure.
@@ -78,6 +78,11 @@ WARN_CFLAGS=
 WARN_CXXFLAGS=
 WARN_CPPFLAGS=
 
+AC_SUBST(ARFLAGS)
+if test -z "$ARFLAGS"
+then
+	ARFLAGS="rcD"
+fi
 dnl Check for ccache if they want it
 AC_ARG_WITH([ccache], AS_HELP_STRING([--with-ccache], [Compile using ccache]), [AC_PATH_PROG([CCACHE], [ccache])])
 if test "x$with_ccache" = xyes; then
@@ -133,6 +138,7 @@ AC_SUBST([OPTIMISE])
 
 dnl Debug stuff
 AC_ARG_ENABLE([debug], AS_HELP_STRING([--enable-debug], [Enable debugging code (stack checks, debug tools features, etc)]), [EXTRA_CPPFLAGS="$EXTRA_CPPFLAGS -DDEBUG"])
+AC_ARG_ENABLE([remote-lua-repl], AS_HELP_STRING([--enable-remote-lua-repl], [Enable remote lua repl (tcp port 12345 or -DREMOTE_LUA_REPL_PORT=54321]), [EXTRA_CPPFLAGS="$EXTRA_CPPFLAGS -DREMOTE_LUA_REPL"])
 AC_ARG_ENABLE([ldb], AS_HELP_STRING([--enable-ldb], [Enable ldb support.]), [EXTRA_CPPFLAGS="$EXTRA_CPPFLAGS -DENABLE_LDB" ; EXTRA_LIBS="$EXTRA_LIBS -lldbcore"])
 AC_ARG_ENABLE([profiler], AS_HELP_STRING([--enable-profiler], [Enable internal profiler]), [EXTRA_CPPFLAGS="$EXTRA_CPPFLAGS -DPIONEER_PROFILER"])
 
@@ -167,7 +173,7 @@ EXTRA_CPPFLAGS="$EXTRA_CPPFLAGS -DPIONEER_VERSION=\\\"$PIONEER_VERSION\\\" -DPIO
 dnl __STDC_LIMIT_MACROS is defined so that GCC 4.7 will provide limit macros (eg, INT64_MAX) as part of cstdint
 dnl (note, __STDC_LIMIT_MACROS is not needed in GCC 4.8 or later; those macros are part of the C++11 standard)
 dnl __STDC_FORMAT_MACROS is the same deal for the (PRI|SCN)[ud](32|64) macros
-EXTRA_CPPFLAGS="$EXTRA_CPPFLAGS -D__STDC_LIMIT_MACROS -D__STDC_FORMAT_MACROS"
+EXTRA_CPPFLAGS="$EXTRA_CPPFLAGS -DGLEW_STATIC -D__STDC_LIMIT_MACROS -D__STDC_FORMAT_MACROS"
 
 
 dnl Compiler warning options
@@ -284,7 +290,7 @@ if test "x$cross_compiling" = "xno" ; then
 	assimp_rpath=`echo $ASSIMP_LIBS | sed -e 's/-[^L] *[^ ]\+ *//g' | sed -e 's/-L */-Wl,-rpath,/g'`
 	old_cxxflags="$CXXFLAGS"
 	old_libs="$LIBS"
-	CXXFLAGS="$ASSIMP_CFLAGS"
+	CXXFLAGS="$ASSIMP_CFLAGS $EXTRA_CXXFLAGS"
 	LIBS="$ASSIMP_LIBS $EXTRA_LIBS $assimp_rpath"
 	AC_LANG_PUSH([C++])
 	AC_RUN_IFELSE([AC_LANG_PROGRAM([[#include <assimp/defs.h>
@@ -401,6 +407,7 @@ AC_CONFIG_FILES([
 	src/gameui/Makefile
 	src/gui/Makefile
 	src/graphics/Makefile
+	src/graphics/gl2/Makefile
 	src/graphics/opengl/Makefile
 	src/graphics/dummy/Makefile
 	src/scenegraph/Makefile
@@ -414,9 +421,12 @@ AC_CONFIG_FILES([
 	contrib/lua/Makefile
 	contrib/miniz/Makefile
 	contrib/jenkins/Makefile
+	contrib/imgui/Makefile
+	contrib/nanosvg/Makefile
 	contrib/json/Makefile
 	contrib/PicoDDS/Makefile
 	contrib/vcacheopt/Makefile
+	contrib/glew/Makefile
 	contrib/profiler/Makefile
 	osx/Makefile
 	win32/Makefile])

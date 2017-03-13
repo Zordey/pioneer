@@ -1,4 +1,4 @@
-// Copyright © 2008-2016 Pioneer Developers. See AUTHORS.txt for details
+// Copyright © 2008-2017 Pioneer Developers. See AUTHORS.txt for details
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #pragma once
@@ -28,6 +28,7 @@ namespace OGL {
 	class GeoSphereSkyMaterial;
 	class GeoSphereStarMaterial;
 	class GeoSphereSurfaceMaterial;
+	class GenGasGiantColourMaterial;
 	class Material;
 	class MultiMaterial;
 	class LitMultiMaterial;
@@ -50,11 +51,14 @@ public:
 	virtual ~RendererOGL() override final;
 
 	virtual const char* GetName() const override final { return "OpenGL 3.1, with extensions, renderer"; }
+	virtual RendererType GetRendererType() const  override final { return RENDERER_OPENGL_3x; }
 
 	virtual void WriteRendererInfo(std::ostream &out) const override final;
 
 	virtual void CheckRenderErrors(const char *func = nullptr, const int line = -1) const override final { CheckErrors(func, line); }
 	static void CheckErrors(const char *func = nullptr, const int line = -1);
+
+	virtual bool SupportsInstancing() override final { return true; }
 
 	virtual bool GetNearFarRange(float &near_, float &far_) const override final;
 
@@ -133,7 +137,7 @@ protected:
 	float m_maxZFar;
 	bool m_useCompressedTextures;
 	bool m_useAnisotropicFiltering;
-	
+
 	void SetMaterialShaderTransforms(Material *);
 
 	matrix4x4f& GetCurrentTransform() { return m_currentTransform; }
@@ -145,6 +149,7 @@ protected:
 	friend class OGL::GeoSphereSurfaceMaterial;
 	friend class OGL::GeoSphereSkyMaterial;
 	friend class OGL::GeoSphereStarMaterial;
+	friend class OGL::GenGasGiantColourMaterial;
 	friend class OGL::MultiMaterial;
 	friend class OGL::LitMultiMaterial;
 	friend class OGL::RingMaterial;
