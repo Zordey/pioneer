@@ -10,6 +10,8 @@
 #include "matrix4x4.h"
 #include "Orbit.h"
 
+class Propulsion;
+
 class DynamicBody: public ModelBody {
 private:
 	friend class Propulsion;
@@ -23,7 +25,6 @@ public:
 	virtual void SetFrame(Frame *f) override;
 	vector3d GetAngVelocity() const;
 	void SetAngVelocity(const vector3d &v);
-	void SetMesh(ObjMesh *m);
 	virtual bool OnCollision(Object *o, Uint32 flags, double relVel) override;
 	vector3d GetAngularMomentum() const;
 	double GetAngularInertia() const { return m_angInertia; }
@@ -34,7 +35,6 @@ public:
 	virtual void TimeStepUpdate(const float timeStep) override;
 	double CalcAtmosphericForce(double dragCoeff) const;
 	void CalcExternalForce();
-	void UndoTimestep();
 
 	void SetMass(double);
 	void AddForce(const vector3d &);
@@ -76,7 +76,9 @@ public:
 
 	bool Have( Feature f ) const { return m_features[f]; };
 	void SetDecelerating(bool decel) { m_decelerating = decel; }
-
+	const Propulsion *GetPropulsion() const;
+	Propulsion *GetPropulsion();
+	void AddFeature( Feature f );
 protected:
 	virtual void SaveToJson(Json::Value &jsonObj, Space *space) override;
 	virtual void LoadFromJson(const Json::Value &jsonObj, Space *space) override;
@@ -106,9 +108,9 @@ private:
 	vector3d m_lastForce;
 	vector3d m_lastTorque;
 
-	void AddFeature( Feature f ) { m_features[f] = true; };
 	bool m_features[MAX_FEATURE];
 
+	Propulsion *m_propulsion;
 };
 
 #endif /* _DYNAMICBODY_H */
