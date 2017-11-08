@@ -91,6 +91,24 @@ void Player::InitCockpit()
 		m_cockpit.reset(new ShipCockpit(cockpitModelName));
 }
 
+bool Player::DoCrushDamage(float kgDamage)
+{
+	bool r = Ship::DoCrushDamage(kgDamage);
+	// Don't fire audio on EVERY iteration (aka every 16ms, or 60fps), only when exceeds a value randomly
+	const float dam = kgDamage*0.01f;
+	if (Pi::rng.Double() < dam)
+	{
+		if (!IsDead() && (GetPercentHull() < 25.0f)) {
+			Sound::BodyMakeNoise(this, "warning", .5f);
+		}
+		if (dam < (0.01 * float(GetShipType()->hullMass)))
+			Sound::BodyMakeNoise(this, "Hull_hit_Small", 1.0f);
+		else
+			Sound::BodyMakeNoise(this, "Hull_Hit_Medium", 1.0f);
+	}
+	return r;
+}
+
 //XXX perhaps remove this, the sound is very annoying
 bool Player::OnDamage(Object *attacker, float kgDamage, const CollisionContact& contactData)
 {
@@ -150,8 +168,6 @@ void Player::SetAlertState(Ship::AlertState as)
 			Sound::PlaySfx("warning", 0.2f, 0.2f, 0);
 			break;
 	}
-
-	Pi::game->GetCpan()->SetAlertState(as);
 
 	Ship::SetAlertState(as);
 }
@@ -221,6 +237,13 @@ void Player::SetCombatTarget(Body* const target, bool setSpeedTo)
 void Player::SetNavTarget(Body* const target, bool setSpeedTo)
 {
 	static_cast<PlayerShipController*>(m_controller)->SetNavTarget(target, setSpeedTo);
+	Pi::onPlayerChangeTarget.emit();
+}
+
+void Player::SetSetSpeedTarget(Body* const target)
+{
+	static_cast<PlayerShipController*>(m_controller)->SetSetSpeedTarget(target);
+	// TODO: not sure, do we actually need this? we are only changing the set speed target
 	Pi::onPlayerChangeTarget.emit();
 }
 //temporary targeting stuff ends

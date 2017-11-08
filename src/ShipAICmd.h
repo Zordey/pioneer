@@ -79,7 +79,7 @@ public:
 		VectorToJson(aiCommandObj, m_dockpos, "dock_pos");
 		VectorToJson(aiCommandObj, m_dockdir, "dock_dir");
 		VectorToJson(aiCommandObj, m_dockupdir, "dock_up_dir");
-		aiCommandObj["state"] = m_state;
+		aiCommandObj["state"] = Json::Value::Int(m_state);
 		jsonObj["ai_command"] = aiCommandObj; // Add ai command object to supplied object.
 	}
 	AICmdDock(const Json::Value &jsonObj) : AICommand(jsonObj, CMD_DOCK) {
@@ -269,7 +269,7 @@ public:
 		m_leadTime = m_evadeTime = m_closeTime = 0.0;
 		m_lastVel = m_target->GetVelocity();
 		m_prop = m_dBody->GetPropulsion();
-		m_fguns = dynamic_cast<FixedGuns*>(m_dBody);
+		m_fguns = m_dBody->GetFixedGuns();
 		assert(m_prop!=nullptr);
 		assert(m_fguns!=nullptr);
 	}
@@ -298,7 +298,7 @@ public:
 		m_lastVel = m_target->GetVelocity();
 		// Ensure needed sub-system:
 		m_prop = m_dBody->GetPropulsion();
-		m_fguns = dynamic_cast<FixedGuns*>(m_dBody);
+		m_fguns = m_dBody->GetFixedGuns();
 		assert(m_prop!=nullptr);
 		assert(m_fguns!=nullptr);
 	}

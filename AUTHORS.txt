@@ -10,10 +10,12 @@ The Pioneer Developers are:
 * Alan Briggs
 * Alan 'joonicks' Londa
 * Alessandro Giachi
+* Alexander Noack
 * Andrew Cook
 * Andrew Copland
 * Anton Korzun
 * Antti Salonen
+* Arda Güler
 * Armin Kretschmer
 * Asier Basagoiti
 * Benamucki
@@ -26,6 +28,8 @@ The Pioneer Developers are:
 * Chris Dennett
 * Christian Koch
 * Claudius Mueller
+* Clinton Mead
+* ColdSpirit
 * Connor Findlay
 * Craig Thomson
 * Dan Bennett

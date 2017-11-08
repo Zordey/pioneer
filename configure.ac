@@ -83,7 +83,8 @@ if test -z "$ARFLAGS"
 then
   case "${host_os}" in
   darwin*)
-  # do nothing, darwin does not support ar flag D
+  # darwin uses it's own version of ar with different flags to what GNU uses
+  ARFLAGS="r"
   ;;
   *)
   ARFLAGS="rcD"
@@ -302,7 +303,9 @@ if test "x$cross_compiling" = "xno" ; then
 	AC_RUN_IFELSE([AC_LANG_PROGRAM([[#include <assimp/defs.h>
 	                                 #include <assimp/version.h>]],
 	                            [[do {
-	                                if (aiGetVersionMajor() >= 3 && aiGetVersionMinor() >= 2)
+	                                if (aiGetVersionMajor() > 3)
+	                                    return 0;
+	                                else if (aiGetVersionMajor() == 3 && aiGetVersionMinor() >= 2)
 	                                    return 0;
 	                                return 1;
 	                              } while(0)]])],

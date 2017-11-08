@@ -141,7 +141,6 @@ GameConfig *Pi::config;
 DetailLevel Pi::detail;
 bool Pi::joystickEnabled;
 bool Pi::mouseYInvert;
-bool Pi::compactRadar;
 std::map<SDL_JoystickID,Pi::JoystickState> Pi::joysticks;
 bool Pi::navTunnelDisplayed = false;
 bool Pi::speedLinesDisplayed = false;
@@ -261,7 +260,7 @@ static void draw_progress(float progress)
 {
 
 	Pi::renderer->ClearScreen();
-	PiGui::NewFrame(Pi::renderer->GetWindow()->GetSDLWindow());
+	PiGui::NewFrame(Pi::renderer->GetSDLWindow());
 	Pi::DrawPiGui(progress, "INIT");
 	Pi::renderer->SwapBuffers();
 }
@@ -279,6 +278,7 @@ static void LuaInit()
 	LuaObject<Missile>::RegisterClass();
 	LuaObject<CargoBody>::RegisterClass();
 	LuaObject<ModelBody>::RegisterClass();
+	LuaObject<HyperspaceCloud>::RegisterClass();
 
 	LuaObject<StarSystem>::RegisterClass();
 	LuaObject<SystemPath>::RegisterClass();
@@ -317,13 +317,13 @@ static void LuaInit()
 
 	// XXX load everything. for now, just modules
 	lua_State *l = Lua::manager->GetLuaState();
-	pi_lua_dofile(l, "libs/autoload.lua");
-	pi_lua_dofile_recursive(l, "ui");
-	pi_lua_dofile(l, "pigui/pigui.lua");
-	pi_lua_dofile(l, "pigui/game.lua");
-	pi_lua_dofile(l, "pigui/init.lua");
-	pi_lua_dofile_recursive(l, "pigui/modules");
-	pi_lua_dofile_recursive(l, "modules");
+	pi_lua_import(l, "libs/autoload.lua", true);
+	pi_lua_import_recursive(l, "ui");
+	pi_lua_import(l, "pigui/pigui.lua", true);
+	pi_lua_import(l, "pigui/game.lua", true);
+	pi_lua_import(l, "pigui/init.lua", true);
+	pi_lua_import_recursive(l, "pigui/modules");
+	pi_lua_import_recursive(l, "modules");
 
 	Pi::luaNameGen = new LuaNameGen(Lua::manager);
 }
@@ -517,7 +517,6 @@ void Pi::Init(const std::map<std::string,std::string> &options, bool no_gui)
 
 	joystickEnabled = (config->Int("EnableJoystick")) ? true : false;
 	mouseYInvert = (config->Int("InvertMouseY")) ? true : false;
-	compactRadar = (config->Int("CompactRadar")) ? true : false;
 
 	navTunnelDisplayed = (config->Int("DisplayNavTunnel")) ? true : false;
 	speedLinesDisplayed = (config->Int("SpeedLines")) ? true : false;
@@ -546,7 +545,7 @@ void Pi::Init(const std::map<std::string,std::string> &options, bool no_gui)
 	Lua::Init();
 
 	Pi::pigui.Reset(new PiGui);
-	Pi::pigui->Init(Pi::renderer->GetWindow()->GetSDLWindow());
+	Pi::pigui->Init(Pi::renderer->GetSDLWindow());
 
 	float ui_scale = config->Float("UIScaleFactor", 1.0f);
 	if (Graphics::GetScreenHeight() < 768) {
@@ -1166,7 +1165,7 @@ void Pi::TombStoneLoop()
 	float _time = 0;
 	do {
 		Pi::HandleEvents();
-		Pi::renderer->GetWindow()->SetGrab(false);
+		Pi::renderer->SetGrab(false);
 
 		// render the scene
 		Pi::BeginRenderTarget();
@@ -1220,7 +1219,6 @@ void Pi::StartGame()
 	Pi::player->onLanded.connect(sigc::ptr_fun(&OnPlayerDockOrUndock));
 	Pi::game->GetCpan()->ShowAll();
 	DrawGUI = true;
-	Pi::game->GetCpan()->SetAlertState(Ship::ALERT_NONE);
 	SetView(game->GetWorldView());
 
 #ifdef REMOTE_LUA_REPL
@@ -1300,7 +1298,7 @@ void Pi::Start()
 		ui->Update();
 		ui->Draw();
 
-		PiGui::NewFrame(Pi::renderer->GetWindow()->GetSDLWindow());
+		PiGui::NewFrame(Pi::renderer->GetSDLWindow());
 		DrawPiGui(Pi::frameTime, "MAINMENU");
 
 		Pi::EndRenderTarget();
@@ -1486,8 +1484,6 @@ void Pi::MainLoop()
 		Pi::renderer->ClearDepthBuffer();
 		if( DrawGUI ) {
 			Gui::Draw();
-			if (game)
-				game->log->DrawHudMessages(renderer);
 		} else if (game && game->IsNormalSpace()) {
 			if (config->Int("DisableScreenshotInfo")==0) {
 				const RefCountedPtr<StarSystem> sys = game->GetSpace()->GetStarSystem();
@@ -1536,7 +1532,7 @@ void Pi::MainLoop()
 				Pi::game->GetWorldView()->BeginCameraFrame();
 				endCameraFrame = true;
 			}
-			PiGui::NewFrame(Pi::renderer->GetWindow()->GetSDLWindow());
+			PiGui::NewFrame(Pi::renderer->GetSDLWindow());
 			DrawPiGui(Pi::frameTime, "GAME");
 			if(endCameraFrame) {
 				Pi::game->GetWorldView()->EndCameraFrame();
@@ -1632,7 +1628,7 @@ void Pi::MainLoop()
 		if (isRecordingVideo && (Pi::ffmpegFile!=nullptr)) {
 			Graphics::ScreendumpState sd;
 			Pi::renderer->FrameGrab(sd);
-			fwrite(sd.pixels.get(), sizeof(uint32_t) * Pi::renderer->GetWindow()->GetWidth() * Pi::renderer->GetWindow()->GetHeight(), 1, Pi::ffmpegFile);
+			fwrite(sd.pixels.get(), sizeof(uint32_t) * Pi::renderer->GetWindowWidth() * Pi::renderer->GetWindowHeight(), 1, Pi::ffmpegFile);
 		}
 
 #ifdef PIONEER_PROFILER
@@ -1736,12 +1732,12 @@ float Pi::JoystickAxisState(int joystick, int axis) {
 void Pi::SetMouseGrab(bool on)
 {
 	if (!doingMouseGrab && on) {
-		Pi::renderer->GetWindow()->SetGrab(true);
+		Pi::renderer->SetGrab(true);
 		Pi::ui->SetMousePointerEnabled(false);
 		doingMouseGrab = true;
 	}
 	else if(doingMouseGrab && !on) {
-		Pi::renderer->GetWindow()->SetGrab(false);
+		Pi::renderer->SetGrab(false);
 		Pi::ui->SetMousePointerEnabled(true);
 		doingMouseGrab = false;
 	}
@@ -1759,7 +1755,8 @@ void Pi::DrawPiGui(double delta, std::string handler) {
 	#ifdef PROFILE_LUA_TIME
 	auto before = clock();
 	#endif
-	Pi::pigui->Render(delta, handler);
+	if(!IsConsoleActive())
+		Pi::pigui->Render(delta, handler);
 	#ifdef PROFILE_LUA_TIME
 	auto after = clock();
   Output("Lua PiGUI took %f\n", double(after - before) / CLOCKS_PER_SEC);

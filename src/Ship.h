@@ -50,7 +50,7 @@ struct shipstats_t {
 	float fuel_tank_mass_left;
 };
 
-class Ship: public DynamicBody, public FixedGuns {
+class Ship: public DynamicBody {
 	friend class ShipController; //only controllers need access to AITimeStep
 	friend class PlayerShipController;
 public:
@@ -86,7 +86,9 @@ public:
 	const shipstats_t &GetStats() const { return m_stats; }
 
 	void Explode();
+	virtual bool DoCrushDamage(float kgDamage); // can be overloaded in Player to add "crush" audio
 	void SetGunState(int idx, int state);
+	float GetGunTemperature(int idx) const { return GetFixedGuns()->GetGunTemperature(idx); }
 	void UpdateMass();
 	virtual bool SetWheelState(bool down); // returns success of state change, NOT state itself
 	void Blastoff();

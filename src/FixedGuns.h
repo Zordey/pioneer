@@ -23,13 +23,13 @@ class FixedGuns
 {
 	public:
 		FixedGuns();
-		~FixedGuns();
+		virtual ~FixedGuns();
 		void Init(DynamicBody *b);
 		void InitGun( SceneGraph::Model *m, const char *tag, int num);
 		void UpdateGuns( float timeStep );
 		bool Fire( int num, Body* b );
 		bool IsFiring();
-		inline float GetGunTemperature(int idx) const { return m_temperature_stat[idx]; }
+		float GetGunTemperature(int idx) const;
 		inline void IsDual( int idx, bool dual ) { m_gun[idx].dual = dual; };
 		void MountGun( int num, const float recharge, const float lifespan, const float dam, const float length,
 						 const float width, const bool mining, const Color& color, const float speed );
@@ -37,8 +37,10 @@ class FixedGuns
 		inline float GetGunRange( int idx ) { return m_gun[idx].projData.speed*m_gun[idx].projData.lifespan; };
 		inline float GetProjSpeed(int idx ) { return m_gun[idx].projData.speed; };
 		inline void SetCoolingBoost( float cooler ) { m_cooler_boost = cooler; };
-		inline void SetGunFiringState( int idx, int s ) { if (m_gun_present[idx]) m_state[idx] = s; };
-	protected:
+		inline void SetGunFiringState( int idx, int s ) {
+			if(m_gun_present[idx])
+				m_is_firing[idx] = s;
+		};
 		virtual void SaveToJson( Json::Value &jsonObj, Space *space);
 		virtual void LoadFromJson( const Json::Value &jsonObj, Space *space);
 	private:
@@ -52,7 +54,7 @@ class FixedGuns
 			ProjectileData projData;
 		};
 
-		bool m_state[Guns::GUNMOUNT_MAX];
+		bool m_is_firing[Guns::GUNMOUNT_MAX];
 		float m_recharge_stat[Guns::GUNMOUNT_MAX];
 		float m_temperature_stat[Guns::GUNMOUNT_MAX];
 		//TODO: Make it a vector and rework struct Gun to have bool dir={Forward,Backward}

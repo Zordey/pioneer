@@ -11,11 +11,16 @@ local Event = import("Event")
 
 -- cache ui
 local pionillium = ui.fonts.pionillium
+local pionicons = ui.fonts.pionicons
 local colors = ui.theme.colors
 local icons = ui.theme.icons
 
-local reticuleCircleRadius = math.min(ui.screenWidth, ui.screenHeight) / 13
+local reticuleCircleRadius = math.min(ui.screenWidth, ui.screenHeight) / 8
 local reticuleCircleThickness = 2.0
+
+-- for modules
+ui.reticuleCircleRadius = reticuleCircleRadius
+ui.reticuleCircleThickness = reticuleCircleThickness
 
 -- settings
 local ASTEROID_RADIUS = 1500000 -- rocky planets smaller than this (in meters) are considered an asteroid, not a planet
@@ -297,7 +302,7 @@ local reticuleTarget = "frame"
 
 -- show frame / target switch buttons if anything is targetted
 local function displayDetailButtons(radius, navTarget, combatTarget)
-	local uiPos = ui.pointOnClock(center, radius, 4.2)
+	local uiPos = ui.pointOnClock(center, radius, 3.6)
 	local mouse_position = ui.getMousePos()
 	local size = 24
 	if combatTarget or navTarget then
@@ -329,13 +334,13 @@ local function displayDetailData(target, radius, combatTarget, navTarget, colorL
 	local velocity = player:GetVelocityRelTo(target)
 	local position = player:GetPositionRelTo(target)
 
-	local uiPos = ui.pointOnClock(center, radius, 2)
+	local uiPos = ui.pointOnClock(center, radius, 2.46)
 	-- label of target
 	local tooltip = reticuleTarget == "combatTarget" and lui.HUD_CURRENT_COMBAT_TARGET or (reticuleTarget == "navTarget" and lui.HUD_CURRENT_NAV_TARGET or lui.HUD_CURRENT_FRAME)
 	ui.addStyledText(uiPos, ui.anchor.left, ui.anchor.baseline, target.label, colorDark, pionillium.medium, tooltip, colors.lightBlackBackground)
 
 	-- current distance, relative speed
-	uiPos = ui.pointOnClock(center, radius, 2.5)
+	uiPos = ui.pointOnClock(center, radius, 2.75)
 	-- currently unused: local distance, distance_unit = ui.Format.Distance(player:DistanceTo(target))
 	local approach_speed = position:dot(velocity) / position:magnitude()
 	local speed, speed_unit = ui.Format.Speed(approach_speed)
@@ -353,8 +358,7 @@ local function displayDetailData(target, radius, combatTarget, navTarget, colorL
 	local ratio_retro = brake_distance_retro / altitude
 	speed, speed_unit = ui.Format.Speed(velocity:magnitude())
 
-	-- speed
-	uiPos = ui.pointOnClock(center, radius, 3.5)
+	uiPos = ui.pointOnClock(center, radius, 3)
 	local distance,unit = ui.Format.Distance(brake_distance)
 	ui.addFancyText(uiPos, ui.anchor.left, ui.anchor.baseline, {
 										{ text="~" .. distance, color=colorDark, font=pionillium.medium, tooltip=lui.HUD_BRAKE_DISTANCE_MAIN_THRUSTERS },
@@ -362,7 +366,7 @@ local function displayDetailData(target, radius, combatTarget, navTarget, colorL
 									colors.lightBlackBackground)
 
 	-- current altitude
-	uiPos = ui.pointOnClock(center, radius, 3)
+	uiPos = ui.pointOnClock(center, radius, 3.25)
 	local altitude, altitude_unit = ui.Format.Distance(altitude)
 	ui.addFancyText(uiPos, ui.anchor.left, ui.anchor.baseline, {
 										{ text=altitude,      color=colorLight, font=pionillium.medium, tooltip=lui.HUD_DISTANCE_TO_SURFACE_OF_TARGET },
@@ -424,25 +428,38 @@ local function displayFrameData(frame, radius)
 	local velocity = player:GetVelocityRelTo(frame)
 	local position = player:GetPositionRelTo(frame)
 	local altitude = player:GetAltitudeRelTo(frame)
+	local brake_distance = player:GetDistanceToZeroV(velocity:magnitude(),"forward")
 	local altitude, altitude_unit = ui.Format.Distance(altitude)
 	local approach_speed = position:dot(velocity) / position:magnitude()
 	local speed, speed_unit = ui.Format.Speed(approach_speed)
-	local uiPos = ui.pointOnClock(center, radius, -2)
+	local uiPos = ui.pointOnClock(center, radius, -2.46)
 	-- label of frame
 	ui.addStyledText(uiPos, ui.anchor.right, ui.anchor.baseline, frame.label, colors.frame, pionillium.medium, lui.HUD_CURRENT_FRAME, colors.lightBlackBackground)
-	-- altitude above frame
-	uiPos = ui.pointOnClock(center, radius, -3)
-	ui.addFancyText(uiPos, ui.anchor.right, ui.anchor.baseline, {
-										{ text=altitude,      color=colors.frame,     font=pionillium.medium, tooltip=lui.HUD_DISTANCE_TO_SURFACE_OF_FRAME },
-										{ text=altitude_unit, color=colors.frameDark, font=pionillium.small,  tooltip=lui.HUD_DISTANCE_TO_SURFACE_OF_FRAME }},
-									colors.lightBlackBackground)
-
 	-- speed of approach of frame
-	uiPos = ui.pointOnClock(center, radius, -2.5)
+	uiPos = ui.pointOnClock(center, radius, -2.75)
 	ui.addFancyText(uiPos, ui.anchor.right, ui.anchor.baseline, {
 										{ text=speed,      color=colors.frame,     font=pionillium.medium, tooltip=lui.HUD_SPEED_OF_APPROACH_TO_FRAME },
 										{ text=speed_unit, color=colors.frameDark, font=pionillium.small,  tooltip=lui.HUD_SPEED_OF_APPROACH_TO_FRAME }},
 									colors.lightBlackBackground)
+	-- brake distance
+	uiPos = ui.pointOnClock(center, radius, -3)
+	local distance,unit = ui.Format.Distance(brake_distance)
+	ui.addFancyText(uiPos, ui.anchor.right, ui.anchor.baseline, {
+										{ text="~" .. distance, color=colors.frame,     font=pionillium.medium, tooltip=lui.HUD_BRAKE_DISTANCE_MAIN_THRUSTERS },
+										{ text=unit,            color=colors.frameDark, font=pionillium.small,  tooltip=lui.HUD_BRAKE_DISTANCE_MAIN_THRUSTERS }},
+									colors.lightBlackBackground)
+
+
+	-- altitude above frame
+	speed, speed_unit = ui.Format.Speed(velocity:magnitude())
+	uiPos = ui.pointOnClock(center, radius, -3.25)
+	ui.addFancyText(uiPos, ui.anchor.right, ui.anchor.baseline, {
+										{ text=speed,           color=colors.frame,     font=pionillium.medium, tooltip=lui.HUD_SPEED_RELATIVE_TO_TARGET },
+										{ text=speed_unit,      color=colors.frameDark, font=pionillium.small,  tooltip=lui.HUD_SPEED_RELATIVE_TO_TARGET },
+										{ text=' ' .. altitude, color=colors.frame,     font=pionillium.medium, tooltip=lui.HUD_DISTANCE_TO_SURFACE_OF_FRAME },
+										{ text=altitude_unit,   color=colors.frameDark, font=pionillium.small,  tooltip=lui.HUD_DISTANCE_TO_SURFACE_OF_FRAME }},
+									colors.lightBlackBackground)
+
 end
 
 -- display current maneuver data below the reticule circle
@@ -514,6 +531,38 @@ local function updateReticuleTarget(frame, navTarget, combatTarget)
 	end
 end
 
+local function displaySetSpeed(radius)
+	local setSpeed = player:GetSetSpeed()
+	if setSpeed ~= nil then
+		local distance, unit = ui.Format.Speed(setSpeed)
+		local uiPos = ui.pointOnClock(center, radius, 4.0)
+		local target = player:GetSetSpeedTarget()
+		if target then
+			local color = colors.reticuleCircle
+			local colorDark = colors.reticuleCircleDark
+			ui.addFancyText(uiPos, ui.anchor.left, ui.anchor.top, {
+												{ text=icons.autopilot_set_speed, color=color,     font=pionicons.medium,  tooltip="set speed" },
+												{ text=distance,                  color=color,     font=pionillium.medium, tooltip="set speed" },
+												{ text=unit,                      color=colorDark, font=pionillium.small,  tooltip="set speed" },
+												{ text=' ' .. target.label,       color=color,     font=pionillium.medium, tooltip="set speed" }},
+											colors.lightBlackBackground)
+		end
+	end
+end
+
+local function displayAlertMarker()
+	local alert = player:GetAlertState()
+	local iconsize = Vector(24,24)
+	if alert then
+		local uiPos = ui.pointOnClock(center, reticuleCircleRadius * 1.2 , 2)
+		if alert == "ship-firing" then
+			ui.addIcon(uiPos, icons.alert2, colors.alertRed, iconsize, ui.anchor.center, ui.anchor.center, lc.LASER_FIRE_DETECTED)
+		elseif alert == "ship-nearby" then
+			ui.addIcon(uiPos, icons.alert1, colors.alertYellow, iconsize, ui.anchor.center, ui.anchor.center, lc.SHIP_DETECTED_NEARBY)
+		end
+	end
+end
+
 local function displayReticule()
 	-- reticule circle
 	ui.addCircle(center, reticuleCircleRadius, colors.reticuleCircle, ui.circleSegments(reticuleCircleRadius), reticuleCircleThickness)
@@ -540,11 +589,13 @@ local function displayReticule()
 		displayDetailData(combatTarget, radius, combatTarget, navTarget, colors.combatTarget, colors.combatTargetDark)
 	end
 
+	displaySetSpeed(radius)
 	displayManeuverData(radius)
 	displayMouseMoveIndicator()
 	displayReticulePitchHorizonCompass()
 	displayReticuleDeltaV()
 	displayDirectionalMarkers()
+	displayAlertMarker()
 
 	if frame then
 		displayFrameIndicators(frame, navTarget)
@@ -555,102 +606,14 @@ local function displayReticule()
 end
 
 local function displayHyperspace()
-	-- TODO implement :)
-end
-
-local MAX_RADAR_SIZE = 1000000000
-local MIN_RADAR_SIZE = 1000
-
-local shouldDisplay2DRadar = false
-local current_radar_size = 10000
-
--- display the 2D radar
-local function display2DRadar(cntr, size)
-	local targets = ui.getTargetsNearby(current_radar_size)
-	local halfsize = size * 0.5
-	local thirdsize = size * 0.3
-	local twothirdsize = size * 0.7
-
-	local function line(x,y)
-		-- ui.addLine(cntr + Vector(x, y) * halfsize, cntr + Vector(x,y) * size, colors.reticuleCircle, reticuleCircleThickness)
-		ui.addLine(cntr + Vector(x, y) * thirdsize, cntr + Vector(x,y) * twothirdsize, colors.reticuleCircle, reticuleCircleThickness)
-	end
-	ui.addCircleFilled(cntr, size, colors.lightBlueBackground, ui.circleSegments(size), 1)
-	ui.addCircle(cntr, size, colors.reticuleCircle, ui.circleSegments(size), reticuleCircleThickness)
-	--	ui.addCircle(cntr, halfsize, colors.reticuleCircle, ui.circleSegments(halfsize), reticuleCircleThickness)
-	ui.addCircle(cntr, thirdsize, colors.reticuleCircle, ui.circleSegments(thirdsize), reticuleCircleThickness)
-	ui.addCircle(cntr, twothirdsize, colors.reticuleCircle, ui.circleSegments(twothirdsize), reticuleCircleThickness)
-	local l = ui.oneOverSqrtTwo
-	line(-l, l)
-	line(-l, -l)
-	line(l, -l)
-	line(l, l)
-	local combatTarget = player:GetCombatTarget()
-	local navTarget = player:GetNavTarget()
-	local tooltip = {}
-	for k,v in pairs(targets) do
-		if v.distance < current_radar_size then
-			local halfRadarSize = current_radar_size / 2
-			local alpha = 255
-			if v.distance > halfRadarSize then
-				alpha = 255 * (1 - (v.distance - halfRadarSize) / halfRadarSize)
-			end
-			local position = cntr + v.aep * size * 2
-			if v.body == navTarget then
-				local color = Color(colors.navTarget.r, colors.navTarget.g, colors.navTarget.b, alpha)
-				ui.addIcon(position, icons.square, color, 12, ui.anchor.center, ui.anchor.center)
-			elseif v.body == combatTarget then
-				local color = Color(colors.combatTarget.r, colors.combatTarget.g, colors.combatTarget.b, alpha)
-				ui.addIcon(position, icons.square, color, 12, ui.anchor.center, ui.anchor.center)
-			else
-				local color = Color(colors.reticuleCircle.r, colors.reticuleCircle.g, colors.reticuleCircle.b, alpha)
-				ui.addCircleFilled(position, 2, color, 4, 1)
-			end
-			local mouse_position = ui.getMousePos()
-			if (mouse_position - position):magnitude() < 4 then
-				table.insert(tooltip, v.label)
-			end
-		end
-	end
-	if #tooltip > 0 then
-		ui.setTooltip(table.concat(tooltip, "\n"))
-	end
-	local d, d_u = ui.Format.Distance(current_radar_size)
-	local distance = d .. ' ' .. d_u
-	local textcenter = cntr + Vector(0, size + 2)
-	local textsize = ui.addStyledText(textcenter, ui.anchor.center, ui.anchor.top, distance, colors.frame, pionillium.small, lui.HUD_RADAR_DISTANCE, colors.lightBlackBackground)
-end
-
--- display either the 3D or the 2D radar, show a popup on right click to select
-local function displayRadar()
-	local cntr = Vector(ui.screenWidth / 2, ui.screenHeight - reticuleCircleRadius - 15)
-	local size = reticuleCircleRadius
-
-	local mp = ui.getMousePos()
-	if (Vector(mp.x,mp.y) - cntr):magnitude() < size then
-		if ui.isMouseReleased(1) then
-			ui.openPopup("radarselector")
-		end
-		local wheel = ui.getMouseWheel()
-		if wheel > 0 then
-			current_radar_size = math.max(current_radar_size / 10, MIN_RADAR_SIZE)
-		elseif wheel < 0 then
-			current_radar_size = math.min(current_radar_size * 10, MAX_RADAR_SIZE)
-		end
-	end
-	ui.popup("radarselector", function()
-						 if ui.selectable(lui.HUD_2D_RADAR, shouldDisplay2DRadar, {}) then
-							 shouldDisplay2DRadar = true
-							 Game.SetRadarVisible(false)
-						 end
-						 if ui.selectable(lui.HUD_3D_RADAR, not shouldDisplay2DRadar, {}) then
-							 shouldDisplay2DRadar = false
-							 Game.SetRadarVisible(true)
-						 end
-	end)
-	if shouldDisplay2DRadar then
-		display2DRadar(cntr, size)
-	end
+	local uiPos = Vector(ui.screenWidth / 2, ui.screenHeight / 2 - 10)
+	local path,destName = player:GetHyperspaceDestination()
+	local label = string.interp(lui.HUD_IN_TRANSIT_TO_N_X_X_X, { system = destName, x = path.sectorX, y = path.sectorY, z = path.sectorZ })
+	local r = ui.addStyledText(uiPos, ui.anchor.center, ui.anchor.bottom, label, colors.hyperspaceInfo, pionillium.large, nil, colors.lightBlackBackground)
+	uiPos = uiPos + Vector(0, r.y + 20)
+	local percent = Game.GetHyperspaceTravelledPercentage() * 100
+	label = string.interp(lui.HUD_JUMP_COMPLETE, { percent = string.format("%2.1f", percent) })
+	ui.addStyledText(uiPos, ui.anchor.center, ui.anchor.top, label, colors.hyperspaceInfo, pionillium.large, nil, colors.lightBlackBackground)
 end
 
 local function getBodyIcon(body)
@@ -708,7 +671,104 @@ end
 
 local function callModules(mode)
 	for k,v in pairs(ui.getModules(mode)) do
-		v()
+		v.fun()
+	end
+end
+local shipInfoLowerBound
+local function displayTargetScannerFor(target, offset)
+	local hull = target:GetHullPercent()
+	local shield = target:GetShieldsPercent()
+	local class = target:GetShipType()
+	local label = target.label
+	local engine = target:GetEquip('engine', 1)
+	local stats = target:GetStats()
+	local mass = stats.staticMass
+	local cargo = stats.usedCargo
+	if engine then
+		engine = engine:GetName()
+	else
+		engine = 'No Hyperdrive'
+	end
+	local uiPos = Vector(ui.screenWidth - 30, 1 * ui.gauge_height)
+	if shield then
+		ui.gauge(uiPos - Vector(ui.gauge_width, 0), shield, nil, nil, 0, 100, icons.shield, colors.gaugeShield, lui.HUD_SHIELD_STRENGTH)
+	end
+	uiPos = uiPos + Vector(0, ui.gauge_height * 1.5)
+	ui.gauge(uiPos - Vector(ui.gauge_width, 0), hull, nil, nil, 0, 100, icons.hull, colors.gaugeHull, lui.HUD_HULL_STRENGTH)
+	uiPos = uiPos + Vector(0, ui.gauge_height * 0.8)
+	local r = ui.addStyledText(uiPos, ui.anchor.right, ui.anchor.top, label, colors.frame, pionillium.medium, nil, colors.lightBlackBackground)
+	uiPos = uiPos + Vector(0, r.y + offset)
+	r = ui.addStyledText(uiPos, ui.anchor.right, ui.anchor.top, class, colors.frame, pionillium.medium, nil, colors.lightBlackBackground)
+	uiPos = uiPos + Vector(0, r.y + offset)
+	r = ui.addStyledText(uiPos, ui.anchor.right, ui.anchor.top, engine, colors.frame, pionillium.medium, nil, colors.lightBlackBackground)
+	uiPos = uiPos + Vector(0, r.y + offset)
+	r = ui.addFancyText(uiPos, ui.anchor.right, ui.anchor.top, {
+										{ text=lui.HUD_MASS .. ' ', color=colors.reticuleCircleDark, font=pionillium.medium },
+										{ text=mass, color=colors.reticuleCircle, font=pionillium.medium, },
+										{ text=lc.UNIT_TONNES, color=colors.reticuleCircleDark, font=pionillium.medium }},
+									colors.lightBlackBackground)
+	uiPos = uiPos + Vector(0, r.y + offset)
+	r = ui.addFancyText(uiPos, ui.anchor.right, ui.anchor.top, {
+										{ text=lui.HUD_CARGO_MASS .. ' ', color=colors.reticuleCircleDark, font=pionillium.medium, },
+										{ text=cargo, color=colors.reticuleCircle, font=pionillium.medium },
+										{ text=lc.UNIT_TONNES, color=colors.reticuleCircleDark, font=pionillium.medium }},
+									colors.lightBlackBackground)
+	shipInfoLowerBound = uiPos + Vector(0, r.y + 15)
+end
+
+local function displayTargetScanner()
+	local offset = 7
+	shipInfoLowerBound = Vector(ui.screenWidth - 30, 1 * ui.gauge_height)
+	if player:GetEquipCountOccupied('target_scanner') > 0 or player:GetEquipCountOccupied('advanced_target_scanner') > 0 then
+           -- what is the difference between target_scanner and advanced_target_scanner?
+		local target = player:GetNavTarget()
+		if target and target:IsShip() then
+			displayTargetScannerFor(target, offset)
+		else
+			target = player:GetCombatTarget()
+			if target and target:IsShip() then
+				displayTargetScannerFor(target, offset)
+			end
+		end
+	end
+	if player:GetEquipCountOccupied('hypercloud') > 0 then
+		local target = player:GetNavTarget()
+		if target and target:IsHyperspaceCloud() then
+			local arrival = target:IsArrival()
+			local ship = target:GetShip()
+			if ship then
+				local stats = ship:GetStats()
+				local mass = stats.staticMass
+				local path,destName = ship:GetHyperspaceDestination()
+				local date = target:GetDueDate()
+				local dueDate = ui.Format.Datetime(date)
+				local uiPos = shipInfoLowerBound + Vector(0, 15)
+				local name = (arrival and lc.HYPERSPACE_ARRIVAL_CLOUD or lc.HYPERSPACE_DEPARTURE_CLOUD)
+				local r = ui.addStyledText(uiPos, ui.anchor.right, ui.anchor.top, name , colors.frame, pionillium.medium, nil, colors.lightBlackBackground)
+				uiPos = uiPos + Vector(0, r.y + offset)
+				r = ui.addFancyText(uiPos, ui.anchor.right, ui.anchor.top, {
+													{ text=lui.HUD_MASS .. ' ', color=colors.reticuleCircleDark, font=pionillium.medium },
+													{ text=mass, color=colors.reticuleCircle, font=pionillium.medium },
+													{ text=lc.UNIT_TONNES, color=colors.reticuleCircleDark, font=pionillium.medium }},
+												colors.lightBlackBackground)
+				uiPos = uiPos + Vector(0, r.y + offset)
+				r = ui.addStyledText(uiPos, ui.anchor.right, ui.anchor.top, destName, colors.frame, pionillium.medium, nil, colors.lightBlackBackground)
+				uiPos = uiPos + Vector(0, r.y + offset)
+				ui.addStyledText(uiPos, ui.anchor.right, ui.anchor.top, dueDate, colors.frame, pionillium.medium, nil, colors.lightBlackBackground)
+			else
+				local uiPos = Vector(ui.screenWidth - 30, 1 * ui.gauge_height)
+				ui.addStyledText(uiPos, ui.anchor.right, ui.anchor.top, lc.HYPERSPACE_ARRIVAL_CLOUD_REMNANT , colors.frame, pionillium.medium, nil, colors.lightBlackBackground)
+			end
+		end
+	end
+end
+
+local function displayHyperspaceCountdown()
+	if player:IsHyperspaceActive() then
+		local countdown = math.ceil(player:GetHyperspaceCountdown())
+                local path,destName = player:GetHyperspaceDestination()
+		local uiPos = Vector(ui.screenWidth / 2, ui.screenHeight / 3)
+		ui.addStyledText(uiPos, ui.anchor.center, ui.anchor.bottom, string.interp(lui.HUD_HYPERSPACING_TO_N_IN_N_SECONDS ,{ destination = destName, countdown = countdown }), colors.hyperspaceInfo, pionillium.large)
 	end
 end
 
@@ -725,8 +785,7 @@ local function displayOnScreenObjects()
 	for k,v in pairs(bodies) do
 		if v.onscreen then
 			local it = v
-			it.label = k
-			local itk = k
+			it.label = k:GetLabel()
 			local itbody = it.body
 			local itsc = it.screenCoordinates
 			local inserted = false
@@ -741,7 +800,7 @@ local function displayOnScreenObjects()
 								-- if the navtarget is one of the collapsed ones, it's the most important
 								table.insert(v.others, v.mainBody)
 								v.mainBody = it
-								v.hasNavTarget = true
+								v.hasNavTarget = itbody == navTarget
 								v.multiple = true
 							else
 								-- otherwise, just add it as a further body
@@ -775,13 +834,13 @@ local function displayOnScreenObjects()
 		end
 		local mp = ui.getMousePos()
 		-- click handler
-		if (Vector(mp.x,mp.y) - coords):magnitude() < iconsize then
-			if ui.isMouseReleased(0) then
-				if v.hasNavTarget and ui.ctrlHeld() then
-					-- if ctrl-clicked and has nav target, unset nav target
+		if (Vector(mp.x,mp.y) - coords):magnitude() < iconsize * 1.5 then
+			if not ui.isMouseHoveringAnyWindow() and ui.isMouseReleased(0) then
+				if v.hasNavTarget then
+					-- if clicked and has nav target, unset nav target
 					player:SetNavTarget(nil)
-				elseif v.hasCombatTarget and ui.ctrlHeld() then
-					-- if ctlr-clicked and has combat target, unset combat target
+				elseif v.hasCombatTarget then
+					-- if clicked and has combat target, unset combat target
 					player:SetCombatTarget(nil)
 				else
 					if v.multiple then
@@ -790,6 +849,13 @@ local function displayOnScreenObjects()
 					else
 						-- clicked on single, just set navtarget/combatTarget
 						setTarget(v.mainBody.body)
+						if ui.ctrlHeld() then
+							local target = v.mainBody.body
+							if target == player:GetSetSpeedTarget() then
+								target = nil
+							end
+							player:SetSetSpeedTarget(target)
+						end
 					end
 				end
 			end
@@ -800,22 +866,33 @@ local function displayOnScreenObjects()
 							 ui.icon(getBodyIcon(v.mainBody.body), size, colors.frame)
 							 ui.sameLine()
 							 if ui.selectable(v.mainBody.label, v.mainBody.body == navTarget, {}) then
-								 player:SetNavTarget(v.mainBody.body)
+								 if v.mainBody.body:IsShip() then
+									 player:SetCombatTarget(v.mainBody.body)
+								 else
+									 player:SetNavTarget(v.mainBody.body)
+								 end
+								 if ui.ctrlHeld() then
+									 local target = v.mainBody.body
+									 if target == player:GetSetSpeedTarget() then
+										 target = nil
+									 end
+									 player:SetSetSpeedTarget(target)
+								 end
 							 end
 							 for k,v in pairs(v.others) do
 								 ui.icon(getBodyIcon(v.body), size, colors.frame)
 								 ui.sameLine()
 								 if ui.selectable(v.label, v.body == navTarget, {}) then
-									 player:SetNavTarget(v.body)
+									 if v.body:IsShip() then
+										 player:SetCombatTarget(v.body)
+									 else
+										 player:SetNavTarget(v.body)
+									 end
 								 end
 							 end
 		end)
 	end
 end
-
-Event.Register('onGameStart', function()
-								 shouldDisplay2DRadar = false
-end)
 
 ui.registerHandler(
 	'game',
@@ -836,7 +913,9 @@ ui.registerHandler(
 											else
 												displayOnScreenObjects()
 												displayReticule()
-												displayRadar()
+												ui.displayPlayerGauges()
+												displayTargetScanner()
+												displayHyperspaceCountdown()
 												callModules("game")
 											end
 										else
@@ -848,5 +927,3 @@ ui.registerHandler(
 		end)
 end)
 
--- todo: f8 low thrust, f5 flight control, f10 equipment ?
--- todo: on hyperspace target changed while counting down -> abort
