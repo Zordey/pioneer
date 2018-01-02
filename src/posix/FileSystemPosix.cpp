@@ -1,4 +1,4 @@
-// Copyright © 2008-2017 Pioneer Developers. See AUTHORS.txt for details
+// Copyright © 2008-2018 Pioneer Developers. See AUTHORS.txt for details
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "libs.h"
@@ -129,15 +129,6 @@ namespace FileSystem {
 		}
 	}
 
-	static FileInfo::FileType stat_fd(int fd, Time::DateTime &mtime) {
-		struct stat info;
-		if (fstat(fd, &info) == 0) {
-			return interpret_stat(info, mtime);
-		} else {
-			return FileInfo::FT_NON_EXISTENT;
-		}
-	}
-
 	FileInfo FileSourceFS::Lookup(const std::string &path)
 	{
 		const std::string fullpath = JoinPathBelow(GetRoot(), path);
@@ -173,7 +164,7 @@ namespace FileSystem {
 					memset(data + read_size, 0xee, sz - read_size);
 				}
 				fclose(fl);
-	
+
 				return RefCountedPtr<FileData>(new FileDataMalloc(MakeFileInfo(path, ty, mtime), sz, data));
 			}
 		}

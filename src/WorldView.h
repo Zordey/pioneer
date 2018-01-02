@@ -1,4 +1,4 @@
-// Copyright © 2008-2017 Pioneer Developers. See AUTHORS.txt for details
+// Copyright © 2008-2018 Pioneer Developers. See AUTHORS.txt for details
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #ifndef _WORLDVIEW_H
@@ -8,7 +8,6 @@
 #include "gui/Gui.h"
 #include "gui/GuiWidget.h"
 #include "UIView.h"
-#include "Serializer.h"
 #include "SpeedLines.h"
 #include "Background.h"
 #include "Camera.h"

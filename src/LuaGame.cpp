@@ -1,4 +1,4 @@
-// Copyright © 2008-2017 Pioneer Developers. See AUTHORS.txt for details
+// Copyright © 2008-2018 Pioneer Developers. See AUTHORS.txt for details
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "LuaGame.h"
@@ -19,6 +19,7 @@
 #include "SystemInfoView.h"
 #include "ShipCpanel.h"
 #include "LuaPiGui.h"
+#include "GameSaveError.h"
 
 /*
  * Interface: Game
@@ -610,7 +611,7 @@ void LuaGame::Register()
 		{ "GetTimeAcceleration",          l_game_get_time_acceleration },
 		{ "GetRequestedTimeAcceleration", l_game_get_requested_time_acceleration },
 		{ "GetHyperspaceTravelledPercentage", l_game_get_hyperspace_travelled_percentage },
-		
+
 		{ "SetWorldCamType", l_game_set_world_cam_type },
 		{ "GetWorldCamType", l_game_get_world_cam_type },
 		{ "ToggleTargetActions",         l_game_toggle_target_actions }, // deprecated

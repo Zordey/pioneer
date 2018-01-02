@@ -1,4 +1,4 @@
-// Copyright © 2008-2017 Pioneer Developers. See AUTHORS.txt for details
+// Copyright © 2008-2018 Pioneer Developers. See AUTHORS.txt for details
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "StarSystem.h"
@@ -8,19 +8,19 @@
 #include "GalaxyGenerator.h"
 #include "Factions.h"
 
-#include "Serializer.h"
 #include "Pi.h"
 #include "LuaEvent.h"
 #include "enum_table.h"
-#include <map>
-#include <string>
-#include <algorithm>
 #include "utils.h"
 #include "Orbit.h"
 #include "Lang.h"
 #include "StringF.h"
-#include <SDL_stdinc.h>
 #include "EnumStrings.h"
+#include "GameSaveError.h"
+#include <SDL_stdinc.h>
+#include <map>
+#include <string>
+#include <algorithm>
 
 //#define DEBUG_DUMP
 
@@ -1000,7 +1000,7 @@ void StarSystem::ExportToLua(const char *filename) {
 	if(f == 0)
 		return;
 
-	fprintf(f,"-- Copyright © 2008-2017 Pioneer Developers. See AUTHORS.txt for details\n");
+	fprintf(f,"-- Copyright © 2008-2018 Pioneer Developers. See AUTHORS.txt for details\n");
 	fprintf(f,"-- Licensed under the terms of the GPL v3. See licenses/GPL-3.txt\n\n");
 
 	std::string stars_in_system = GetStarTypes(m_rootBody.Get());

@@ -1,4 +1,4 @@
--- Copyright © 2008-2017 Pioneer Developers. See AUTHORS.txt for details
+-- Copyright © 2008-2018 Pioneer Developers. See AUTHORS.txt for details
 -- Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 
@@ -562,6 +562,7 @@ local calcReward = function (flavour, pickup_crew, pickup_pass, pickup_comm, del
 		reward = reward + extra
 	end
 
+	reward = math.ceil(reward)
 	return reward
 end
 

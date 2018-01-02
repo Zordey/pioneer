@@ -1,4 +1,4 @@
-// Copyright © 2008-2017 Pioneer Developers. See AUTHORS.txt for details
+// Copyright © 2008-2018 Pioneer Developers. See AUTHORS.txt for details
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #ifndef _UTILS_H
@@ -191,9 +191,9 @@ static inline size_t SplitSpec(const std::string &spec, std::vector<float> &outp
 	return i;
 }
 
+std::vector<std::string> SplitString(const std::string& source, const std::string& delim);
+
 // 'Numeric type' to string conversions.
-std::string SInt64ToStr(Sint64 val);
-std::string UInt64ToStr(Uint64 val);
 std::string FloatToStr(float val);
 std::string DoubleToStr(double val);
 std::string AutoToStr(Sint32 val);

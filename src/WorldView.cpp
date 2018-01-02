@@ -1,4 +1,4 @@
-// Copyright © 2008-2017 Pioneer Developers. See AUTHORS.txt for details
+// Copyright © 2008-2018 Pioneer Developers. See AUTHORS.txt for details
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "WorldView.h"
@@ -12,7 +12,6 @@
 #include "galaxy/GalaxyCache.h"
 #include "SectorView.h"
 #include "SystemView.h"
-#include "Serializer.h"
 #include "Sound.h"
 #include "Space.h"
 #include "SpaceStation.h"
@@ -35,6 +34,7 @@
 #include "Quaternion.h"
 #include "LuaObject.h"
 #include "utils.h"
+#include "GameSaveError.h"
 #include <algorithm>
 #include <sstream>
 #include <iomanip>
