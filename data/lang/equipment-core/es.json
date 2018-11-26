@@ -33,15 +33,15 @@
   },
   "BEAMLASER_1MW": {
     "description": "",
-    "message": "1MW beam laser"
+    "message": "Rayo láser de 1MW"
   },
   "BEAMLASER_DUAL_1MW": {
     "description": "",
-    "message": "1MW dual-fire beam laser"
+    "message": "Rayo láser dual de 1MW"
   },
   "BEAMLASER_RAPID_2MW": {
     "description": "",
-    "message": "2MW rapid-fire beam laser"
+    "message": "Rayo láser de disparo rápido de 2MW"
   },
   "CARGO_LIFE_SUPPORT": {
     "description": "",

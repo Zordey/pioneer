@@ -1555,6 +1555,14 @@
     "description": "",
     "message": "Comienzo de juego fácil en Londres/Tierra, en el Sistema Solar."
   },
+  "START_AT_MARS": {
+    "description": "",
+    "message": "Comenzar en Marte"
+  },
+  "START_AT_MARS_DESC": {
+    "description": "",
+    "message": "Comienzo de juego fácil en Cydonia/Marte, en el Sistema Solar."
+  },
   "START_AT_NEW_HOPE": {
     "description": "New Hope is an in game location",
     "message": "Comenzar en New Hope"

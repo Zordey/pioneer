@@ -28,9 +28,7 @@
 #include "galaxy/GalaxyGenerator.h"
 #include "GameSaveError.h"
 
-static const int  s_saveVersion   = 84;
-static const char s_saveStart[]   = "PIONEER";
-static const char s_saveEnd[]     = "END";
+static const int  s_saveVersion   = 85;
 
 Game::Game(const SystemPath &path, double time) :
 	m_galaxy(GalaxyGenerator::Create()),
@@ -41,6 +39,14 @@ Game::Game(const SystemPath &path, double time) :
 	m_requestedTimeAccel(TIMEACCEL_1X),
 	m_forceTimeAccel(false)
 {
+#ifdef PIONEER_PROFILER
+	std::string profilerPath;
+	FileSystem::userFiles.MakeDirectory("profiler");
+	FileSystem::userFiles.MakeDirectory("profiler/NewGame");
+	profilerPath = FileSystem::JoinPathBelow(FileSystem::userFiles.GetRoot(), "profiler/NewGame");
+	Profiler::reset();
+#endif
+
 	// Now that we have a Galaxy, check the starting location
 	if (!path.IsBodyPath())
 		throw InvalidGameStartLocation("SystemPath is not a body path");
@@ -81,6 +87,9 @@ Game::Game(const SystemPath &path, double time) :
 	CreateViews();
 
 	EmitPauseState(IsPaused());
+#ifdef PIONEER_PROFILER
+	Profiler::dumphtml(profilerPath.c_str());
+#endif
 }
 
 Game::~Game()
@@ -109,27 +118,20 @@ Game::~Game()
 	m_galaxy->FlushCaches();
 }
 
-Game::Game(const Json::Value &jsonObj) :
+Game::Game(const Json &jsonObj) :
 m_timeAccel(TIMEACCEL_PAUSED),
 m_requestedTimeAccel(TIMEACCEL_PAUSED),
 m_forceTimeAccel(false)
 {
-	// signature check
-	if (!jsonObj.isMember("signature")) throw SavedGameCorruptException();
-	Json::Value signature = jsonObj["signature"];
-	if (signature.isString() && signature.asString().compare(s_saveStart) == 0) {}
-	else throw SavedGameCorruptException();
-
-	// version check
-	if (!jsonObj.isMember("version")) throw SavedGameCorruptException();
-	Json::Value version = jsonObj["version"];
-	if (!version.isInt()) throw SavedGameCorruptException();
-	Output("savefile version: %d\n", version.asInt());
-	if (version.asInt() == s_saveVersion) {}
-	else
-	{
-		Output("can't load savefile, expected version: %d\n", s_saveVersion);
-		throw SavedGameWrongVersionException();
+	try {
+		int version = jsonObj["version"];
+		Output("savefile version: %d\n", version);
+		if (version != s_saveVersion) {
+			Output("can't load savefile, expected version: %d\n", s_saveVersion);
+			throw SavedGameWrongVersionException();
+		}
+	} catch (Json::type_error &) {
+		throw SavedGameCorruptException();
 	}
 
 	// Preparing the Lua stuff
@@ -138,34 +140,32 @@ m_forceTimeAccel(false)
 	// galaxy generator
 	m_galaxy = Galaxy::LoadFromJson(jsonObj);
 
-	// game state
-	if (!jsonObj.isMember("time")) throw SavedGameCorruptException();
-	if (!jsonObj.isMember("state")) throw SavedGameCorruptException();
-	m_time = StrToDouble(jsonObj["time"].asString());
-	m_state = State(jsonObj["state"].asInt());
+	try {
+		// game state
+		m_time = jsonObj["time"];
+		m_state = jsonObj["state"].get<State>();
 
-	if (!jsonObj.isMember("want_hyperspace")) throw SavedGameCorruptException();
-	if (!jsonObj.isMember("hyperspace_progress")) throw SavedGameCorruptException();
-	if (!jsonObj.isMember("hyperspace_duration")) throw SavedGameCorruptException();
-	if (!jsonObj.isMember("hyperspace_end_time")) throw SavedGameCorruptException();
-	m_wantHyperspace = jsonObj["want_hyperspace"].asBool();
-	m_hyperspaceProgress = StrToDouble(jsonObj["hyperspace_progress"].asString());
-	m_hyperspaceDuration = StrToDouble(jsonObj["hyperspace_duration"].asString());
-	m_hyperspaceEndTime = StrToDouble(jsonObj["hyperspace_end_time"].asString());
+		m_wantHyperspace = jsonObj["want_hyperspace"];
+		m_hyperspaceProgress = jsonObj["hyperspace_progress"];
+		m_hyperspaceDuration = jsonObj["hyperspace_duration"];
+		m_hyperspaceEndTime = jsonObj["hyperspace_end_time"];
 
-	// space, all the bodies and things
-	if (!jsonObj.isMember("player")) throw SavedGameCorruptException();
-	m_space.reset(new Space(this, m_galaxy, jsonObj, m_time));
-	m_player.reset(static_cast<Player*>(m_space->GetBodyByIndex(jsonObj["player"].asUInt())));
+		// space, all the bodies and things
+		m_space.reset(new Space(this, m_galaxy, jsonObj, m_time));
 
-	assert(!m_player->IsDead()); // Pioneer does not support necromancy
+		unsigned int player = jsonObj["player"];
+		m_player.reset(static_cast<Player*>(m_space->GetBodyByIndex(player)));
 
-	// hyperspace clouds being brought over from the previous system
-	if (!jsonObj.isMember("hyperspace_clouds")) throw SavedGameCorruptException();
-	Json::Value hyperspaceCloudArray = jsonObj["hyperspace_clouds"];
-	if (!hyperspaceCloudArray.isArray()) throw SavedGameCorruptException();
-	for (Uint32 i = 0; i < hyperspaceCloudArray.size(); i++)
-		m_hyperspaceClouds.push_back(static_cast<HyperspaceCloud*>(Body::FromJson(hyperspaceCloudArray[i], 0)));
+		assert(!m_player->IsDead()); // Pioneer does not support necromancy
+
+		// hyperspace clouds being brought over from the previous system
+		Json hyperspaceCloudArray = jsonObj["hyperspace_clouds"].get<Json::array_t>();
+		for (Uint32 i = 0; i < hyperspaceCloudArray.size(); i++) {
+			m_hyperspaceClouds.push_back(static_cast<HyperspaceCloud*>(Body::FromJson(hyperspaceCloudArray[i], 0)));
+		}
+	} catch (Json::type_error &) {
+		throw SavedGameCorruptException();
+	}
 
 	// views
 	LoadViewsFromJson(jsonObj);
@@ -175,23 +175,14 @@ m_forceTimeAccel(false)
 
 	Pi::luaSerializer->UninitTableRefs();
 
-	// signature check (don't really need this anymore)
-	if (!jsonObj.isMember("trailing_signature")) throw SavedGameCorruptException();
-	Json::Value trailingSignature = jsonObj["trailing_signature"];
-	if (trailingSignature.isString() && trailingSignature.asString().compare(s_saveEnd) == 0) {}
-	else throw SavedGameCorruptException();
-
 	EmitPauseState(IsPaused());
 }
 
-void Game::ToJson(Json::Value &jsonObj)
+void Game::ToJson(Json &jsonObj)
 {
 	PROFILE_SCOPED()
 	// preparing the lua serializer
 	Pi::luaSerializer->InitTableRefs();
-
-	// signature
-	jsonObj["signature"] = s_saveStart;
 
 	// version
 	jsonObj["version"] = s_saveVersion;
@@ -200,25 +191,25 @@ void Game::ToJson(Json::Value &jsonObj)
 	m_galaxy->ToJson(jsonObj);
 
 	// game state
-	jsonObj["time"] = DoubleToStr(m_time);
+	jsonObj["time"] = m_time;
 	jsonObj["state"] = Uint32(m_state);
 
 	jsonObj["want_hyperspace"] = m_wantHyperspace;
-	jsonObj["hyperspace_progress"] = DoubleToStr(m_hyperspaceProgress);
-	jsonObj["hyperspace_duration"] = DoubleToStr(m_hyperspaceDuration);
-	jsonObj["hyperspace_end_time"] = DoubleToStr(m_hyperspaceEndTime);
+	jsonObj["hyperspace_progress"] = m_hyperspaceProgress;
+	jsonObj["hyperspace_duration"] = m_hyperspaceDuration;
+	jsonObj["hyperspace_end_time"] = m_hyperspaceEndTime;
 
 	// space, all the bodies and things
 	m_space->ToJson(jsonObj);
 	jsonObj["player"] = m_space->GetIndexForBody(m_player.get());
 
 	// hyperspace clouds being brought over from the previous system
-	Json::Value hyperspaceCloudArray(Json::arrayValue); // Create JSON array to contain hyperspace cloud data.
+	Json hyperspaceCloudArray = Json::array(); // Create JSON array to contain hyperspace cloud data.
 	for (std::list<HyperspaceCloud*>::const_iterator i = m_hyperspaceClouds.begin(); i != m_hyperspaceClouds.end(); ++i)
 	{
-		Json::Value hyperspaceCloudArrayEl(Json::objectValue); // Create JSON object to contain hyperspace cloud.
+		Json hyperspaceCloudArrayEl = Json::object(); // Create JSON object to contain hyperspace cloud.
 		(*i)->ToJson(hyperspaceCloudArrayEl, m_space.get());
-		hyperspaceCloudArray.append(hyperspaceCloudArrayEl); // Append hyperspace cloud object to array.
+		hyperspaceCloudArray.push_back(hyperspaceCloudArrayEl); // Append hyperspace cloud object to array.
 	}
 	jsonObj["hyperspace_clouds"] = hyperspaceCloudArray; // Add hyperspace cloud array to supplied object.
 
@@ -232,7 +223,7 @@ void Game::ToJson(Json::Value &jsonObj)
 
 	// Stuff to show in the preview in load game window
 	// some may be redundant, but this won't require loading up a game to get it all
-	Json::Value gameInfo(Json::objectValue);
+	Json gameInfo = Json::object();
 	float credits = LuaObject<Player>::CallMethod<float>(Pi::player, "GetMoney");
 
 	gameInfo["system"] = Pi::game->GetSpace()->GetStarSystem()->GetName();
@@ -270,9 +261,6 @@ void Game::ToJson(Json::Value &jsonObj)
 	}
 
 	jsonObj["game_info"] = gameInfo;
-
-	// trailing signature
-	jsonObj["trailing_signature"] = s_saveEnd; // Don't really need this anymore.
 
 	Pi::luaSerializer->UninitTableRefs();
 }
@@ -502,9 +490,62 @@ void Game::SwitchToNormalSpace()
 	m_space->AddBody(m_player.get());
 
 	// place it
-	m_player->SetPosition(m_space->GetHyperspaceExitPoint(m_hyperspaceSource, m_hyperspaceDest));
-	m_player->SetVelocity(vector3d(0,0,-100.0));
-	m_player->SetOrient(matrix3x3d::Identity());
+	vector3d position = m_space->GetHyperspaceExitPoint(m_hyperspaceSource, m_hyperspaceDest);
+	m_player->SetPosition(position);
+
+	// calculate orbital velocity
+	vector3d orbVelocity(0, 0, -100.0);
+	matrix3x3d orientation(matrix3x3d::Identity());
+	{
+		auto dest = m_hyperspaceDest;
+
+		// find the primary body in this system
+		Body *primary = nullptr;
+		if (dest.IsBodyPath()) {
+			assert(dest.bodyIndex < m_space->GetStarSystem()->GetNumBodies());
+			primary = m_space->FindBodyForPath(&dest);
+			while (primary && primary->GetSystemBody()->GetSuperType() != SystemBody::SUPERTYPE_STAR) {
+				SystemBody* parent = primary->GetSystemBody()->GetParent();
+				primary = parent ? m_space->FindBodyForPath(&parent->GetPath()) : 0;
+			}
+		}
+		if (!primary) {
+			// find the first non-gravpoint. should be the primary star
+			for (Body* b : m_space->GetBodies()) {
+				if (b->GetSystemBody()->GetType() != SystemBody::TYPE_GRAVPOINT) {
+					primary = b;
+					break;
+				}
+			}
+		}
+		assert(primary);
+
+		// wtf andy?
+		vector3d direction = (primary->GetPosition() - position);
+		double alt = direction.Length();
+
+		// push out of effect radius (gravity safety & station parking zones)
+		alt = std::max(alt, std::max(primary->GetPhysRadius(), sqrt(G * primary->GetMass() / m_player->GetPropulsion()->GetAccelUp())));
+
+		// drag within frame because orbits are impossible otherwise
+		// timestep code also doesn't work correctly for ex-frame cases, should probably be fixed 
+		alt = std::min(alt, 0.95 * primary->GetFrame()->GetNonRotFrame()->GetRadius());
+
+		// generate suitable velocity if none provided
+		double minacc = m_player->GetPropulsion()->GetAccelMin();
+		double mass = primary->IsType(Object::TERRAINBODY) ? primary->GetMass() : 0;
+		double vel = sqrt(alt * 0.8 * minacc + mass * G / alt);
+
+		// ...there are so many things wrong with this...
+		vector3d up(direction.z, direction.y, direction.x);
+		vector3d tangent(direction.Cross(up).Normalized());
+		orbVelocity = tangent * vel;
+
+		// finally orient the ship in the direction in which we exited from hyperspace
+		orientation = MathUtil::LookAt(position, position + tangent.Normalized(), vector3d(0.0, 1.0, 0.0)); // this probably doesn't always want to be "up"
+	}
+	m_player->SetVelocity(orbVelocity);
+	m_player->SetOrient(orientation);
 
 	// place the exit cloud
 	HyperspaceCloud *cloud = new HyperspaceCloud(0, Pi::game->GetTime(), true);
@@ -525,7 +566,7 @@ void Game::SwitchToNormalSpace()
 			Ship *ship = cloud->EvictShip();
 
 			ship->SetFrame(m_space->GetRootFrame());
-			ship->SetVelocity(vector3d(0,0,-100.0));
+			ship->SetVelocity(orbVelocity*0.9999);
 			ship->SetOrient(matrix3x3d::Identity());
 			ship->SetFlightState(Ship::FLYING);
 
@@ -671,46 +712,46 @@ void Game::RequestTimeAccel(TimeAccel t, bool force)
 
 void Game::RequestTimeAccelInc(bool force)
 {
-    switch(m_requestedTimeAccel) {
-        case Game::TIMEACCEL_1X:
-            m_requestedTimeAccel = Game::TIMEACCEL_10X;
-            break;
-        case Game::TIMEACCEL_10X:
-            m_requestedTimeAccel = Game::TIMEACCEL_100X;
-            break;
-        case Game::TIMEACCEL_100X:
-            m_requestedTimeAccel = Game::TIMEACCEL_1000X;
-            break;
-        case Game::TIMEACCEL_1000X:
-            m_requestedTimeAccel = Game::TIMEACCEL_10000X;
-            break;
-        default:
-            // ignore if paused, hyperspace or 10000X
-            break;
-    }
-    m_forceTimeAccel = force;
+	switch(m_requestedTimeAccel) {
+		case Game::TIMEACCEL_1X:
+			m_requestedTimeAccel = Game::TIMEACCEL_10X;
+			break;
+		case Game::TIMEACCEL_10X:
+			m_requestedTimeAccel = Game::TIMEACCEL_100X;
+			break;
+		case Game::TIMEACCEL_100X:
+			m_requestedTimeAccel = Game::TIMEACCEL_1000X;
+			break;
+		case Game::TIMEACCEL_1000X:
+			m_requestedTimeAccel = Game::TIMEACCEL_10000X;
+			break;
+		default:
+			// ignore if paused, hyperspace or 10000X
+			break;
+	}
+	m_forceTimeAccel = force;
 }
 
 void Game::RequestTimeAccelDec(bool force)
 {
-    switch(m_requestedTimeAccel) {
-        case Game::TIMEACCEL_10X:
-            m_requestedTimeAccel = Game::TIMEACCEL_1X;
-            break;
-        case Game::TIMEACCEL_100X:
-            m_requestedTimeAccel = Game::TIMEACCEL_10X;
-            break;
-        case Game::TIMEACCEL_1000X:
-            m_requestedTimeAccel = Game::TIMEACCEL_100X;
-            break;
-        case Game::TIMEACCEL_10000X:
-            m_requestedTimeAccel = Game::TIMEACCEL_1000X;
-            break;
-        default:
-            // ignore if paused, hyperspace or 1X
-            break;
-    }
-    m_forceTimeAccel = force;
+	switch(m_requestedTimeAccel) {
+		case Game::TIMEACCEL_10X:
+			m_requestedTimeAccel = Game::TIMEACCEL_1X;
+			break;
+		case Game::TIMEACCEL_100X:
+			m_requestedTimeAccel = Game::TIMEACCEL_10X;
+			break;
+		case Game::TIMEACCEL_1000X:
+			m_requestedTimeAccel = Game::TIMEACCEL_100X;
+			break;
+		case Game::TIMEACCEL_10000X:
+			m_requestedTimeAccel = Game::TIMEACCEL_1000X;
+			break;
+		default:
+			// ignore if paused, hyperspace or 1X
+			break;
+	}
+	m_forceTimeAccel = force;
 }
 
 Game::Views::Views()
@@ -759,7 +800,7 @@ void Game::Views::Init(Game* game)
 	SetRenderer(Pi::renderer);
 }
 
-void Game::Views::LoadFromJson(const Json::Value &jsonObj, Game* game)
+void Game::Views::LoadFromJson(const Json &jsonObj, Game* game)
 {
 	m_cpan = new ShipCpanel(jsonObj, Pi::renderer, game);
 	m_sectorView = new SectorView(jsonObj, game);
@@ -817,7 +858,7 @@ void Game::CreateViews()
 }
 
 // XXX mostly a copy of CreateViews
-void Game::LoadViewsFromJson(const Json::Value &jsonObj)
+void Game::LoadViewsFromJson(const Json &jsonObj)
 {
 	Pi::SetView(0);
 
@@ -853,24 +894,33 @@ void Game::EmitPauseState(bool paused)
 	LuaEvent::Emit();
 }
 
+Json Game::LoadGameToJson(const std::string &filename)
+{
+	Json rootNode = JsonUtils::LoadJsonSaveFile(FileSystem::JoinPathBelow(Pi::SAVE_DIR_NAME, filename), FileSystem::userFiles);
+	if (!rootNode.is_object()) {
+		Output("Loading saved game '%s' failed.\n", filename.c_str());
+		throw SavedGameCorruptException();
+	}
+	if (!rootNode["version"].is_number_integer() || rootNode["version"].get<int>() != s_saveVersion) {
+		Output("Loading saved game '%s' failed: wrong save file version.\n", filename.c_str());
+		throw SavedGameCorruptException();
+	}
+	return rootNode;
+}
+
 Game *Game::LoadGame(const std::string &filename)
 {
 	Output("Game::LoadGame('%s')\n", filename.c_str());
-	auto file = FileSystem::userFiles.ReadFile(FileSystem::JoinPathBelow(Pi::SAVE_DIR_NAME, filename));
-	if (!file) throw CouldNotOpenFileException();
-	const auto compressed_data = file->AsByteRange();
+
+	Json rootNode = LoadGameToJson(filename);
+
 	try {
-		const std::string plain_data = gzip::DecompressDeflateOrGZip(reinterpret_cast<const unsigned char*>(compressed_data.begin), compressed_data.Size());
-		const char *pdata = plain_data.data();
-		Json::Reader jsonReader;
-		Json::Value rootNode;
-		if (!jsonReader.parse(pdata, pdata + plain_data.size(), rootNode)) {
-			Output("Game load failed: %s\n", jsonReader.getFormattedErrorMessages().c_str());
-			throw SavedGameCorruptException();
-		}
-		if (!rootNode.isObject()) throw SavedGameCorruptException();
 		return new Game(rootNode);
-	} catch (gzip::DecompressionFailedException) {
+	}
+	catch (Json::type_error) {
+		throw SavedGameCorruptException();
+	}
+	catch (Json::out_of_range) {
 		throw SavedGameCorruptException();
 	}
 }
@@ -908,16 +958,22 @@ void Game::SaveGame(const std::string &filename, Game *game)
 	Profiler::reset();
 #endif
 
-	Json::Value rootNode; // Create the root JSON value for receiving the game data.
+	Json rootNode; // Create the root JSON value for receiving the game data.
 	game->ToJson(rootNode); // Encode the game data as JSON and give to the root value.
-	Json::FastWriter jsonWriter; // Create writer for writing the JSON data to string.
-	const std::string jsonDataStr = jsonWriter.write(rootNode); // Write the JSON data.
+	std::vector<uint8_t> jsonData;
+	{
+		PROFILE_SCOPED_DESC("json.to_cbor");
+		jsonData = Json::to_cbor(rootNode); // Convert the JSON data to CBOR.
+	}
 
 	FILE *f = FileSystem::userFiles.OpenWriteStream(FileSystem::JoinPathBelow(Pi::SAVE_DIR_NAME, filename));
 	if (!f) throw CouldNotOpenFileException();
 
 	try {
-		const std::string comressed_data = gzip::CompressGZip(jsonDataStr, filename + ".json");
+		// Compress the CBOR data.
+		const std::string comressed_data = gzip::CompressGZip(
+			std::string(reinterpret_cast<const char *>(jsonData.data()), jsonData.size()),
+			filename + ".json");
 		size_t nwritten = fwrite(comressed_data.data(), comressed_data.size(), 1, f);
 		fclose(f);
 		if (nwritten != 1) throw CouldNotWriteToFileException();

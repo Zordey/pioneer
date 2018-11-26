@@ -359,9 +359,17 @@ static int l_starsystem_distance_to(lua_State *l)
 	RefCountedPtr<const Sector> sec1 = s->m_galaxy->GetSector(*loc1);
 	RefCountedPtr<const Sector> sec2 = s->m_galaxy->GetSector(*loc2);
 
-	double dist = Sector::DistanceBetween(sec1, loc1->systemIndex, sec2, loc2->systemIndex);
-
-	lua_pushnumber(l, dist);
+	// this only works if the SystemPath is valid
+	if (loc1->HasValidSystem() && loc2->HasValidSystem())
+	{
+		double dist = Sector::DistanceBetween(sec1, loc1->systemIndex, sec2, loc2->systemIndex);
+		lua_pushnumber(l, dist);
+	}
+	else
+	{
+		lua_pushnumber(l, FLT_MAX);
+		return luaL_error(l, "Cannot compare non-systemPaths");
+	}
 
 	LUA_DEBUG_END(l, 1);
 	return 1;
@@ -462,6 +470,20 @@ static int l_starsystem_attr_name(lua_State *l)
 	PROFILE_SCOPED()
 	StarSystem *s = LuaObject<StarSystem>::CheckFromLua(1);
 	lua_pushstring(l, s->GetName().c_str());
+	return 1;
+}
+
+static int l_starsystem_attr_other_names(lua_State *l)
+{
+	PROFILE_SCOPED();
+	StarSystem *s = LuaObject<StarSystem>::CheckFromLua(1);
+	LuaTable names(l);
+	int i = 1;
+	for(std::string n : s->GetOtherNames()) {
+		LuaPush(l, i++);
+		LuaPush(l, n);
+		lua_settable(l, -3);
+	}
 	return 1;
 }
 
@@ -646,6 +668,7 @@ template <> void LuaObject<StarSystem>::RegisterClass()
 
 	static const luaL_Reg l_attrs[] = {
 		{ "name", l_starsystem_attr_name },
+		{ "other_names", l_starsystem_attr_other_names },
 		{ "path", l_starsystem_attr_path },
 
 		{ "lawlessness", l_starsystem_attr_lawlessness },

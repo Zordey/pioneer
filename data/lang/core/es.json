@@ -975,6 +975,10 @@
     "description": "",
     "message": "Sin alertas"
   },
+  "NO_AUTOPILOT_INSTALLED": {
+    "description": "",
+    "message": "Piloto automático no instalado, no se puede habilitar piloto automático"
+  },
   "NO_CENTRAL_GOVERNANCE": {
     "description": "",
     "message": "Sin gobierno central"

@@ -526,6 +526,8 @@ ui.getMouseWheel = pigui.GetMouseWheel
 ui.setTooltip = maybeSetTooltip
 ui.shouldDrawUI = pigui.ShouldDrawUI
 ui.getWindowPos = pigui.GetWindowPos
+ui.getWindowSize = pigui.GetWindowSize
+ui.getContentRegion = pigui.GetContentRegion
 ui.getTargetsNearby = pigui.GetTargetsNearby
 ui.getProjectedBodies = pigui.GetProjectedBodies
 ui.isMouseReleased = pigui.IsMouseReleased
@@ -576,45 +578,66 @@ end
 local radial_menu_actions_station = {
 	{icon=ui.theme.icons.comms, tooltip=lc.REQUEST_DOCKING_CLEARANCE,
 	 action=function(target)
-		 local msg = Game.player:RequestDockingClearance(target)
-		 Game.AddCommsLogLine(msg, target.label)
-		 Game.player:SetNavTarget(target)
+			local msg = Game.player:RequestDockingClearance(target)
+		 	Game.AddCommsLogLine(msg, target.label)
+		 	Game.player:SetNavTarget(target)
 	end},
 	{icon=ui.theme.icons.autopilot_dock, tooltip=lc.AUTOPILOT_DOCK_WITH_STATION,
 	 action=function(target)
-		 Game.player:SetFlightControlState("CONTROL_AUTOPILOT")
-		 Game.player:AIDockWith(target)
-		 Game.player:SetNavTarget(target)
+	 		if next(Game.player:GetEquip('autopilot')) ~= nil then
+		 		Game.player:SetFlightControlState("CONTROL_AUTOPILOT")
+		 		Game.player:AIDockWith(target)
+		 		Game.player:SetNavTarget(target)
+			else
+				Game.AddCommsLogLine(lc.NO_AUTOPILOT_INSTALLED)
+			end
 	end},
 }
 
 local radial_menu_actions_all_bodies = {
 	{icon=ui.theme.icons.autopilot_fly_to, tooltip=lc.AUTOPILOT_FLY_TO_VICINITY_OF,
 	 action=function(target)
-		 Game.player:SetFlightControlState("CONTROL_AUTOPILOT")
-		 Game.player:AIFlyTo(target)
-		 Game.player:SetNavTarget(target)
+		if next(Game.player:GetEquip('autopilot')) ~= nil then
+		 	Game.player:SetFlightControlState("CONTROL_AUTOPILOT")
+		 	Game.player:AIFlyTo(target)
+		 	Game.player:SetNavTarget(target)
+		else
+			Game.AddCommsLogLine(lc.NO_AUTOPILOT_INSTALLED)
+		end
+
 	end},
 }
 
 local radial_menu_actions_systembody = {
 	{icon=ui.theme.icons.autopilot_low_orbit, tooltip=lc.AUTOPILOT_ENTER_LOW_ORBIT_AROUND,
 	 action=function(target)
-		 Game.player:SetFlightControlState("CONTROL_AUTOPILOT")
-		 Game.player:AIEnterLowOrbit(target)
-		 Game.player:SetNavTarget(target)
+	 		if next(Game.player:GetEquip('autopilot')) ~= nil then
+		 		Game.player:SetFlightControlState("CONTROL_AUTOPILOT")
+		 		Game.player:AIEnterLowOrbit(target)
+		 		Game.player:SetNavTarget(target)
+		 	else
+				Game.AddCommsLogLine(lc.NO_AUTOPILOT_INSTALLED)
+			end
 	end},
 	{icon=ui.theme.icons.autopilot_medium_orbit, tooltip=lc.AUTOPILOT_ENTER_MEDIUM_ORBIT_AROUND,
 	 action=function(target)
-		 Game.player:SetFlightControlState("CONTROL_AUTOPILOT")
-		 Game.player:AIEnterMediumOrbit(target)
-		 Game.player:SetNavTarget(target)
+	 		if next(Game.player:GetEquip('autopilot')) ~= nil then
+		 		Game.player:SetFlightControlState("CONTROL_AUTOPILOT")
+		 		Game.player:AIEnterMediumOrbit(target)
+		 		Game.player:SetNavTarget(target)
+		 	else
+				Game.AddCommsLogLine(lc.NO_AUTOPILOT_INSTALLED)
+			end
 	end},
 	{icon=ui.theme.icons.autopilot_high_orbit, tooltip=lc.AUTOPILOT_ENTER_HIGH_ORBIT_AROUND,
 	 action=function(target)
-		 Game.player:SetFlightControlState("CONTROL_AUTOPILOT")
-		 Game.player:AIEnterHighOrbit(target)
-		 Game.player:SetNavTarget(target)
+	 		if next(Game.player:GetEquip('autopilot')) ~= nil then
+		 		Game.player:SetFlightControlState("CONTROL_AUTOPILOT")
+		 		Game.player:AIEnterHighOrbit(target)
+		 		Game.player:SetNavTarget(target)
+		 	else
+				Game.AddCommsLogLine(lc.NO_AUTOPILOT_INSTALLED)
+			end
 	end},
 }
 
@@ -730,7 +753,7 @@ ui.gauge_height = 25
 ui.gauge_width = 275
 
 ui.gauge = function(position, value, unit, format, minimum, maximum, icon, color, tooltip)
-	local percent = (value - minimum) / (maximum - minimum)
+	local percent = math.clamp((value - minimum) / (maximum - minimum), 0, 1)
 	local offset = 60
 	local uiPos = position
 	ui.withFont(ui.fonts.pionillium.medium.name, ui.fonts.pionillium.medium.size, function()

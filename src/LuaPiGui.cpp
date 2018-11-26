@@ -144,16 +144,16 @@ void pi_lua_generic_pull(lua_State *l, int index, ImGuiInputTextFlags_ &theflags
 	theflags = parse_imgui_flags(l, index, imguiInputTextFlagsTable, "ImGuiInputTextFlagsTable");
 }
 
-static std::map<std::string, ImGuiSetCond_> imguiSetCondTable
+static std::map<std::string, ImGuiCond_> imguiSetCondTable
 = {
-	{ "Always", ImGuiSetCond_Always },
-	{ "Once", ImGuiSetCond_Once },
-	{ "FirstUseEver", ImGuiSetCond_FirstUseEver },
-	{ "Appearing", ImGuiSetCond_Appearing }
+	{ "Always", ImGuiCond_Always },
+	{ "Once", ImGuiCond_Once },
+	{ "FirstUseEver", ImGuiCond_FirstUseEver },
+	{ "Appearing", ImGuiCond_Appearing }
 };
 
-void pi_lua_generic_pull(lua_State *l, int index, ImGuiSetCond_ &value) {
-	value = parse_imgui_enum(l, index, imguiSetCondTable, "ImGuiSetCond");
+void pi_lua_generic_pull(lua_State *l, int index, ImGuiCond_ &value) {
+	value = parse_imgui_enum(l, index, imguiSetCondTable, "ImGuiCond");
 }
 
 static std::map<std::string, ImGuiCol_> imguiColTable
@@ -176,7 +176,6 @@ static std::map<std::string, ImGuiCol_> imguiColTable
 	{"ScrollbarGrab", ImGuiCol_ScrollbarGrab},
 	{"ScrollbarGrabHovered", ImGuiCol_ScrollbarGrabHovered},
 	{"ScrollbarGrabActive", ImGuiCol_ScrollbarGrabActive},
-	{"ComboBg", ImGuiCol_ComboBg},
 	{"CheckMark", ImGuiCol_CheckMark},
 	{"SliderGrab", ImGuiCol_SliderGrab},
 	{"SliderGrabActive", ImGuiCol_SliderGrabActive},
@@ -192,9 +191,6 @@ static std::map<std::string, ImGuiCol_> imguiColTable
 	{"ResizeGrip", ImGuiCol_ResizeGrip},
 	{"ResizeGripHovered", ImGuiCol_ResizeGripHovered},
 	{"ResizeGripActive", ImGuiCol_ResizeGripActive},
-	{"CloseButton", ImGuiCol_CloseButton},
-	{"CloseButtonHovered", ImGuiCol_CloseButtonHovered},
-	{"CloseButtonActive", ImGuiCol_CloseButtonActive},
 	{"PlotLines", ImGuiCol_PlotLines},
 	{"PlotLinesHovered", ImGuiCol_PlotLinesHovered},
 	{"PlotHistogram", ImGuiCol_PlotHistogram},
@@ -212,10 +208,13 @@ static std::map<std::string, ImGuiStyleVar_> imguiStyleVarTable
     { "Alpha", ImGuiStyleVar_Alpha},
 	{ "WindowPadding", ImGuiStyleVar_WindowPadding},
 	{ "WindowRounding", ImGuiStyleVar_WindowRounding},
+	{ "WindowBorderSize", ImGuiStyleVar_WindowBorderSize},
 	{ "WindowMinSize", ImGuiStyleVar_WindowMinSize},
-	{ "ChildWindowRounding", ImGuiStyleVar_ChildWindowRounding},
+	{ "ChildRounding", ImGuiStyleVar_ChildRounding},
+	{ "ChildBorderSize", ImGuiStyleVar_ChildBorderSize},
 	{ "FramePadding", ImGuiStyleVar_FramePadding},
 	{ "FrameRounding", ImGuiStyleVar_FrameRounding},
+	{ "FrameBorderSize", ImGuiStyleVar_FrameBorderSize},
 	{ "ItemSpacing", ImGuiStyleVar_ItemSpacing},
 	{ "ItemInnerSpacing", ImGuiStyleVar_ItemInnerSpacing},
 	{ "IndentSpacing", ImGuiStyleVar_IndentSpacing},
@@ -236,7 +235,6 @@ static std::map<std::string, ImGuiWindowFlags_> imguiWindowFlagsTable
 	{ "NoScrollWithMouse", ImGuiWindowFlags_NoScrollWithMouse },
 	{ "NoCollapse", ImGuiWindowFlags_NoCollapse },
 	{ "AlwaysAutoResize", ImGuiWindowFlags_AlwaysAutoResize },
-	{ "ShowBorders", ImGuiWindowFlags_ShowBorders },
 	{ "NoSavedSettings", ImGuiWindowFlags_NoSavedSettings },
 	{ "NoInputs", ImGuiWindowFlags_NoInputs },
 	{ "MenuBar", ImGuiWindowFlags_MenuBar },
@@ -359,13 +357,13 @@ static int l_pigui_push_clip_rect_full_screen(lua_State *l) {
 
 static int l_pigui_set_next_window_pos(lua_State *l) {
 	ImVec2 pos = LuaPull<ImVec2>(l, 1);
-	int cond = LuaPull<ImGuiSetCond_>(l, 2);
+	int cond = LuaPull<ImGuiCond_>(l, 2);
 	ImGui::SetNextWindowPos(pos, cond);
 	return 0;
 }
 
 static int l_pigui_set_next_window_pos_center(lua_State *l) {
-	int cond = LuaPull<ImGuiSetCond_>(l, 1);
+	int cond = LuaPull<ImGuiCond_>(l, 1);
 	ImGui::SetNextWindowPosCenter(cond);
 	return 0;
 }
@@ -383,7 +381,7 @@ static int l_pigui_set_window_focus(lua_State *l) {
 
 static int l_pigui_set_next_window_size(lua_State *l) {
 	ImVec2 size = LuaPull<ImVec2>(l, 1);
-	int cond = LuaPull<ImGuiSetCond_>(l, 2);
+	int cond = LuaPull<ImGuiCond_>(l, 2);
 	ImGui::SetNextWindowSize(size, cond);
 	return 0;
 }
@@ -398,7 +396,7 @@ static int l_pigui_set_next_window_size_constraints(lua_State *l) {
 static int l_pigui_push_style_color(lua_State *l) {
 	int style = LuaPull<ImGuiCol_>(l, 1);
 	ImColor color = LuaPull<ImColor>(l, 2);
-	ImGui::PushStyleColor(style, color);
+	ImGui::PushStyleColor(style, static_cast<ImVec4>(color));
 	return 0;
 }
 
@@ -634,7 +632,7 @@ static int l_pigui_text_colored(lua_State *l) {
 static int l_pigui_get_axisbinding(lua_State *l)
 {
 	std::string binding = "";
-	if (!Pi::IsJoystickEnabled()) {
+	if (!Pi::input.IsJoystickEnabled()) {
 		lua_pushnil(l);
 		return 1;
 	}
@@ -642,7 +640,8 @@ static int l_pigui_get_axisbinding(lua_State *l)
 	ImGuiIO io = ImGui::GetIO();
 
 	// Escape is used to clear an existing binding
-	if (io.KeysDown[SDLK_ESCAPE]) {
+	// io.KeysDown uses scancodes, but we want to use keycodes.
+	if (io.KeysDown[SDL_GetScancodeFromKey(SDLK_ESCAPE)]) {
 		binding = "disabled";
 		LuaPush<std::string>(l, binding);
 		return 1;
@@ -650,13 +649,13 @@ static int l_pigui_get_axisbinding(lua_State *l)
 
 	// otherwise actually check the joystick
 
-	auto joysticks = Pi::GetJoysticksState();
+	auto joysticks = Pi::input.GetJoysticksState();
 
 	for (auto js : joysticks) {
 		std::vector<float> axes = js.second.axes;
 		for (size_t a = 0; a < axes.size(); a++) {
 			if (axes[a]>0.25 || axes[a]<-0.25) {
-				binding = "Joy" + Pi::JoystickGUIDString(js.first) + "/Axis" + std::to_string(a);
+				binding = "Joy" + Pi::input.JoystickGUIDString(js.first) + "/Axis" + std::to_string(a);
 				break;
 			}
 		}
@@ -680,7 +679,8 @@ static int l_pigui_get_keybinding(lua_State *l)
 	// should there be a priority?
 	for (int i = 0; i < 512; i++) {
 		if (io.KeysDown[i]) {
-			key = i;
+			// io.KeysDown uses scancodes, but we need keycodes.
+			key = SDL_GetKeyFromScancode(static_cast<SDL_Scancode>(i));
 			break;
 		}
 	}
@@ -692,14 +692,9 @@ static int l_pigui_get_keybinding(lua_State *l)
 		return 1;
 	}
 
-	// or-ing with 0x100 below is done because ImGui does it for key codes that are derived from scancodes
-	// (essentially adding 256 to the scancode)
-	// ImGui keycodes range from 0-512
-	// So LCTRL goes from 224 -> 480
-
 	// No modifier if the key is a modifier
-	// These are all in a continous range apparently...?
-	if (!(key >= (SDL_SCANCODE_LCTRL | 0x100) && key <= (SDL_SCANCODE_RGUI | 0x100))) {
+	// These are all in a continous range
+	if (!(key >= SDLK_LCTRL && key <= SDLK_RGUI)) {
 		if (io.KeyAlt) mod |= KMOD_ALT;
 		if (io.KeyShift) mod |= KMOD_SHIFT;
 		if (io.KeyCtrl) mod |= KMOD_CTRL;
@@ -707,20 +702,30 @@ static int l_pigui_get_keybinding(lua_State *l)
 	}
 
 	// Check joysticks if no keys are held down
-	if (Pi::IsJoystickEnabled() && (key == 0 || (key >= (SDL_SCANCODE_LCTRL | 0x100) && key <= (SDL_SCANCODE_RGUI | 0x100)))) {
-		auto joysticks = Pi::GetJoysticksState();
+	if (Pi::input.IsJoystickEnabled() && (key == 0 || (key >= SDLK_LCTRL && key <= SDLK_RGUI))) {
+		auto joysticks = Pi::input.GetJoysticksState();
 
 		for (auto js : joysticks) {
 			std::vector<bool> buttons = js.second.buttons;
 			for (size_t b = 0; b < buttons.size(); b++) {
 				if (buttons[b]) {
-					binding = "Joy" + Pi::JoystickGUIDString(js.first) + "/Button" + std::to_string(b);
+					binding = "Joy" + Pi::input.JoystickGUIDString(js.first) + "/Button" + std::to_string(b);
 					break;
 				}
 			}
 			for (size_t h = 0; h < js.second.hats.size(); h++) {
 				if (js.second.hats[h]) {
-					binding = "Joy" + Pi::JoystickGUIDString(js.first) + "/Hat" + std::to_string(h) + "Dir" + std::to_string(js.second.hats[h]);
+					int hatDir = js.second.hats[h];
+					switch (hatDir) {
+						case SDL_HAT_LEFT:
+						case SDL_HAT_RIGHT:
+						case SDL_HAT_UP:
+						case SDL_HAT_DOWN:
+							binding = "Joy" + Pi::input.JoystickGUIDString(js.first) + "/Hat" + std::to_string(h) + "Dir" + std::to_string(js.second.hats[h]);
+							break;
+						default:
+							continue;
+					}
 					break;
 				}
 			}
@@ -1020,6 +1025,16 @@ static int l_pigui_get_window_pos(lua_State *l) {
 	return 1;
 }
 
+static int l_pigui_get_window_size(lua_State *l) {
+	pi_lua_generic_push(l, ImGui::GetWindowSize());
+	return 1;
+}
+
+static int l_pigui_get_content_region(lua_State *l) {
+	pi_lua_generic_push(l, ImGui::GetContentRegionAvail());
+	return 1;
+}
+
 static int l_pigui_image(lua_State *l) {
 	ImTextureID id = pi_lua_checklightuserdata(l, 1);
 	ImVec2 size = LuaPull<ImVec2>(l, 2);
@@ -1119,16 +1134,14 @@ static int l_pigui_get_targets_nearby(lua_State *l) {
 		vector3d shipSpacePosition = position * Pi::player->GetOrient();
 		// convert to polar https://en.wikipedia.org/wiki/Spherical_coordinate_system
 		vector3d polarPosition(// don't calculate X, it is not used
-													 // sqrt(shipSpacePosition.x*shipSpacePosition.x
-													 // 			+ shipSpacePosition.y*shipSpacePosition.y
-													 // 			+ shipSpacePosition.z*shipSpacePosition.z)
-													 0
-													 ,
-													 atan2(shipSpacePosition.x, shipSpacePosition.y),
-													 atan2(-shipSpacePosition.z,
-																 sqrt(shipSpacePosition.x*shipSpacePosition.x
-																			+ shipSpacePosition.y*shipSpacePosition.y))
-													 );
+			// sqrt(shipSpacePosition.x*shipSpacePosition.x
+			// 		+ shipSpacePosition.y*shipSpacePosition.y
+			// 		+ shipSpacePosition.z*shipSpacePosition.z)
+			0,
+			atan2(shipSpacePosition.x, shipSpacePosition.y),
+			atan2(-shipSpacePosition.z, sqrt(shipSpacePosition.x*shipSpacePosition.x
+				+ shipSpacePosition.y*shipSpacePosition.y))
+		);
 		// convert to AEP https://en.wikipedia.org/wiki/Azimuthal_equidistant_projection
 		double rho = M_PI / 2 - polarPosition.z;
 		double theta = polarPosition.y;
@@ -1160,7 +1173,7 @@ static int l_pigui_disable_mouse_facing(lua_State *l) {
 static int l_pigui_set_mouse_button_state(lua_State *l) {
 	int button = LuaPull<int>(l, 1);
 	bool state = LuaPull<bool>(l, 2);
-	Pi::SetMouseButtonState(button, state);
+	Pi::input.SetMouseButtonState(button, state);
 	if(state == false) {
 		// new UI caches which widget should receive the mouse up event
 		// after a mouse down. This function exists exactly because the mouse-up event
@@ -1222,6 +1235,8 @@ static int l_attr_screen_height(lua_State *l) {
 	return 1;
 }
 
+// TODO: the Combo API was upgraded in IMGUI v1.53.
+// The Lua API currently uses the old API, and needs to be upgraded.
 static int l_pigui_combo(lua_State *l) {
 	std::string lbl = LuaPull<std::string>(l, 1);
 	int selected = LuaPull<int>(l, 2);
@@ -1423,8 +1438,8 @@ static int l_pigui_vsliderfloat(lua_State *l) {
 }
 
 static int l_pigui_is_key_released(lua_State *l) {
-	int key = LuaPull<int>(l, 1);
-	LuaPush<bool>(l, ImGui::IsKeyReleased(key));
+	SDL_Keycode key = LuaPull<int>(l, 1);
+	LuaPush<bool>(l, ImGui::IsKeyReleased(SDL_GetScancodeFromKey(key)));
 	return 1;
 }
 
@@ -1486,7 +1501,10 @@ static int l_pigui_add_convex_poly_filled(lua_State *l) {
 		} else
 			x = *iter;
 	}
-	draw_list->AddConvexPolyFilled(ps.data(), ps.size(), col, anti_aliased);
+	ImDrawListFlags flags = draw_list->Flags;
+	if (!anti_aliased) flags = 0; // Disable antialiasing
+	draw_list->AddConvexPolyFilled(ps.data(), ps.size(), col);
+	draw_list->Flags = flags; // Restore the flags.
 	return 0;
 }
 
@@ -1620,6 +1638,8 @@ template <> void LuaObject<PiGui>::RegisterClass()
 		{ "IsKeyReleased",          l_pigui_is_key_released },
 		{ "DragInt4",               l_pigui_drag_int_4 },
 		{ "GetWindowPos",           l_pigui_get_window_pos },
+		{ "GetWindowSize",          l_pigui_get_window_size },
+		{ "GetContentRegion",       l_pigui_get_content_region },
 		{ "InputText",              l_pigui_input_text },
 		{ "Combo",                  l_pigui_combo },
 		{ "ListBox",                l_pigui_listbox },

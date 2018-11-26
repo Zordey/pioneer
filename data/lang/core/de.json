@@ -975,6 +975,10 @@
     "description": "",
     "message": "kein Alarm"
   },
+  "NO_AUTOPILOT_INSTALLED": {
+    "description": "",
+    "message": "Autopilot wurde auf dem Schiff nicht installiert, Autopilot kann nicht aktiviert werden"
+  },
   "NO_CENTRAL_GOVERNANCE": {
     "description": "",
     "message": "Ohne Zentralregierung"

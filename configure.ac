@@ -180,7 +180,7 @@ EXTRA_CPPFLAGS="$EXTRA_CPPFLAGS -DPIONEER_VERSION=\\\"$PIONEER_VERSION\\\" -DPIO
 dnl __STDC_LIMIT_MACROS is defined so that GCC 4.7 will provide limit macros (eg, INT64_MAX) as part of cstdint
 dnl (note, __STDC_LIMIT_MACROS is not needed in GCC 4.8 or later; those macros are part of the C++11 standard)
 dnl __STDC_FORMAT_MACROS is the same deal for the (PRI|SCN)[ud](32|64) macros
-EXTRA_CPPFLAGS="$EXTRA_CPPFLAGS -DGLEW_STATIC -D__STDC_LIMIT_MACROS -D__STDC_FORMAT_MACROS"
+EXTRA_CPPFLAGS="$EXTRA_CPPFLAGS -D__STDC_LIMIT_MACROS -D__STDC_FORMAT_MACROS"
 
 
 dnl Compiler warning options
@@ -348,6 +348,10 @@ if test "$with_external_libglew" = yes; then
 fi
 AM_CONDITIONAL([HAVE_GLEW], [test "$HAVE_GLEW" = yes])
 
+AM_COND_IF([HAVE_GLEW],
+		   [],
+		   [GLEW_CFLAGS="-DGLEW_STATIC"])
+
 LUA_CFLAGS="$LUA_CFLAGS -DLUA_USE_APICHECK"
 case "$host" in
   i686-w64-mingw32.static)
@@ -430,7 +434,6 @@ AC_CONFIG_FILES([
 	src/gameui/Makefile
 	src/gui/Makefile
 	src/graphics/Makefile
-	src/graphics/gl2/Makefile
 	src/graphics/opengl/Makefile
 	src/graphics/dummy/Makefile
 	src/scenegraph/Makefile
@@ -446,11 +449,9 @@ AC_CONFIG_FILES([
 	contrib/jenkins/Makefile
 	contrib/imgui/Makefile
 	contrib/nanosvg/Makefile
-	contrib/json/Makefile
 	contrib/PicoDDS/Makefile
 	contrib/vcacheopt/Makefile
 	contrib/glew/Makefile
 	contrib/profiler/Makefile
-	osx/Makefile
 	win32/Makefile])
 AC_OUTPUT

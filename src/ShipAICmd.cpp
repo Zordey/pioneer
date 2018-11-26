@@ -16,15 +16,15 @@
 static const double VICINITY_MIN = 15000.0;
 static const double VICINITY_MUL = 4.0;
 
-AICommand *AICommand::LoadFromJson(const Json::Value &jsonObj)
+AICommand *AICommand::LoadFromJson(const Json &jsonObj)
 {
-	if (jsonObj.isMember("ai_command"))
-	{
-		Json::Value aiCommandObj = jsonObj["ai_command"];
-		if (!aiCommandObj.isMember("common_ai_command")) throw SavedGameCorruptException();
-		Json::Value commonAiCommandObj = aiCommandObj["common_ai_command"];
-		if (!commonAiCommandObj.isMember("command_name")) throw SavedGameCorruptException();
-		CmdName name = CmdName(commonAiCommandObj["command_name"].asInt());
+	// Return 0 if supplied object doesn't contain an "ai_command" object.
+	if (!jsonObj.count("ai_command")) return 0;
+
+	try {
+		Json aiCommandObj = jsonObj["ai_command"];
+		Json commonAiCommandObj = aiCommandObj["common_ai_command"];
+		CmdName name = CmdName(commonAiCommandObj["command_name"]);
 		switch (name) {
 			case CMD_NONE: default: return 0; // No longer need CMD_NONE (see AICommand::SaveToJson notes).
 			case CMD_DOCK: return new AICmdDock(aiCommandObj);
@@ -35,11 +35,12 @@ AICommand *AICommand::LoadFromJson(const Json::Value &jsonObj)
 			case CMD_HOLDPOSITION: return new AICmdHoldPosition(aiCommandObj);
 			case CMD_FORMATION: return new AICmdFormation(aiCommandObj);
 		}
+	} catch (Json::type_error &) {
+		throw SavedGameCorruptException();
 	}
-	return 0; // Return 0 if supplied object doesn't contain an "ai_command" object.
 }
 
-void AICommand::SaveToJson(Json::Value &jsonObj)
+void AICommand::SaveToJson(Json &jsonObj)
 {
 	// AICommand is an abstract base class, so it is guaranteed that the supplied object
 	// is the top-level JSON object (always named "ai_command") encoding the specific ai command.
@@ -49,26 +50,25 @@ void AICommand::SaveToJson(Json::Value &jsonObj)
 	// The command name (enum CmdName) and a child ai command (if this ai command has one) are added to the common ai command object.
 	// No longer need to save CMD_NONE when a child ai command does not exist (just don't add a child ai command object).
 	Space *space = Pi::game->GetSpace();
-	Json::Value commonAiCommandObj(Json::objectValue); // Create JSON object to contain common ai command data.
-	commonAiCommandObj["command_name"] = Json::Value::Int(m_cmdName);
+	Json commonAiCommandObj({}); // Create JSON object to contain common ai command data.
+	commonAiCommandObj["command_name"] = m_cmdName;
 	commonAiCommandObj["index_for_body"] = space->GetIndexForBody(m_dBody);
-	commonAiCommandObj["is_flyto"] = Json::Value::Int(m_is_flyto);
+	commonAiCommandObj["is_flyto"] = m_is_flyto;
 	if (m_child) m_child->SaveToJson(commonAiCommandObj);
 	jsonObj["common_ai_command"] = commonAiCommandObj; // Add common ai command object to supplied object.
 }
 
-AICommand::AICommand(const Json::Value &jsonObj, CmdName name) : m_cmdName(name)
+AICommand::AICommand(const Json &jsonObj, CmdName name) : m_cmdName(name)
 {
-	if (!jsonObj.isMember("common_ai_command")) throw SavedGameCorruptException();
-	Json::Value commonAiCommandObj = jsonObj["common_ai_command"];
+	try {
+		Json commonAiCommandObj = jsonObj["common_ai_command"];
+		m_dBodyIndex = commonAiCommandObj["index_for_body"];
+		m_is_flyto = commonAiCommandObj["is_flyto"];
 
-	if (!commonAiCommandObj.isMember("index_for_body")) throw SavedGameCorruptException();
-	m_dBodyIndex = commonAiCommandObj["index_for_body"].asInt();
-
-	if (commonAiCommandObj.isMember("is_flyto"))
-	    m_is_flyto = commonAiCommandObj["is_flyto"].asBool();
-
-	m_child.reset(LoadFromJson(commonAiCommandObj));
+		m_child.reset(LoadFromJson(commonAiCommandObj));
+	} catch (Json::type_error &) {
+		throw SavedGameCorruptException();
+	}
 }
 
 void AICommand::PostLoadFixup(Space *space)
@@ -221,6 +221,19 @@ static void LaunchShip(Ship *ship)
 		ship->Undock();
 }
 
+AICmdKamikaze::AICmdKamikaze(const Json &jsonObj) : AICommand(jsonObj, CMD_KAMIKAZE) {
+	if (!jsonObj.count("index_for_target")) throw SavedGameCorruptException();
+	m_targetIndex = jsonObj["index_for_target"];
+}
+
+void AICmdKamikaze::SaveToJson(Json &jsonObj) {
+	Space *space = Pi::game->GetSpace();
+	Json aiCommandObj({}); // Create JSON object to contain ai command data.
+	AICommand::SaveToJson(aiCommandObj);
+	aiCommandObj["index_for_target"] = space->GetIndexForBody(m_target);
+	jsonObj["ai_command"] = aiCommandObj; // Add ai command object to supplied object.
+}
+
 bool AICmdKamikaze::TimeStepUpdate()
 {
 	if (!m_target || m_target->IsDead()) return true;
@@ -266,6 +279,18 @@ bool AICmdKamikaze::TimeStepUpdate()
 	m_prop->AIAccelToModelRelativeVelocity(aimVel * m_dBody->GetOrient());
 
 	return false;
+}
+
+AICmdKill::AICmdKill(const Json &jsonObj) : AICommand(jsonObj, CMD_KILL) {
+	m_targetIndex = jsonObj["index_for_target"];
+}
+
+void AICmdKill::SaveToJson(Json &jsonObj) {
+	Space *space = Pi::game->GetSpace();
+	Json aiCommandObj({}); // Create JSON object to contain ai command data.
+	AICommand::SaveToJson(aiCommandObj);
+	aiCommandObj["index_for_target"] = space->GetIndexForBody(m_target);
+	jsonObj["ai_command"] = aiCommandObj; // Add ai command object to supplied object.
 }
 
 bool AICmdKill::TimeStepUpdate()
@@ -371,7 +396,7 @@ bool AICmdKill::TimeStepUpdate()
 			// else no evade thrust
 		}
 	}
-	else evadethrust = m_prop->GetThrusterState();
+	else evadethrust = m_prop->GetLinThrusterState();
 
 
 	// todo: some logic behind desired range? pass from higher level
@@ -395,8 +420,8 @@ bool AICmdKill::TimeStepUpdate()
 		else if (vdiff*vdiff < 400.0) evadethrust.z = 0.0;
 		else evadethrust.z = (vdiff > 0.0) ? -1.0 : 1.0;
 	}
-	else evadethrust.z = m_prop->GetThrusterState().z;
-	m_prop->SetThrusterState(evadethrust);
+	else evadethrust.z = m_prop->GetLinThrusterState().z;
+	m_prop->SetLinThrusterState(evadethrust);
 
 	return false;
 }
@@ -761,6 +786,34 @@ AICmdFlyTo::AICmdFlyTo(DynamicBody *dBody, Frame *targframe, const vector3d &pos
 	assert(m_prop!=nullptr);
 }
 
+AICmdFlyTo::AICmdFlyTo(const Json &jsonObj) : AICommand(jsonObj, CMD_FLYTO) {
+	try {
+		m_targetIndex = jsonObj["index_for_target"];
+		m_dist = jsonObj["dist"];
+		m_targframeIndex = jsonObj["index_for_target_frame"];
+		m_posoff = jsonObj["pos_off"];
+		m_endvel = jsonObj["end_vel"];
+		m_tangent = jsonObj["tangent"];
+		m_state = jsonObj["state"];
+	} catch (Json::type_error &) {
+		throw SavedGameCorruptException();
+	}
+}
+
+void AICmdFlyTo::SaveToJson(Json &jsonObj) {
+	if (m_child) { m_child.reset(); }
+	Json aiCommandObj({}); // Create JSON object to contain ai command data.
+	AICommand::SaveToJson(aiCommandObj);
+	aiCommandObj["index_for_target"] = Pi::game->GetSpace()->GetIndexForBody(m_target);
+	aiCommandObj["dist"] = m_dist;
+	aiCommandObj["index_for_target_frame"] = Pi::game->GetSpace()->GetIndexForFrame(m_targframe);
+	aiCommandObj["pos_off"] = m_posoff;
+	aiCommandObj["end_vel"] = m_endvel;
+	aiCommandObj["tangent"] = m_tangent;
+	aiCommandObj["state"] = m_state;
+	jsonObj["ai_command"] = aiCommandObj; // Add ai command object to supplied object.
+}
+
 bool AICmdFlyTo::TimeStepUpdate()
 {
 	/* TODO: ship is used ONLY to calls
@@ -801,7 +854,7 @@ bool AICmdFlyTo::TimeStepUpdate()
 #ifdef DEBUG_AUTOPILOT
 if (m_ship->IsType(Object::PLAYER))
 Output("Autopilot dist = %.1f, speed = %.1f, zthrust = %.2f, state = %i\n",
-	targdist, relvel.Length(), m_ship->GetThrusterState().z, m_state);
+	targdist, relvel.Length(), m_ship->GetLinThrusterState().z, m_state);
 #endif
 
 	// frame switch stuff - clear children/collision state
@@ -960,6 +1013,30 @@ AICmdDock::AICmdDock(DynamicBody *dBody, SpaceStation *target) : AICommand(dBody
 	}
 }
 
+AICmdDock::AICmdDock(const Json &jsonObj) : AICommand(jsonObj, CMD_DOCK) {
+	try {
+		m_targetIndex = jsonObj["index_for_target"];
+		m_dockpos = jsonObj["dock_pos"];
+		m_dockdir = jsonObj["dock_dir"];
+		m_dockupdir = jsonObj["dock_up_dir"];
+		m_state = EDockingStates(jsonObj["state"]);
+	} catch (Json::type_error &) {
+		throw SavedGameCorruptException();
+	}
+}
+
+void AICmdDock::SaveToJson(Json &jsonObj) {
+	Space *space = Pi::game->GetSpace();
+	Json aiCommandObj({}); // Create JSON object to contain ai command data.
+	AICommand::SaveToJson(aiCommandObj);
+	aiCommandObj["index_for_target"] = space->GetIndexForBody(m_target);
+	aiCommandObj["dock_pos"] = m_dockpos;
+	aiCommandObj["dock_dir"] = m_dockdir;
+	aiCommandObj["dock_up_dir"] = m_dockupdir;
+	aiCommandObj["state"] = m_state;
+	jsonObj["ai_command"] = aiCommandObj; // Add ai command object to supplied object.
+}
+
 // m_state values:
 // 0: get data for docking start pos
 // 1: Fly to docking start pos
@@ -1087,7 +1164,7 @@ bool AICmdDock::TimeStepUpdate()
 
 #ifdef DEBUG_AUTOPILOT
 Output("AICmdDock dist = %.1f, speed = %.1f, ythrust = %.2f, state = %i\n",
-	targdist, relvel.Length(), m_ship->GetThrusterState().y, m_state);
+	targdist, relvel.Length(), m_ship->GetLinThrusterState().y, m_state);
 #endif
 
 	return false;
@@ -1110,7 +1187,7 @@ void AICmdFlyAround::Setup(Body *obstructor, double alt, double vel, int mode)
 	alt = std::max(alt, MaxEffectRad(obstructor, m_prop.Get()));
 
 	// drag within frame because orbits are impossible otherwise
-	// timestep code also doesn't work correctly for ex-frame cases, should probably be fixed 
+	// timestep code also doesn't work correctly for ex-frame cases, should probably be fixed
 	alt = std::min(alt, 0.95 * obstructor->GetFrame()->GetNonRotFrame()->GetRadius());
 
 	// generate suitable velocity if none provided
@@ -1139,6 +1216,28 @@ AICmdFlyAround::AICmdFlyAround(DynamicBody *dBody, Body *obstructor, double alt,
 
 	assert(!std::isnan(alt));
 	Setup(obstructor, alt, vel, mode);
+}
+
+AICmdFlyAround::AICmdFlyAround(const Json &jsonObj) : AICommand(jsonObj, CMD_FLYAROUND) {
+	try {
+		m_obstructorIndex = jsonObj["index_for_obstructor"];
+		m_vel = jsonObj["vel"];
+		m_alt = jsonObj["alt"];
+		m_targmode = jsonObj["targ_mode"];
+	} catch (Json::type_error &) {
+		throw SavedGameCorruptException();
+	}
+}
+
+void AICmdFlyAround::SaveToJson(Json &jsonObj) {
+   if (m_child) { m_child.reset(); }
+   Json aiCommandObj({}); // Create JSON object to contain ai command data.
+   AICommand::SaveToJson(aiCommandObj);
+   aiCommandObj["index_for_obstructor"] = Pi::game->GetSpace()->GetIndexForBody(m_obstructor);
+   aiCommandObj["vel"] = m_vel;
+   aiCommandObj["alt"] = m_alt;
+   aiCommandObj["targ_mode"] = m_targmode;
+   jsonObj["ai_command"] = aiCommandObj; // Add ai command object to supplied object.
 }
 
 double AICmdFlyAround::MaxVel(double targdist, double targalt)
@@ -1226,9 +1325,9 @@ bool AICmdFlyAround::TimeStepUpdate()
 //	m_ship->AIFaceDirection(newhead-m_ship->GetPosition());
 
 	// termination condition for orbits
-	vector3d thrust = m_prop->GetThrusterState();
+	vector3d thrust = m_prop->GetLinThrusterState();
 	if (m_targmode >= 2 && thrust.LengthSqr() < 0.01) m_targmode++;
-	if (m_targmode == 4) { m_prop->SetThrusterState(vector3d(0.0)); return true; }
+	if (m_targmode == 4) { m_prop->SetLinThrusterState(vector3d(0.0)); return true; }
 	return false;
 }
 
@@ -1239,6 +1338,24 @@ AICmdFormation::AICmdFormation(DynamicBody *dBody, DynamicBody *target, const ve
 {
 	m_prop.Reset(dBody->GetPropulsion());
 	assert(m_prop!=nullptr);
+}
+
+AICmdFormation::AICmdFormation(const Json &jsonObj) : AICommand(jsonObj, CMD_FORMATION) {
+	try {
+		m_targetIndex = jsonObj["index_for_target"];
+		m_posoff = jsonObj["pos_off"];
+	} catch (Json::type_error &) {
+		throw SavedGameCorruptException();
+	}
+}
+
+void AICmdFormation::SaveToJson(Json &jsonObj) {
+	if (m_child) { m_child.reset(); }
+	Json aiCommandObj({}); // Create JSON object to contain ai command data.
+	AICommand::SaveToJson(aiCommandObj);
+	aiCommandObj["index_for_target"] = Pi::game->GetSpace()->GetIndexForBody(m_target);
+	aiCommandObj["pos_off"] = m_posoff;
+	jsonObj["ai_command"] = aiCommandObj; // Add ai command object to supplied object.
 }
 
 bool AICmdFormation::TimeStepUpdate()

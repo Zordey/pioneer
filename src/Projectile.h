@@ -10,6 +10,7 @@
 #include "graphics/RenderState.h"
 
 struct ProjectileData {
+	ProjectileData() : lifespan(0.0f), damage(0.0f), length(0.0f), width(0.0f), speed(0.0f), color(Color::WHITE), mining(false), beam(false) {}
 	float lifespan;
 	float damage;
 	float length;
@@ -48,8 +49,8 @@ public:
 	static void FreeModel();
 
 protected:
-	virtual void SaveToJson(Json::Value &jsonObj, Space *space) override final;
-	virtual void LoadFromJson(const Json::Value &jsonObj, Space *space) override final;
+	virtual void SaveToJson(Json &jsonObj, Space *space) override final;
+	virtual void LoadFromJson(const Json &jsonObj, Space *space) override final;
 
 private:
 	float GetDamage() const;

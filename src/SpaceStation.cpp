@@ -21,7 +21,7 @@
 #include "galaxy/StarSystem.h"
 #include "graphics/Graphics.h"
 #include "scenegraph/ModelSkin.h"
-#include "json/JsonUtils.h"
+#include "JsonUtils.h"
 #include "GameSaveError.h"
 #include <algorithm>
 
@@ -30,137 +30,106 @@ void SpaceStation::Init()
 	SpaceStationType::Init();
 }
 
-void SpaceStation::SaveToJson(Json::Value &jsonObj, Space *space)
+void SpaceStation::SaveToJson(Json &jsonObj, Space *space)
 {
 	ModelBody::SaveToJson(jsonObj, space);
 
-	Json::Value spaceStationObj(Json::objectValue); // Create JSON object to contain space station data.
+	Json spaceStationObj({}); // Create JSON object to contain space station data.
 
-	Json::Value shipDockingArray(Json::arrayValue); // Create JSON array to contain ship docking data.
+	Json shipDockingArray = Json::array(); // Create JSON array to contain ship docking data.
 	for (Uint32 i = 0; i<m_shipDocking.size(); i++)
 	{
-		Json::Value shipDockingArrayEl(Json::objectValue); // Create JSON object to contain ship docking.
-		shipDockingArrayEl["index_for_body"] = space->GetIndexForBody(m_shipDocking[i].ship);
-		shipDockingArrayEl["stage"] = m_shipDocking[i].stage;
-		shipDockingArrayEl["stage_pos"] = DoubleToStr(m_shipDocking[i].stagePos); // stagePos is a double but was saved as a float in pre-JSON system for some reason (saved as double here).
-		VectorToJson(shipDockingArrayEl, m_shipDocking[i].fromPos, "from_pos");
-		QuaternionToJson(shipDockingArrayEl, m_shipDocking[i].fromRot, "from_rot");
-		shipDockingArray.append(shipDockingArrayEl); // Append ship docking object to array.
+		Json shipDockingArrayEl({}); // Create JSON object to contain ship docking.
+		Uint32 bodyIndex = space->GetIndexForBody(m_shipDocking[i].ship);
+		if (bodyIndex != 0)
+		{
+			shipDockingArrayEl["index_for_body"] = bodyIndex;
+			shipDockingArrayEl["stage"] = m_shipDocking[i].stage;
+			shipDockingArrayEl["stage_pos"] = m_shipDocking[i].stagePos; // stagePos is a double but was saved as a float in pre-JSON system for some reason (saved as double here).
+			shipDockingArrayEl["from_pos"] = m_shipDocking[i].fromPos;
+			shipDockingArrayEl["from_rot"] = m_shipDocking[i].fromRot;
+		}
+		shipDockingArray.push_back(shipDockingArrayEl); // Append ship docking object to array.
 	}
 	spaceStationObj["ship_docking"] = shipDockingArray; // Add ship docking array to space station object.
 
 	// store each of the port details and bay IDs
-	Json::Value portArray(Json::arrayValue); // Create JSON array to contain port data.
+	Json portArray = Json::array(); // Create JSON array to contain port data.
 	for (Uint32 i = 0; i < m_ports.size(); i++)
 	{
-		Json::Value portArrayEl(Json::objectValue); // Create JSON object to contain port.
+		Json portArrayEl({}); // Create JSON object to contain port.
 
-		portArrayEl["min_ship_size"] = m_ports[i].minShipSize;
-		portArrayEl["max_ship_size"] = m_ports[i].maxShipSize;
-		portArrayEl["in_use"] = m_ports[i].inUse;
+		if(m_ports[i].inUse)
+			portArrayEl["in_use"] = m_ports[i].inUse;
 
-		Json::Value bayArray(Json::arrayValue); // Create JSON array to contain bay data.
-		for (Uint32 j = 0; j<m_ports[i].bayIDs.size(); j++)
-		{
-			Json::Value bayArrayEl(Json::objectValue); // Create JSON object to contain bay.
-			bayArrayEl["bay_id"] = m_ports[i].bayIDs[j].first;
-			bayArrayEl["name"] = m_ports[i].bayIDs[j].second;
-			bayArray.append(bayArrayEl); // Append bay object to array.
-		}
-		portArrayEl["bays"] = bayArray; // Add bay array to port object.
-
-		portArray.append(portArrayEl); // Append port object to array.
+		portArray.push_back(portArrayEl); // Append port object to array.
 	}
 	spaceStationObj["ports"] = portArray; // Add port array to space station object.
 
 	spaceStationObj["index_for_system_body"] = space->GetIndexForSystemBody(m_sbody);
 
-	spaceStationObj["door_animation_step"] = DoubleToStr(m_doorAnimationStep);
-	spaceStationObj["door_animation_state"] = DoubleToStr(m_doorAnimationState);
+	spaceStationObj["door_animation_step"] = m_doorAnimationStep;
+	spaceStationObj["door_animation_state"] = m_doorAnimationState;
 
 	m_navLights->SaveToJson(spaceStationObj);
 
 	jsonObj["space_station"] = spaceStationObj; // Add space station object to supplied object.
 }
 
-void SpaceStation::LoadFromJson(const Json::Value &jsonObj, Space *space)
+void SpaceStation::LoadFromJson(const Json &jsonObj, Space *space)
 {
 	ModelBody::LoadFromJson(jsonObj, space);
 	GetModel()->SetLabel(GetLabel());
 
-	if (!jsonObj.isMember("space_station")) throw SavedGameCorruptException();
-	Json::Value spaceStationObj = jsonObj["space_station"];
+	try {
+		Json spaceStationObj = jsonObj["space_station"];
 
-	if (!spaceStationObj.isMember("ship_docking")) throw SavedGameCorruptException();
-	if (!spaceStationObj.isMember("ports")) throw SavedGameCorruptException();
-	if (!spaceStationObj.isMember("index_for_system_body")) throw SavedGameCorruptException();
-	if (!spaceStationObj.isMember("door_animation_step")) throw SavedGameCorruptException();
-	if (!spaceStationObj.isMember("door_animation_state")) throw SavedGameCorruptException();
+		m_oldAngDisplacement = 0.0;
 
-	m_oldAngDisplacement = 0.0;
-
-	Json::Value shipDockingArray = spaceStationObj["ship_docking"];
-	if (!shipDockingArray.isArray()) throw SavedGameCorruptException();
-	m_shipDocking.reserve(shipDockingArray.size());
-	for (Uint32 i = 0; i < shipDockingArray.size(); i++)
-	{
-		m_shipDocking.push_back(shipDocking_t());
-		shipDocking_t &sd = m_shipDocking.back();
-
-		Json::Value shipDockingArrayEl = shipDockingArray[i];
-		if (!shipDockingArrayEl.isMember("index_for_body")) throw SavedGameCorruptException();
-		if (!shipDockingArrayEl.isMember("stage")) throw SavedGameCorruptException();
-		if (!shipDockingArrayEl.isMember("stage_pos")) throw SavedGameCorruptException();
-		if (!shipDockingArrayEl.isMember("from_pos")) throw SavedGameCorruptException();
-		if (!shipDockingArrayEl.isMember("from_rot")) throw SavedGameCorruptException();
-
-		sd.shipIndex = shipDockingArrayEl["index_for_body"].asInt();
-		sd.stage = shipDockingArrayEl["stage"].asInt();
-		sd.stagePos = StrToDouble(shipDockingArrayEl["stage_pos"].asString()); // For some reason stagePos was saved as a float in pre-JSON system (saved & loaded as double here).
-		JsonToVector(&(sd.fromPos), shipDockingArrayEl, "from_pos");
-		JsonToQuaternion(&(sd.fromRot), shipDockingArrayEl, "from_rot");
-	}
-
-	// retrieve each of the port details and bay IDs
-	Json::Value portArray = spaceStationObj["ports"];
-	if (!portArray.isArray()) throw SavedGameCorruptException();
-	m_ports.reserve(portArray.size());
-	for (Uint32 i = 0; i < portArray.size(); i++)
-	{
-		m_ports.push_back(SpaceStationType::SPort());
-		SpaceStationType::SPort &port = m_ports.back();
-
-		Json::Value portArrayEl = portArray[i];
-		if (!portArrayEl.isMember("min_ship_size")) throw SavedGameCorruptException();
-		if (!portArrayEl.isMember("max_ship_size")) throw SavedGameCorruptException();
-		if (!portArrayEl.isMember("in_use")) throw SavedGameCorruptException();
-		if (!portArrayEl.isMember("bays")) throw SavedGameCorruptException();
-
-		port.minShipSize = portArrayEl["min_ship_size"].asInt();
-		port.maxShipSize = portArrayEl["max_ship_size"].asInt();
-		port.inUse = portArrayEl["in_use"].asBool();
-
-		Json::Value bayArray = portArrayEl["bays"];
-		if (!bayArray.isArray()) throw SavedGameCorruptException();
-		port.bayIDs.reserve(bayArray.size());
-		for (Uint32 j = 0; j < bayArray.size(); j++)
+		Json shipDockingArray = spaceStationObj["ship_docking"].get<Json::array_t>();
+		m_shipDocking.reserve(shipDockingArray.size());
+		for (Uint32 i = 0; i < shipDockingArray.size(); i++)
 		{
-			Json::Value bayArrayEl = bayArray[j];
-			if (!bayArrayEl.isMember("bay_id")) throw SavedGameCorruptException();
-			if (!bayArrayEl.isMember("name")) throw SavedGameCorruptException();
+			m_shipDocking.push_back(shipDocking_t());
+			shipDocking_t &sd = m_shipDocking.back();
 
-			port.bayIDs.push_back(std::make_pair(bayArrayEl["bay_id"].asInt(), bayArrayEl["name"].asString()));
+			Json shipDockingArrayEl = shipDockingArray[i];
+			if(shipDockingArrayEl.count("index_for_body"))
+				sd.shipIndex = shipDockingArrayEl["index_for_body"];
+			if(shipDockingArrayEl.count("stage"))
+				sd.stage = shipDockingArrayEl["stage"];
+			if(shipDockingArrayEl.count("stage_pos"))
+				sd.stagePos = shipDockingArrayEl["stage_pos"]; // For some reason stagePos was saved as a float in pre-JSON system (saved & loaded as double here).
+			if(shipDockingArrayEl.count("from_pos"))
+				sd.fromPos = shipDockingArrayEl["from_pos"];
+			if(shipDockingArrayEl.count("from_rot"))
+				sd.fromRot = shipDockingArrayEl["from_rot"];
 		}
+
+		// retrieve each of the port details and bay IDs
+		Json portArray = spaceStationObj["ports"].get<Json::array_t>();
+		m_ports.reserve(portArray.size());
+		for (Uint32 i = 0; i < portArray.size(); i++)
+		{
+			m_ports.push_back(SpaceStationType::SPort());
+			SpaceStationType::SPort &port = m_ports.back();
+
+			Json portArrayEl = portArray[i];
+			if (portArrayEl["in_use"].is_boolean())
+				port.inUse = portArrayEl["in_use"];
+		}
+
+		m_sbody = space->GetSystemBodyByIndex(spaceStationObj["index_for_system_body"]);
+
+		m_doorAnimationStep = spaceStationObj["door_animation_step"];
+		m_doorAnimationState = spaceStationObj["door_animation_state"];
+
+		InitStation();
+
+		m_navLights->LoadFromJson(spaceStationObj);
+	} catch (Json::type_error &) {
+		throw SavedGameCorruptException();
 	}
-
-	m_sbody = space->GetSystemBodyByIndex(spaceStationObj["index_for_system_body"].asUInt());
-
-	m_doorAnimationStep = StrToDouble(spaceStationObj["door_animation_step"].asString());
-	m_doorAnimationState = StrToDouble(spaceStationObj["door_animation_state"].asString());
-
-	InitStation();
-
-	m_navLights->LoadFromJson(spaceStationObj);
 }
 
 void SpaceStation::PostLoadFixup(Space *space)
@@ -208,7 +177,23 @@ void SpaceStation::InitStation()
 	assert(m_shipDocking.size() == m_type->NumDockingPorts());
 
 	// This SpaceStation's bay ports are an instance of...
-	m_ports = m_type->Ports();
+	if (m_ports.size() != m_type->Ports().size())
+	{
+		m_ports = m_type->Ports();
+	}
+	else
+	{
+		// since we might have loaded from JSON we've got a little bit of useful info in m_ports already
+		// backup the current data
+		auto backup = m_ports;
+		// clear it all to default
+		m_ports = m_type->Ports();
+		// now restore the "inUse" variable only since it's the only bit that might have changed
+		for (int p=0;p<m_ports.size();p++)
+		{
+			m_ports[p].inUse = backup[p].inUse;
+		}
+	}
 
 	SetStatic(ground);			// orbital stations are dynamic now
 

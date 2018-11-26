@@ -387,7 +387,7 @@ SystemView::SystemView(Game* game) : UIView(), m_game(game)
 	Add(b, time_controls_left + 121, time_controls_top);
 
 	m_onMouseWheelCon =
-		Pi::onMouseWheel.connect(sigc::mem_fun(this, &SystemView::MouseWheel));
+		Pi::input.onMouseWheel.connect(sigc::mem_fun(this, &SystemView::MouseWheel));
 
 	Graphics::TextureBuilder b1 = Graphics::TextureBuilder::UI("icons/periapsis.png");
 	m_periapsisIcon.reset(new Gui::TexturedQuad(b1.GetOrCreateTexture(Gui::Screen::GetRenderer(), "ui")));
@@ -453,6 +453,8 @@ void SystemView::ResetViewpoint()
 	m_selectedObject = 0;
 	m_rot_z = 0;
 	m_rot_x = 50;
+	m_rot_z_to = m_rot_z;
+	m_rot_x_to = m_rot_x;
 	m_zoom = 1.0f/float(AU);
 	m_zoomTo = m_zoom;
 	m_timeStep = 1.0f;
@@ -866,10 +868,10 @@ void SystemView::Update()
 	const float ft = Pi::GetFrameTime();
 	// XXX ugly hack checking for console here
 	if (!Pi::IsConsoleActive()) {
-		if (Pi::KeyState(SDLK_EQUALS) ||
+		if (Pi::input.KeyState(SDLK_EQUALS) ||
 			m_zoomInButton->IsPressed())
 				m_zoomTo *= pow(ZOOM_IN_SPEED * Pi::GetMoveSpeedShiftModifier(), ft);
-		if (Pi::KeyState(SDLK_MINUS) ||
+		if (Pi::input.KeyState(SDLK_MINUS) ||
 			m_zoomOutButton->IsPressed())
 				m_zoomTo *= pow(ZOOM_OUT_SPEED / Pi::GetMoveSpeedShiftModifier(), ft);
 
@@ -897,13 +899,18 @@ void SystemView::Update()
 	// TODO: add "true" lower/upper bounds to m_zoomTo / m_zoom
 	m_zoomTo = Clamp(m_zoomTo, MIN_ZOOM, MAX_ZOOM);
 	m_zoom = Clamp(m_zoom, MIN_ZOOM, MAX_ZOOM);
-	AnimationCurves::Approach(m_zoom, m_zoomTo, ft);
+	// Since m_zoom changes over multiple orders of magnitude, any fixed linear factor will not be appropriate
+	// at some of them.
+	AnimationCurves::Approach(m_zoom, m_zoomTo, ft, 10.f, m_zoomTo / 60.f);
 
-	if (Pi::MouseButtonState(SDL_BUTTON_RIGHT)) {
+	AnimationCurves::Approach(m_rot_x, m_rot_x_to, ft);
+	AnimationCurves::Approach(m_rot_z, m_rot_z_to, ft);
+
+	if (Pi::input.MouseButtonState(SDL_BUTTON_RIGHT)) {
 		int motion[2];
-		Pi::GetMouseMotion(motion);
-		m_rot_x += motion[1]*20*ft;
-		m_rot_z += motion[0]*20*ft;
+		Pi::input.GetMouseMotion(motion);
+		m_rot_x_to += motion[1]*20*ft;
+		m_rot_z_to += motion[0]*20*ft;
 	}
 
 	UIView::Update();

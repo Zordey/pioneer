@@ -8,7 +8,7 @@
 #include "libs.h"
 #include "Space.h"
 #include "Camera.h"
-#include "json/JsonUtils.h"
+#include "JsonUtils.h"
 #include "scenegraph/Model.h"
 #include "Projectile.h"
 #include "DynamicBody.h"
@@ -25,7 +25,7 @@ class FixedGuns : public RefCounted
 		FixedGuns();
 		virtual ~FixedGuns();
 		void Init(DynamicBody *b);
-		void InitGun( SceneGraph::Model *m, const char *tag, int num);
+		void InitGuns( SceneGraph::Model *m);
 		void UpdateGuns( float timeStep );
 		bool Fire( const int num, Body* b );
 		bool IsFiring();
@@ -43,13 +43,16 @@ class FixedGuns : public RefCounted
 			if(m_gun_present[idx])
 				m_is_firing[idx] = s;
 		};
-		virtual void SaveToJson( Json::Value &jsonObj, Space *space);
-		virtual void LoadFromJson( const Json::Value &jsonObj, Space *space);
+		virtual void SaveToJson( Json &jsonObj, Space *space);
+		virtual void LoadFromJson( const Json &jsonObj, Space *space);
 	private:
 
 		struct GunData {
-			vector3f pos;
-			vector3f dir;
+			struct GunLoc {
+				vector3d pos;
+				vector3d dir;
+			};
+			std::vector<GunLoc> locs;
 			float recharge;
 			float temp_heat_rate;
 			float temp_cool_rate;

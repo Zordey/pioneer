@@ -5,7 +5,7 @@
   },
   "MSG_10": {
     "description": "",
-    "message": "Bitte drücke {nein}, um noch ein paar produktive Stunden zu verschwenden. Bitte?"
+    "message": "Bitte drücke {nein}, um noch ein paar produktive Stunden zu verschwenden. Bitte, bitte?"
   },
   "MSG_11": {
     "description": "",
@@ -46,6 +46,18 @@
   "MSG_2": {
     "description": "",
     "message": "Geh jetzt nicht, ein Pirat wartet im anderen Programm auf dich."
+  },
+  "MSG_20": {
+    "description": "",
+    "message": "Musst du wirklich schon gehen?"
+  },
+  "MSG_21": {
+    "description": "alluding to suicide",
+    "message": "Wegrennen wie ein Feigling?"
+  },
+  "MSG_22": {
+    "description": "alluding to suicide",
+    "message": "Nein, nicht! Ab hier kann es nur noch besser werden! Willst du trotzdem aufgeben?"
   },
   "MSG_3": {
     "description": "",

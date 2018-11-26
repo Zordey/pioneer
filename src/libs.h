@@ -6,6 +6,7 @@
 
 #include "buildopts.h"
 
+#include <cmath>
 #include <cassert>
 #include <cstdio>
 #include <sigc++/sigc++.h>
@@ -37,10 +38,8 @@
 #	endif
 
 #	ifndef __MINGW32__
-#		define alloca _alloca
 #		define strncasecmp _strnicmp
 #		define strcasecmp _stricmp
-#		define snprintf _snprintf
 #	endif
 #endif
 

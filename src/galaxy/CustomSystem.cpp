@@ -428,6 +428,26 @@ static int l_csys_faction(lua_State *L)
 	return 1;
 }
 
+static int l_csys_other_names(lua_State *L)
+{
+	CustomSystem *cs = l_csys_check(L, 1);
+	std::vector<std::string> other_names;
+	if(lua_istable(L, 2)) {
+		lua_pushnil(L);
+		while(lua_next(L, -2) != 0) {
+			if(lua_isstring(L, -2)) {
+				std::string n(lua_tostring(L, -1));
+				other_names.push_back(n);
+			}
+			lua_pop(L, 1); // pop value, keep key for lua_next
+		}
+		lua_pop(L, 1); // pop table
+	}
+	cs->other_names = other_names;
+	lua_settop(L, 1);
+	return 1;
+}
+
 static int l_csys_govtype(lua_State *L)
 {
 	CustomSystem *cs = l_csys_check(L, 1);
@@ -571,6 +591,7 @@ static luaL_Reg LuaCustomSystem_meta[] = {
 	{ "govtype", &l_csys_govtype },
 	{ "lawlessness", &l_csys_lawlessness },
 	{ "bodies", &l_csys_bodies },
+	{ "other_names", &l_csys_other_names },
 	{ "add_to_sector", &l_csys_add_to_sector },
 	{ "__gc", &l_csys_gc },
 	{ 0, 0 }
@@ -602,7 +623,6 @@ static void RegisterCustomSystemsAPI(lua_State *L)
 
 void CustomSystemsDatabase::Init()
 {
-	PROFILE_SCOPED()
 	assert(!s_activeCustomSystemsDatabase);
 	s_activeCustomSystemsDatabase = this;
 	lua_State *L = luaL_newstate();
@@ -642,7 +662,6 @@ void CustomSystemsDatabase::Init()
 
 CustomSystemsDatabase::~CustomSystemsDatabase()
 {
-	PROFILE_SCOPED()
 	for (SectorMap::iterator secIt = m_sectorMap.begin(); secIt != m_sectorMap.end(); ++secIt) {
 		for (CustomSystemsDatabase::SystemList::iterator
 				sysIt = secIt->second.begin(); sysIt != secIt->second.end(); ++sysIt) {
@@ -654,7 +673,6 @@ CustomSystemsDatabase::~CustomSystemsDatabase()
 
 const CustomSystemsDatabase::SystemList &CustomSystemsDatabase::GetCustomSystemsForSector(int x, int y, int z) const
 {
-	PROFILE_SCOPED()
 	SystemPath path(x,y,z);
 	SectorMap::const_iterator it = m_sectorMap.find(path);
 	return (it != m_sectorMap.end()) ? it->second : s_emptySystemList;
@@ -675,7 +693,6 @@ CustomSystem::CustomSystem():
 	govType(Polit::GOV_INVALID),
 	want_rand_lawlessness(true)
 {
-	PROFILE_SCOPED()
 	for (int i = 0; i < 4; ++i)
 		primaryType[i] = SystemBody::TYPE_GRAVPOINT;
 }
@@ -696,7 +713,6 @@ CustomSystemBody::CustomSystemBody():
 	seed(0),
 	want_rand_seed(true)
 {
-	PROFILE_SCOPED()
 }
 
 CustomSystemBody::~CustomSystemBody()

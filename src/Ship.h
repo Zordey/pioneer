@@ -230,8 +230,8 @@ public:
 	double GetLandingPosOffset() const { return m_landingMinOffset; }
 
 protected:
-	virtual void SaveToJson(Json::Value &jsonObj, Space *space) override;
-	virtual void LoadFromJson(const Json::Value &jsonObj, Space *space) override;
+	virtual void SaveToJson(Json &jsonObj, Space *space) override;
+	virtual void LoadFromJson(const Json &jsonObj, Space *space) override;
 
 	bool AITimeStep(float timeStep); // Called by controller. Returns true if complete
 
@@ -324,7 +324,7 @@ public:
 	bool AIMatchVel(const vector3d &vel) { return GetPropulsion()->AIMatchVel(vel); }
 	double AIFaceDirection(const vector3d &dir, double av=0) { return GetPropulsion()->AIFaceDirection(dir, av); }
 	void AIMatchAngVelObjSpace(const vector3d &angvel) { return GetPropulsion()->AIMatchAngVelObjSpace(angvel); }
-	void SetThrusterState(int axis, double level) { return GetPropulsion()->SetThrusterState(axis, level); }
+	void SetThrusterState(int axis, double level) { return GetPropulsion()->SetLinThrusterState(axis, level); }
 	void AIModelCoordsMatchAngVel(const vector3d &desiredAngVel, double softness) { return GetPropulsion()->AIModelCoordsMatchAngVel(desiredAngVel, softness); }
 };
 

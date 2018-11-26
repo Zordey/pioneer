@@ -108,7 +108,7 @@ Space::Space(Game *game, RefCountedPtr<Galaxy> galaxy, const SystemPath &path, S
 	//DebugDumpFrames();
 }
 
-Space::Space(Game *game, RefCountedPtr<Galaxy> galaxy, const Json::Value &jsonObj, double at_time)
+Space::Space(Game *game, RefCountedPtr<Galaxy> galaxy, const Json &jsonObj, double at_time)
 	: m_starSystemCache(galaxy->NewStarSystemSlaveCache())
 	, m_game(game)
 	, m_frameIndexValid(false)
@@ -119,8 +119,7 @@ Space::Space(Game *game, RefCountedPtr<Galaxy> galaxy, const Json::Value &jsonOb
 	, m_processingFinalizationQueue(false)
 #endif
 {
-	if (!jsonObj.isMember("space")) throw SavedGameCorruptException();
-	Json::Value spaceObj = jsonObj["space"];
+	Json spaceObj = jsonObj["space"];
 
 	m_starSystem = StarSystem::FromJson(galaxy, spaceObj);
 
@@ -133,19 +132,23 @@ Space::Space(Game *game, RefCountedPtr<Galaxy> galaxy, const Json::Value &jsonOb
 
 	CityOnPlanet::SetCityModelPatterns(m_starSystem->GetPath());
 
-	m_rootFrame.reset(Frame::FromJson(spaceObj, this, 0, at_time));
+	if (!spaceObj.count("frame")) throw SavedGameCorruptException();
+	m_rootFrame.reset(Frame::FromJson(spaceObj["frame"], this, 0, at_time));
 	RebuildFrameIndex();
 
-	if (!spaceObj.isMember("bodies")) throw SavedGameCorruptException();
-	Json::Value bodyArray = spaceObj["bodies"];
-	if (!bodyArray.isArray()) throw SavedGameCorruptException();
-	for (Uint32 i = 0; i < bodyArray.size(); i++)
+	try {
+		Json bodyArray = spaceObj["bodies"].get<Json::array_t>();
+		for (Uint32 i = 0; i < bodyArray.size(); i++)
 		m_bodies.push_back(Body::FromJson(bodyArray[i], this));
+	} catch (Json::type_error &) {
+		throw SavedGameCorruptException();
+	}
+
 	RebuildBodyIndex();
 
 	Frame::PostUnserializeFixup(m_rootFrame.get(), this);
 	for (Body* b : m_bodies)
-		b->PostLoadFixup(this);
+	b->PostLoadFixup(this);
 
 	GenSectorCache(galaxy, &path);
 }
@@ -166,25 +169,27 @@ void Space::RefreshBackground()
 	m_background.reset(new Background::Container(Pi::renderer, rand));
 }
 
-void Space::ToJson(Json::Value &jsonObj)
+void Space::ToJson(Json &jsonObj)
 {
 	PROFILE_SCOPED()
 	RebuildFrameIndex();
 	RebuildBodyIndex();
 	RebuildSystemBodyIndex();
 
-	Json::Value spaceObj(Json::objectValue); // Create JSON object to contain space data (all the bodies and things).
+	Json spaceObj({}); // Create JSON object to contain space data (all the bodies and things).
 
 	StarSystem::ToJson(spaceObj, m_starSystem.Get());
 
-	Frame::ToJson(spaceObj, m_rootFrame.get(), this);
+	Json frameObj({});
+	Frame::ToJson(frameObj, m_rootFrame.get(), this);
+	spaceObj["frame"] = frameObj;
 
-	Json::Value bodyArray(Json::arrayValue); // Create JSON array to contain body data.
+	Json bodyArray = Json::array(); // Create JSON array to contain body data.
 	for (Body* b : m_bodies)
 	{
-		Json::Value bodyArrayEl(Json::objectValue); // Create JSON object to contain body.
+		Json bodyArrayEl({}); // Create JSON object to contain body.
 		b->ToJson(bodyArrayEl, this);
-		bodyArray.append(bodyArrayEl); // Append body object to array.
+		bodyArray.push_back(bodyArrayEl); // Append body object to array.
 	}
 	spaceObj["bodies"] = bodyArray; // Add body array to space object.
 
@@ -282,6 +287,8 @@ void Space::RebuildBodyIndex()
 		}
 	}
 
+	Pi::SetAmountBackgroundStars(Pi::GetAmountBackgroundStars());
+
 	m_bodyIndexValid = true;
 }
 
@@ -363,10 +370,12 @@ vector3d Space::GetHyperspaceExitPoint(const SystemPath &source, const SystemPat
 	}
 	assert(primary);
 
+	vector3d dist = (primary->GetSystemBody()->GetRadius() * 3.0) + MathUtil::RandomPointOnSphere(5.0, 20.0)*1000.0;
+
 	// point along the line between source and dest, a reasonable distance
 	// away based on the radius (don't want to end up inside black holes, and
 	// then mix it up so that ships don't end up on top of each other
-	vector3d pos = (sourcePos - destPos).Normalized() * (primary->GetSystemBody()->GetRadius()/AU+1.0)*11.0*AU*Pi::rng.Double(0.95,1.2) + MathUtil::RandomPointOnSphere(5.0,20.0)*1000.0;
+	vector3d pos = (sourcePos - destPos).Normalized() * dist;
 	assert(pos.Length() > primary->GetSystemBody()->GetRadius());
 	return pos + primary->GetPositionRelTo(GetRootFrame());
 }

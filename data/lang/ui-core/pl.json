@@ -1541,7 +1541,7 @@
   },
   "START_AT_BARNARDS_STAR": {
     "description": "",
-    "message": "Rozpocznij na Barnard's Star"
+    "message": "Rozpocznij na Gwieździe Barnarda"
   },
   "START_AT_BARNARDS_STAR_DESC": {
     "description": "",
@@ -1554,6 +1554,14 @@
   "START_AT_EARTH_DESC": {
     "description": "",
     "message": "Jest to łatwy start z Londynu na Ziemi w układzie Słońca."
+  },
+  "START_AT_MARS": {
+    "description": "",
+    "message": "Rozpocznij na Marsie"
+  },
+  "START_AT_MARS_DESC": {
+    "description": "",
+    "message": "Łatwy początek na marsjańskiej Cydonii w Układzie Słonecznym."
   },
   "START_AT_NEW_HOPE": {
     "description": "New Hope is an in game location",

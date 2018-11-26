@@ -1,3 +1,66 @@
+November 2018
+   * New Features
+     * Two new systems: Bathlight and Delta Pavonis (#4490)
+     * Added 6 new music tracks (#4491)
+
+   * Internal Changes
+     * Switch travis to CMake (#4465)
+
+   * Fixes
+     * Fix alert status not changing to red (#4492)
+
+October 2018
+   * New Features
+     * Adds two custom systems (#4462)
+     * Move Hyperspace exit locations into the heart of systems (#4444)
+     * Partial Real Starfield Rendering (#4471)
+     * Remove option -skipmenu, add option -startat (#4476)
+     * Bring smooth transitions to system view (#4480)
+
+   * Internal Changes
+     * Update JSON to a better library, save games in CBOR (#4459)
+     * Fix the unused variable warnings (#4474)
+     * Support module.submodlue syntax in Lua (#4478)
+
+   * Fixes
+     * Fix dual fire weapon origin problems (#4417)
+     * Improve main menu styling (#4477)
+     * Restore 3 action bindings to event dispatch sequence (#4485)
+
+September 2018
+   * New Features
+     * Add hyperdrive breakdown sound effect (#4401)
+     * Unexplored systems soundtrack (#4398)
+     * Two new custom systems (#4395)
+     * Move start location to Mars (Douglas Quaid!!!) (#4363)
+     * Custom systems continued (#4439)
+     * Adds the Fomalhaut custom system (#4455)
+     * Star Icons overhaul (#4308)
+
+   * Internal Changes
+     * Provide other_names to add multiple names to custom systems (#4388)
+     * Change tech levels (#4363)
+     * Acceleration cap (#4378)
+     * Improve Joystick / Input Handling (#4432)
+     * Update bundled IMGUI to v1.64 (#4437)
+     * Added a clang-format harness (#4429)
+     * More Input Improvements (#4440)
+     * Update CMakeLists.txt to build the modelcompiler (#4447)
+     * Cleanup ExportBodyToLua and the names it uses for output (#4451)
+     * Remove OpenGL 2.1 code from the project (#4450)
+     * Pickle Lua values to JSON (#4207)
+     * Save game optimisations (#4454)
+     * Add Travis build scrips for building releases (#4446)
+
+   * Fixes
+     * Quick fix for 4418, disallow zero length buffers (#4420)
+     * Fix crash when changing distance sort choice (#4428)
+     * Fix for issue 4386 (#4404)
+     * The docking request does not require an Autopilot (#4431)
+     * SystemPath was not fully specified causing a crash (#4449)
+     * Fix 4452 (#4453)
+     * Fixes 4456, typo / wrong language file used for localized string (#4457)
+
 August 2018
    * New Features
      * Add heavy atmospheric shielding, allows easier fuel scooping (#4377)
@@ -8,7 +71,13 @@ August 2018
      * Added more tooltips in settings menu (#4387)
      * Cleanup PatchJobs code (#4393)
      * Update COMPILING.txt (#4396)
-     * Add support for building using the system install of libGLEW (#4391)
+     * Add support for building using the system install of libGLEW (#4391, #4414)
+     * Add support for building using CMake (#4104)
+     * Delete unmaintained premake configuration and XCode project files (#4407)
+     * Fixes to the Nix build config and instructions (#4412)
+
+   * Fixes
+     * In the game load dialog, detect and handle unloadable save files (#4415, #4416)
 
 July 2018
    * New Features
