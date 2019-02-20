@@ -1,4 +1,4 @@
-// Copyright © 2008-2018 Pioneer Developers. See AUTHORS.txt for details
+// Copyright © 2008-2019 Pioneer Developers. See AUTHORS.txt for details
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "LuaObject.h"
@@ -10,9 +10,12 @@
  * Class representing a star. Inherits from <Body>.
  */
 
-template <> const char *LuaObject<Star>::s_type = "Star";
+template <>
+const char *LuaObject<Star>::s_type = "Star";
 
-template <> void LuaObject<Star>::RegisterClass() {
+template <>
+void LuaObject<Star>::RegisterClass()
+{
 	const char *l_parent = "Body";
 
 	LuaObjectBase::CreateClass(s_type, l_parent, 0, 0, 0);

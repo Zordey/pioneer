@@ -1,4 +1,4 @@
-// Copyright © 2008-2018 Pioneer Developers. See AUTHORS.txt for details
+// Copyright © 2008-2019 Pioneer Developers. See AUTHORS.txt for details
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #ifndef _LUAFIXED_H
@@ -16,6 +16,6 @@ namespace LuaFixed {
 	void PushToLua(lua_State *L, const fixed &v);
 	const fixed *GetFromLua(lua_State *L, int idx);
 	const fixed *CheckFromLua(lua_State *L, int idx);
-}
+} // namespace LuaFixed
 
 #endif

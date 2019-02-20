@@ -1,14 +1,14 @@
-// Copyright © 2008-2018 Pioneer Developers. See AUTHORS.txt for details
+// Copyright © 2008-2019 Pioneer Developers. See AUTHORS.txt for details
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
-#include "libs.h"
-#include "Pi.h"
 #include "BaseSphere.h"
-#include "GeoSphere.h"
-#include "GasGiant.h"
-#include "graphics/Material.h"
 
-BaseSphere::BaseSphere(const SystemBody *body) : m_sbody(body), m_terrain(Terrain::InstanceTerrain(body)) {}
+#include "GasGiant.h"
+#include "GeoSphere.h"
+
+BaseSphere::BaseSphere(const SystemBody *body) :
+	m_sbody(body),
+	m_terrain(Terrain::InstanceTerrain(body)) {}
 
 BaseSphere::~BaseSphere() {}
 
@@ -52,8 +52,8 @@ void BaseSphere::DrawAtmosphereSurface(Graphics::Renderer *renderer,
 
 	renderer->SetTransform(modelView * matrix4x4d::ScaleMatrix(rad, rad, rad) * invrot);
 
-	if(!m_atmos)
-		m_atmos.reset( new Drawables::Sphere3D(renderer, mat, rs, 4, 1.0f, ATTRIB_POSITION));
+	if (!m_atmos)
+		m_atmos.reset(new Drawables::Sphere3D(renderer, mat, rs, 4, 1.0f, ATTRIB_POSITION));
 	m_atmos->Draw(renderer);
 
 	renderer->GetStats().AddToStatCount(Graphics::Stats::STAT_ATMOSPHERES, 1);

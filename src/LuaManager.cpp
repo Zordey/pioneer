@@ -1,4 +1,4 @@
-// Copyright © 2008-2018 Pioneer Developers. See AUTHORS.txt for details
+// Copyright © 2008-2019 Pioneer Developers. See AUTHORS.txt for details
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "LuaManager.h"
@@ -7,7 +7,9 @@
 
 bool instantiated = false;
 
-LuaManager::LuaManager() : m_lua(0) {
+LuaManager::LuaManager() :
+	m_lua(0)
+{
 	if (instantiated) {
 		Output("Can't instantiate more than one LuaManager");
 		abort();
@@ -20,18 +22,21 @@ LuaManager::LuaManager() : m_lua(0) {
 	instantiated = true;
 }
 
-LuaManager::~LuaManager() {
+LuaManager::~LuaManager()
+{
 	lua_close(m_lua);
 
 	instantiated = false;
 }
 
-size_t LuaManager::GetMemoryUsage() const {
+size_t LuaManager::GetMemoryUsage() const
+{
 	int kb = lua_gc(m_lua, LUA_GCCOUNT, 0);
 	int b = lua_gc(m_lua, LUA_GCCOUNTB, 0);
 	return (size_t(kb) * 1024) + b;
 }
 
-void LuaManager::CollectGarbage() {
+void LuaManager::CollectGarbage()
+{
 	lua_gc(m_lua, LUA_GCCOLLECT, 0);
 }

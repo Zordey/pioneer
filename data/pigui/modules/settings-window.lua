@@ -1,4 +1,4 @@
--- Copyright © 2008-2018 Pioneer Developers. See AUTHORS.txt for details
+-- Copyright © 2008-2019 Pioneer Developers. See AUTHORS.txt for details
 -- Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 local Engine = import('Engine')
@@ -161,6 +161,7 @@ local function showVideoOptions()
 
 	local textCompress = Engine.GetTextureCompressionEnabled()
 	local gpuJobs = Engine.GetGpuJobsEnabled()
+	local disableScreenshotInfo = Engine.GetDisableScreenshotInfo()
 
 	local fractalDetail = keyOf(detailLabels,keyOf(detailLevels, Engine.GetFractalDetailLevel()))-1
 	local cityDetail = keyOf(detailLabels,keyOf(detailLevels, Engine.GetCityDetailLevel()))-1
@@ -210,6 +211,11 @@ local function showVideoOptions()
 	c,gpuJobs = checkbox(lui.GPU_JOBS, gpuJobs, lui.GPU_JOBS_DESC)
 	if c then
 		Engine.SetGpuJobsEnabled(gpuJobs)
+	end
+	ui.nextColumn()
+	c,disableScreenshotInfo = checkbox(lui.DISABLE_SCREENSHOT_INFO, disableScreenshotInfo, lui.DISABLE_SCREENSHOT_INFO_DESC)
+	if c then
+		Engine.SetDisableScreenshotInfo(disableScreenshotInfo)
 	end
 	ui.columns(1,"",false)
 

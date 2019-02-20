@@ -1,4 +1,4 @@
--- Copyright © 2008-2018 Pioneer Developers. See AUTHORS.txt for details
+-- Copyright © 2008-2019 Pioneer Developers. See AUTHORS.txt for details
 -- Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 local Engine = import("Engine")
@@ -53,12 +53,6 @@ local personalInfo = function ()
 					ui:Label(l.REPUTATION):SetFont("HEADING_LARGE"),
 					ui:Table():SetColumnSpacing(10):AddRows({
 						{ l.STATUS..":", l[player:GetReputationRating()] },
-					}),
-					"",
-					ui:Label(l.MILITARY):SetFont("HEADING_LARGE"),
-					ui:Table():SetColumnSpacing(10):AddRows({
-						{ l.ALLEGIANCE, l.NONE }, -- XXX
-						{ l.RANK,      l.NONE }, -- XXX
 					})
 				})
 			})

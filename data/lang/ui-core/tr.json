@@ -283,6 +283,14 @@
     "description": "tooltip description in settings menu",
     "message": "Düşük ayarlar, görsel estetiği azaltıp performansı arttırır."
   },
+  "DISABLE_SCREENSHOT_INFO": {
+    "description": "",
+    "message": "Ekran Görüntüsü Bilgisini Gösterme"
+  },
+  "DISABLE_SCREENSHOT_INFO_DESC": {
+    "description": "",
+    "message": "Ekran görüntüsü modunda (HUD modu kapatıldığında), sistem koordinatları da dahil bütün gösterilen bilgiyi gizle."
+  },
   "DISMISS": {
     "description": "Terminate crew memeber's contract",
     "message": "Gidebilirsin"

@@ -1,21 +1,21 @@
-// Copyright © 2008-2018 Pioneer Developers. See AUTHORS.txt for details
+// Copyright © 2008-2019 Pioneer Developers. See AUTHORS.txt for details
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "Lua.h"
 
 namespace Lua {
 
-LuaManager *manager = 0;
+	LuaManager *manager = 0;
 
-void Init()
-{
-	manager = new LuaManager();
-}
+	void Init()
+	{
+		manager = new LuaManager();
+	}
 
-void Uninit()
-{
-	delete manager;
-	manager = 0;
-}
+	void Uninit()
+	{
+		delete manager;
+		manager = 0;
+	}
 
-}
+} // namespace Lua

@@ -1,4 +1,4 @@
-// Copyright © 2008-2018 Pioneer Developers. See AUTHORS.txt for details
+// Copyright © 2008-2019 Pioneer Developers. See AUTHORS.txt for details
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #ifndef PROPERTIEDOBJECT_H
@@ -14,7 +14,8 @@ public:
 	const PropertyMap &Properties() const { return m_properties; }
 
 protected:
-	PropertiedObject(LuaManager *lua) : m_properties(lua) {}
+	PropertiedObject(LuaManager *lua) :
+		m_properties(lua) {}
 
 private:
 	PropertyMap m_properties;

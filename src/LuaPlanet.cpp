@@ -1,4 +1,4 @@
-// Copyright © 2008-2018 Pioneer Developers. See AUTHORS.txt for details
+// Copyright © 2008-2019 Pioneer Developers. See AUTHORS.txt for details
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "LuaObject.h"
@@ -11,9 +11,11 @@
  * Class representing a planet. Inherits from <Body>.
  */
 
-template <> const char *LuaObject<Planet>::s_type = "Planet";
+template <>
+const char *LuaObject<Planet>::s_type = "Planet";
 
-template <> void LuaObject<Planet>::RegisterClass()
+template <>
+void LuaObject<Planet>::RegisterClass()
 {
 	const char *l_parent = "Body";
 

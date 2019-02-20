@@ -1,17 +1,19 @@
-// Copyright © 2008-2018 Pioneer Developers. See AUTHORS.txt for details
+// Copyright © 2008-2019 Pioneer Developers. See AUTHORS.txt for details
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "LuaTimer.h"
-#include "LuaUtils.h"
 #include "Game.h"
+#include "Lua.h"
+#include "LuaObject.h"
+#include "LuaUtils.h"
 #include "Pi.h"
 
 void LuaTimer::RemoveAll()
 {
-    lua_State *l = Lua::manager->GetLuaState();
+	lua_State *l = Lua::manager->GetLuaState();
 
-    lua_pushnil(l);
-    lua_setfield(l, LUA_REGISTRYINDEX, "PiTimerCallbacks");
+	lua_pushnil(l);
+	lua_setfield(l, LUA_REGISTRYINDEX, "PiTimerCallbacks");
 }
 
 void LuaTimer::Tick()
@@ -52,8 +54,7 @@ void LuaTimer::Tick()
 				lua_pushvalue(l, -2);
 				lua_pushnil(l);
 				lua_settable(l, -5);
-			}
-			else {
+			} else {
 				double every = lua_tonumber(l, -1);
 				lua_pop(l, 1);
 
@@ -248,16 +249,18 @@ static int l_timer_call_every(lua_State *l)
 	return 0;
 }
 
-template <> const char *LuaObject<LuaTimer>::s_type = "Timer";
+template <>
+const char *LuaObject<LuaTimer>::s_type = "Timer";
 
-template <> void LuaObject<LuaTimer>::RegisterClass()
+template <>
+void LuaObject<LuaTimer>::RegisterClass()
 {
 	lua_State *l = Lua::manager->GetLuaState();
 
 	LUA_DEBUG_START(l);
 
 	static const luaL_Reg l_methods[] = {
-		{ "CallAt",    l_timer_call_at    },
+		{ "CallAt", l_timer_call_at },
 		{ "CallEvery", l_timer_call_every },
 		{ 0, 0 }
 	};

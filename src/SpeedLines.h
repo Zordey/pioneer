@@ -1,4 +1,4 @@
-// Copyright © 2008-2018 Pioneer Developers. See AUTHORS.txt for details
+// Copyright © 2008-2019 Pioneer Developers. See AUTHORS.txt for details
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #ifndef _SPEEDLINES_H
@@ -6,18 +6,17 @@
 
 // virtual space dust to give a sense of movement
 
-#include "libs.h"
 #include "graphics/Renderer.h"
+#include "matrix4x4.h"
 
 class Ship;
 
-class SpeedLines
-{
+class SpeedLines {
 public:
-	SpeedLines(Ship*);
+	SpeedLines(Ship *);
 
 	void Update(float time);
-	void Render(Graphics::Renderer*);
+	void Render(Graphics::Renderer *);
 
 	void SetTransform(const matrix4x4d &t) { m_transform = t; }
 
@@ -26,7 +25,7 @@ public:
 private:
 	static void Init();
 	static float BOUNDS;
-	static int   DEPTH;
+	static int DEPTH;
 	static float SPACING;
 	static float MAX_VEL;
 

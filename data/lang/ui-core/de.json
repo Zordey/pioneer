@@ -283,6 +283,14 @@
     "description": "tooltip description in settings menu",
     "message": "Niedriger gibt eine bessere Performanz auf Kosten der Grafikqualität"
   },
+  "DISABLE_SCREENSHOT_INFO": {
+    "description": "",
+    "message": "Screenshot-Info ausblenden"
+  },
+  "DISABLE_SCREENSHOT_INFO_DESC": {
+    "description": "",
+    "message": "Blende alle Infotexte und HUDs im Screenshot-Modus aus, inklusive der Anzeige der Systemkoordinaten."
+  },
   "DISMISS": {
     "description": "Terminate crew memeber's contract",
     "message": "Entlassen"

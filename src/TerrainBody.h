@@ -1,16 +1,18 @@
-// Copyright © 2008-2018 Pioneer Developers. See AUTHORS.txt for details
+// Copyright © 2008-2019 Pioneer Developers. See AUTHORS.txt for details
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #ifndef _TERRAINBODY_H
 #define _TERRAINBODY_H
 
-#include "Body.h"
-#include "galaxy/StarSystem.h"
 #include "BaseSphere.h"
+#include "Body.h"
 #include "Camera.h"
+#include "galaxy/StarSystem.h"
 
 class Frame;
-namespace Graphics { class Renderer; }
+namespace Graphics {
+	class Renderer;
+}
 
 class TerrainBody : public Body {
 public:
@@ -32,14 +34,14 @@ public:
 	static void OnChangeDetailLevel();
 
 protected:
-	TerrainBody(SystemBody*);
-	TerrainBody();
+	TerrainBody() = delete;
+	TerrainBody(SystemBody *);
+	TerrainBody(const Json &jsonObj, Space *space);
 	virtual ~TerrainBody();
 
 	void InitTerrainBody();
 
 	virtual void SaveToJson(Json &jsonObj, Space *space) override;
-	virtual void LoadFromJson(const Json &jsonObj, Space *space) override;
 
 private:
 	const SystemBody *m_sbody;

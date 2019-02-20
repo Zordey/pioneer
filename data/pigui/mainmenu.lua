@@ -1,4 +1,4 @@
--- Copyright © 2008-2018 Pioneer Developers. See AUTHORS.txt for details
+-- Copyright © 2008-2019 Pioneer Developers. See AUTHORS.txt for details
 -- Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 local Engine = import('Engine')
@@ -26,6 +26,7 @@ local hyperspace = Equipment.hyperspace
 local player = nil
 local colors = ui.theme.colors
 local pionillium = ui.fonts.pionillium
+local orbiteer = ui.fonts.orbiteer
 local icons = ui.theme.icons
 
 local mainButtonSize = Vector(400,46) * (ui.screenHeight / 1200)
@@ -168,6 +169,22 @@ local function showMainMenu()
 			ui.withFont("orbiteer",36 * (ui.screenHeight/1200),function() ui.text("Pioneer") end)
 		end)
 	end)
+	if Engine.IsIntroZooming() then
+		ui.setNextWindowPos(Vector(0,0),'Always')
+		ui.setNextWindowSize(Vector(ui.screenWidth, ui.screenHeight), 'Always')
+		ui.withStyleColors({["WindowBg"]=colors.transparent}, function()
+			ui.window("shipinfoWindow", {"NoTitleBar","NoResize","NoFocusOnAppearing","NoBringToFrontOnFocus","AlwaysAutoResize"}, function()
+				local mn = Engine.GetIntroCurrentModelName()
+				if mn then
+					local sd = ShipDef[mn]
+					if sd then
+						ui.addFancyText(Vector(ui.screenWidth / 3, ui.screenHeight / 5.0 * 4), ui.anchor.center, ui.anchor.bottom, {{text=sd.name, color=colors.white, font=orbiteer.large}}, colors.transparent)
+						ui.addFancyText(Vector(ui.screenWidth / 3, ui.screenHeight / 5.0 * 4.02), ui.anchor.center, ui.anchor.top, {{text=lui[sd.shipClass:upper()], color=colors.white, font=orbiteer.medium}}, colors.transparent)
+					end
+				end
+			end)
+		end)
+	end
 	local build_text = Engine.version
 	ui.withFont("orbiteer", 16 * (ui.screenHeight/1200),
 							function()

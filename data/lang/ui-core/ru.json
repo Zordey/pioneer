@@ -161,7 +161,7 @@
   },
   "CLOSE": {
     "description": "",
-    "message": "Close"
+    "message": "Закрыть"
   },
   "COMBAT": {
     "description": "Headline for kills and combat rating",
@@ -225,7 +225,7 @@
   },
   "CREDITS": {
     "description": "in game currency",
-    "message": "Credits"
+    "message": "Кредиты"
   },
   "CREW_CABINS": {
     "description": "",
@@ -282,6 +282,14 @@
   "DETAIL_DESC": {
     "description": "tooltip description in settings menu",
     "message": "Lower gives better performance, at cost of visual aesthetics"
+  },
+  "DISABLE_SCREENSHOT_INFO": {
+    "description": "",
+    "message": "Disable Screenshot Info"
+  },
+  "DISABLE_SCREENSHOT_INFO_DESC": {
+    "description": "",
+    "message": "Hide all displayed info, including system coordinates, when in screenshot mode (toggle HUD mode)."
   },
   "DISMISS": {
     "description": "Terminate crew memeber's contract",
@@ -373,7 +381,7 @@
   },
   "END_GAME": {
     "description": "",
-    "message": "End Game"
+    "message": "Конец игры"
   },
   "ENGINEERING": {
     "description": "Engineering skills of crew",
@@ -477,7 +485,7 @@
   },
   "GAME_TIME": {
     "description": "",
-    "message": "Game time"
+    "message": "Игровое время"
   },
   "GENERAL_CREW": {
     "description": "",
@@ -605,7 +613,7 @@
   },
   "HUD_BUTTON_FLYBY_VIEW": {
     "description": "Tooltip: Flyby camera view",
-    "message": "Flyby view"
+    "message": "Летать на виду"
   },
   "HUD_BUTTON_HYPERDRIVE_DISABLED": {
     "description": "Tooltip: Hyperdrive disabled (docked or landed)",
@@ -657,7 +665,7 @@
   },
   "HUD_BUTTON_SET_SPEED": {
     "description": "Tooltip: set speed",
-    "message": "Set speed"
+    "message": "Заданная скорость"
   },
   "HUD_BUTTON_SHOW_COMMS": {
     "description": "Tooltip: Show comms",
@@ -1489,7 +1497,7 @@
   },
   "SETTINGS": {
     "description": "UI option",
-    "message": "Settings"
+    "message": "Настроить"
   },
   "SET_AS_TARGET": {
     "description": "",
@@ -1557,7 +1565,7 @@
   },
   "START_AT_MARS": {
     "description": "",
-    "message": "Start on Mars"
+    "message": "Старт на Марсе"
   },
   "START_AT_MARS_DESC": {
     "description": "",
@@ -1649,11 +1657,11 @@
   },
   "TOTAL_DISTANCE": {
     "description": "Total distance of a (possibly series) of hyper jump(s)",
-    "message": "Total Distance:"
+    "message": "Общее расстояние:"
   },
   "TOTAL_DURATION": {
     "description": "Total duration of a (possibly series) of hyper jump(s)",
-    "message": "Total Duration:"
+    "message": "Общая продолжительность:"
   },
   "TOTAL_MASS": {
     "description": "",
@@ -1697,7 +1705,7 @@
   },
   "VICINITY_OF": {
     "description": "",
-    "message": "In vicinity of"
+    "message": "В непосредственной близости от"
   },
   "VIDEO": {
     "description": "",

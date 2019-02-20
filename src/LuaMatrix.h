@@ -1,4 +1,4 @@
-// Copyright © 2008-2018 Pioneer Developers. See AUTHORS.txt for details
+// Copyright © 2008-2019 Pioneer Developers. See AUTHORS.txt for details
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #ifndef _LUAMATRIX_H
@@ -13,9 +13,13 @@ namespace LuaMatrix {
 
 	void Register(lua_State *L);
 	matrix4x4f *PushNewToLua(lua_State *L);
-	inline void PushToLua(lua_State *L, const matrix4x4f &m) { matrix4x4f *v = PushNewToLua(L); *v = m; }
+	inline void PushToLua(lua_State *L, const matrix4x4f &m)
+	{
+		matrix4x4f *v = PushNewToLua(L);
+		*v = m;
+	}
 	const matrix4x4f *GetFromLua(lua_State *L, int index);
 	const matrix4x4f *CheckFromLua(lua_State *L, int index);
-}
+} // namespace LuaMatrix
 
 #endif

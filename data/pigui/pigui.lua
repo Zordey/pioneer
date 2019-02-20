@@ -1,4 +1,4 @@
--- Copyright © 2008-2018 Pioneer Developers. See AUTHORS.txt for details
+-- Copyright © 2008-2019 Pioneer Developers. See AUTHORS.txt for details
 -- Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 -- TODO: don't move pointer in radial menu
@@ -48,6 +48,10 @@ ui.fonts = {
 		-- 		medsmall = { name = "pionillium", size = 15, offset = 12 },
 		small = { name = "pionillium", size = 12 * font_factor, offset = 10 * font_factor},
 		tiny = { name = "pionillium", size = 8 * font_factor, offset = 7 * font_factor},
+	},
+	orbiteer = {
+		large = { name = "orbiteer", size = 24 * font_factor, offset = 20 * font_factor},
+		medium = { name = "orbiteer", size = 20 * font_factor, offset = 16 * font_factor},
 	}
 }
 

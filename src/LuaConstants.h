@@ -1,4 +1,4 @@
-// Copyright © 2008-2018 Pioneer Developers. See AUTHORS.txt for details
+// Copyright © 2008-2019 Pioneer Developers. See AUTHORS.txt for details
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #ifndef _LUACONSTANTS_H
@@ -13,6 +13,6 @@ namespace LuaConstants {
 	int GetConstant(lua_State *l, const char *ns, const char *name);
 	bool CheckConstant(lua_State *l, const char *ns, const char *name, int *out);
 	bool CheckConstantFromArg(lua_State *m, const char *ns, int idx, int *out);
-}
+} // namespace LuaConstants
 
 #endif

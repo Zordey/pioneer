@@ -1,4 +1,4 @@
-// Copyright © 2008-2018 Pioneer Developers. See AUTHORS.txt for details
+// Copyright © 2008-2019 Pioneer Developers. See AUTHORS.txt for details
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "Container.h"
@@ -6,18 +6,19 @@
 
 namespace UI {
 
-class LuaContainer {
-public:
+	class LuaContainer {
+	public:
+	};
 
-};
-
-}
+} // namespace UI
 
 using namespace UI;
 
-template <> const char *LuaObject<UI::Container>::s_type = "UI.Container";
+template <>
+const char *LuaObject<UI::Container>::s_type = "UI.Container";
 
-template <> void LuaObject<UI::Container>::RegisterClass()
+template <>
+void LuaObject<UI::Container>::RegisterClass()
 {
 	static const char *l_parent = "UI.Widget";
 

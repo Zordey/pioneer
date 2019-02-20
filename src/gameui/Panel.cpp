@@ -1,4 +1,4 @@
-// Copyright © 2008-2018 Pioneer Developers. See AUTHORS.txt for details
+// Copyright © 2008-2019 Pioneer Developers. See AUTHORS.txt for details
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "Panel.h"
@@ -6,9 +6,9 @@
 
 namespace GameUI {
 
-UI::Point Panel::PreferredSize()
-{
-	return UI::Point(INT_MAX, 80/Gui::Screen::GetCoords2Pixels()[1]);
-}
+	UI::Point Panel::PreferredSize()
+	{
+		return UI::Point(INT_MAX, 80 / Gui::Screen::GetCoords2Pixels()[1]);
+	}
 
-}
+} // namespace GameUI

@@ -283,6 +283,14 @@
     "description": "tooltip description in settings menu",
     "message": "Reducir ofrece mejor rendimiento a costa de estética visual"
   },
+  "DISABLE_SCREENSHOT_INFO": {
+    "description": "",
+    "message": "Deshabilitar la Información de Captura de Pantalla"
+  },
+  "DISABLE_SCREENSHOT_INFO_DESC": {
+    "description": "",
+    "message": "Oculta toda la información mostrada, incluyendo las coordenadas del sistema mientras esté en el modo de Captura de Pantalla (cambiar el modo HUD)."
+  },
   "DISMISS": {
     "description": "Terminate crew memeber's contract",
     "message": "Despedir"
@@ -765,7 +773,7 @@
   },
   "HUD_HYPERSPACING_TO_N_IN_N_SECONDS": {
     "description": "",
-    "message": "Hipersalto a {destination} en {countdown} segundos"
+    "message": "Hipersalto a {destination} en {countdown} segundos"
   },
   "HUD_INDICATOR_AWAY_FROM_FRAME": {
     "description": "Indicator: Away from the current frame.",
@@ -849,7 +857,7 @@
   },
   "HUD_THRUST_INDICATOR": {
     "description": "Tooltip: describe what the thrust/velocity indicator shows",
-    "message": "Muestra la velocidad actual para cada dirección (líneas delgadas) y empuje (fondo espeso)"
+    "message": "Muestra la velocidad actual para cada dirección (líneas delgadas) y empuje (fondo sólido)"
   },
   "HULL_DOES_NOT_REQUIRE_REPAIR": {
     "description": "",

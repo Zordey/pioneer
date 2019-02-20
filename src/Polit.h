@@ -1,9 +1,10 @@
-// Copyright © 2008-2018 Pioneer Developers. See AUTHORS.txt for details
+// Copyright © 2008-2019 Pioneer Developers. See AUTHORS.txt for details
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #ifndef _POLIT_H
 #define _POLIT_H
 
+#include "fixed.h"
 #include "galaxy/Economy.h"
 
 class Galaxy;
@@ -40,16 +41,17 @@ namespace Polit {
 		GOV_PLUTOCRATIC,
 		GOV_DISORDER,
 		GOV_MAX, // <enum skip>
-		GOV_RAND_MIN = GOV_NONE+1, // <enum skip>
-		GOV_RAND_MAX = GOV_MAX-1, // <enum skip>
+		GOV_RAND_MIN = GOV_NONE + 1, // <enum skip>
+		GOV_RAND_MAX = GOV_MAX - 1, // <enum skip>
 	};
 
 	fixed GetBaseLawlessness(GovType gov);
-}
+} // namespace Polit
 
 class SysPolit {
 public:
-	SysPolit() : govType(Polit::GOV_INVALID) { }
+	SysPolit() :
+		govType(Polit::GOV_INVALID) {}
 
 	const char *GetGovernmentDesc() const;
 	const char *GetEconomicDesc() const;

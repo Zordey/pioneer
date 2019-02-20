@@ -1,4 +1,4 @@
-// Copyright © 2008-2018 Pioneer Developers. See AUTHORS.txt for details
+// Copyright © 2008-2019 Pioneer Developers. See AUTHORS.txt for details
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "Gradient.h"
@@ -6,18 +6,19 @@
 
 namespace UI {
 
-class LuaGradient {
-public:
+	class LuaGradient {
+	public:
+	};
 
-};
-
-}
+} // namespace UI
 
 using namespace UI;
 
-template <> const char *LuaObject<UI::Gradient>::s_type = "UI.Gradient";
+template <>
+const char *LuaObject<UI::Gradient>::s_type = "UI.Gradient";
 
-template <> void LuaObject<UI::Gradient>::RegisterClass()
+template <>
+void LuaObject<UI::Gradient>::RegisterClass()
 {
 	static const char *l_parent = "UI.Single";
 

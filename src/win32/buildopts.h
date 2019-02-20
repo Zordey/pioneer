@@ -1,5 +1,7 @@
-// Copyright © 2008-2018 Pioneer Developers. See AUTHORS.txt for details
+// Copyright © 2008-2019 Pioneer Developers. See AUTHORS.txt for details
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
+
+#if defined(_MSC_VER)
 
 #ifndef _BUILDOPTS_H
 #define _BUILDOPTS_H
@@ -22,4 +24,5 @@
 #define WITH_DEVKEYS 1
 #endif
 
+#endif
 #endif

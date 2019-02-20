@@ -1,4 +1,4 @@
-// Copyright © 2008-2018 Pioneer Developers. See AUTHORS.txt for details
+// Copyright © 2008-2019 Pioneer Developers. See AUTHORS.txt for details
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "PngWriter.h"
@@ -30,13 +30,11 @@ void write_png(FileSystem::FileSourceFS &fs, const std::string &path, const Uint
 	int srcy = height - 1;
 	for (int y = 0; y < height; y++)
 	{
-		for (int x = 0; x < stride; x++)
-		{
+		for (int x = 0; x < stride; x++) {
 			const int src_index = (srcy * stride) + x;
 			const int dst_index = (y * stride) + x;
-			for (int channel = 0; channel < bytes_per_pixel; channel++)
-			{
-				(static_cast<Uint8*>(surface->pixels))[dst_index + channel] = bytes[src_index + channel];
+			for (int channel = 0; channel < bytes_per_pixel; channel++) {
+				(static_cast<Uint8 *>(surface->pixels))[dst_index + channel] = bytes[src_index + channel];
 			}
 		}
 		srcy--;

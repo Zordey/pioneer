@@ -1,4 +1,4 @@
-// Copyright © 2008-2018 Pioneer Developers. See AUTHORS.txt for details
+// Copyright © 2008-2019 Pioneer Developers. See AUTHORS.txt for details
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #ifndef _LUAENGINE_H
@@ -14,6 +14,6 @@ namespace LuaEngine {
 		DETAIL_HIGH,
 		DETAIL_VERY_HIGH,
 	};
-}
+} // namespace LuaEngine
 
 #endif

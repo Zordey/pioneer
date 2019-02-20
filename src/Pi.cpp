@@ -1,7 +1,10 @@
-// Copyright © 2008-2018 Pioneer Developers. See AUTHORS.txt for details
+// Copyright © 2008-2019 Pioneer Developers. See AUTHORS.txt for details
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
+#include "buildopts.h"
+
 #include "Pi.h"
+
 #include "AmbientSounds.h"
 #include "BaseSphere.h"
 #include "CargoBody.h"
@@ -9,10 +12,12 @@
 #include "DeathView.h"
 #include "EnumStrings.h"
 #include "FaceParts.h"
-#include "Factions.h"
 #include "FileSystem.h"
 #include "Frame.h"
 #include "Game.h"
+#include "GameConfig.h"
+#include "GameLog.h"
+#include "GameSaveError.h"
 #include "Input.h"
 #include "Intro.h"
 #include "KeyBindings.h"
@@ -35,6 +40,7 @@
 #include "LuaNameGen.h"
 #include "LuaPiGui.h"
 #include "LuaRef.h"
+#include "LuaSerializer.h"
 #include "LuaServerAgent.h"
 #include "LuaShipDef.h"
 #include "LuaSpace.h"
@@ -44,12 +50,14 @@
 #include "ModelCache.h"
 #include "NavLights.h"
 #include "OS.h"
+#if WITH_OBJECTVIEWER
 #include "ObjectViewerView.h"
+#endif
+#include "Beam.h"
 #include "PiGui.h"
 #include "Planet.h"
 #include "Player.h"
 #include "Projectile.h"
-#include "Propulsion.h"
 #include "SDLWrappers.h"
 #include "SectorView.h"
 #include "ServerAgent.h"
@@ -69,23 +77,20 @@
 #include "Tombstone.h"
 #include "UIView.h"
 #include "WorldView.h"
-#include "galaxy/CustomSystem.h"
 #include "galaxy/GalaxyGenerator.h"
 #include "galaxy/StarSystem.h"
 #include "gameui/Lua.h"
 #include "libs.h"
-// ------------------------------------------------------------
-#include "graphics/opengl/RendererGL.h"
-// ------------------------------------------------------------
+
+#include "graphics/Renderer.h"
+
+#if WITH_DEVKEYS
 #include "graphics/Graphics.h"
 #include "graphics/Light.h"
-#include "graphics/Renderer.h"
 #include "graphics/Stats.h"
-#include "gui/Gui.h"
+#endif // WITH_DEVKEYS
+
 #include "scenegraph/Lua.h"
-#include "scenegraph/Model.h"
-#include "ui/Context.h"
-#include "ui/Lua.h"
 #include "versioningInfo.h"
 #include <algorithm>
 #include <sstream>
@@ -152,7 +157,7 @@ Graphics::RenderTarget *Pi::renderTarget;
 RefCountedPtr<Graphics::Texture> Pi::renderTexture;
 std::unique_ptr<Graphics::Drawables::TexturedQuad> Pi::renderQuad;
 Graphics::RenderState *Pi::quadRenderState = nullptr;
-bool Pi::bRequestEndGame = false;
+std::vector<Pi::InternalRequests> Pi::internalRequests;
 bool Pi::isRecordingVideo = false;
 FILE *Pi::ffmpegFile = nullptr;
 
@@ -774,10 +779,14 @@ bool Pi::IsConsoleActive()
 
 void Pi::Quit()
 {
+	if (Pi::game) { // always end the game if there is one before quitting
+		Pi::EndGame();
+	}
 	if (Pi::ffmpegFile != nullptr) {
 		_pclose(Pi::ffmpegFile);
 	}
 	Projectile::FreeModel();
+	Beam::FreeModel();
 	delete Pi::intro;
 	delete Pi::luaConsole;
 	NavLights::Uninit();
@@ -837,9 +846,7 @@ void Pi::HandleKeyDown(SDL_Keysym *key)
 	if (CTRL) {
 		switch (key->sym) {
 		case SDLK_q: // Quit
-			if (Pi::game)
-				Pi::EndGame();
-			Pi::Quit();
+			Pi::RequestQuit();
 			break;
 		case SDLK_PRINTSCREEN: // print
 		case SDLK_KP_MULTIPLY: // screen
@@ -1039,9 +1046,7 @@ void Pi::HandleEvents()
 	Pi::input.mouseMotion[0] = Pi::input.mouseMotion[1] = 0;
 	while (SDL_PollEvent(&event)) {
 		if (event.type == SDL_QUIT) {
-			if (Pi::game)
-				Pi::EndGame();
-			Pi::Quit();
+			Pi::RequestQuit();
 		}
 
 		Pi::pigui->ProcessEvent(&event);
@@ -1095,6 +1100,24 @@ void Pi::HandleEvents()
 	}
 }
 
+void Pi::HandleRequests()
+{
+	for (auto request : internalRequests) {
+		switch (request) {
+		case END_GAME:
+			EndGame();
+			break;
+		case QUIT_GAME:
+			Quit();
+			break;
+		default:
+			Output("Pi::HandleRequests, unhandled request type processed.\n");
+			break;
+		}
+	}
+	internalRequests.clear();
+}
+
 void Pi::TombStoneLoop()
 {
 	std::unique_ptr<Tombstone> tombstone(new Tombstone(Pi::renderer, Graphics::GetScreenWidth(), Graphics::GetScreenHeight()));
@@ -1114,6 +1137,8 @@ void Pi::TombStoneLoop()
 
 		Pi::DrawRenderTarget();
 		Pi::renderer->SwapBuffers();
+
+		Pi::HandleRequests();
 
 		Pi::frameTime = 0.001f * (SDL_GetTicks() - last_time);
 		_time += Pi::frameTime;
@@ -1162,8 +1187,6 @@ void Pi::StartGame()
 
 void Pi::Start(const SystemPath &startPath)
 {
-	Pi::bRequestEndGame = false;
-
 	Pi::intro = new Intro(Pi::renderer, Graphics::GetScreenWidth(), Graphics::GetScreenHeight());
 	if (startPath != SystemPath(0, 0, 0, 0, 0)) {
 		Pi::game = new Game(startPath, 0.0);
@@ -1179,7 +1202,7 @@ void Pi::Start(const SystemPath &startPath)
 		SDL_Event event;
 		while (SDL_PollEvent(&event)) {
 			if (event.type == SDL_QUIT)
-				Pi::Quit();
+				Pi::RequestQuit();
 			else {
 				Pi::pigui->ProcessEvent(&event);
 
@@ -1260,6 +1283,8 @@ void Pi::Start(const SystemPath &startPath)
 		_time += Pi::frameTime;
 		last_time = SDL_GetTicks();
 
+		Pi::HandleRequests();
+
 #ifdef ENABLE_SERVER_AGENT
 		Pi::serverAgent->ProcessResponses();
 #endif
@@ -1276,14 +1301,16 @@ void Pi::Start(const SystemPath &startPath)
 // request that the game is ended as soon as safely possible
 void Pi::RequestEndGame()
 {
-	Pi::bRequestEndGame = true;
+	internalRequests.push_back(END_GAME);
+}
+
+void Pi::RequestQuit()
+{
+	internalRequests.push_back(QUIT_GAME);
 }
 
 void Pi::EndGame()
 {
-	// always reset this, otherwise we can never play again
-	Pi::bRequestEndGame = false;
-
 	Pi::SetMouseGrab(false);
 
 	Pi::musicPlayer.Stop();
@@ -1423,33 +1450,11 @@ void Pi::MainLoop()
 		Pi::luaConsole->HandleTCPDebugConnections();
 #endif
 
-		if (Pi::bRequestEndGame) {
-			Pi::EndGame();
-		}
-
 		Pi::renderer->EndFrame();
 
 		Pi::renderer->ClearDepthBuffer();
 		if (DrawGUI) {
 			Gui::Draw();
-		} else if (game && game->IsNormalSpace()) {
-			if (config->Int("DisableScreenshotInfo") == 0) {
-				const RefCountedPtr<StarSystem> sys = game->GetSpace()->GetStarSystem();
-				const SystemPath sp = sys->GetPath();
-				std::ostringstream pathStr;
-
-				// fill in pathStr from sp values and sys->GetName()
-				static const std::string comma(", ");
-				pathStr << Pi::player->GetFrame()->GetLabel() << comma << sys->GetName() << " (" << sp.sectorX << comma << sp.sectorY << comma << sp.sectorZ << ")";
-
-				// display pathStr
-				Gui::Screen::EnterOrtho();
-				Gui::Screen::PushFont("ConsoleFont");
-				static RefCountedPtr<Graphics::VertexBuffer> s_pathvb;
-				Gui::Screen::RenderStringBuffer(s_pathvb, pathStr.str(), 0, 0);
-				Gui::Screen::PopFont();
-				Gui::Screen::LeaveOrtho();
-			}
 		}
 
 		// XXX don't draw the UI during death obviously a hack, and still
@@ -1509,6 +1514,8 @@ void Pi::MainLoop()
 		syncJobQueue->RunJobs(SYNC_JOBS_PER_LOOP);
 		asyncJobQueue->FinishJobs();
 		syncJobQueue->FinishJobs();
+
+		HandleRequests();
 
 #if WITH_DEVKEYS
 		if (Pi::showDebugInfo && SDL_GetTicks() - last_stats > 1000) {

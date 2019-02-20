@@ -1,4 +1,4 @@
-// Copyright © 2008-2018 Pioneer Developers. See AUTHORS.txt for details
+// Copyright © 2008-2019 Pioneer Developers. See AUTHORS.txt for details
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #ifndef _LUANAMEGEN_H
@@ -13,7 +13,8 @@ class SystemBody;
 
 class LuaNameGen {
 public:
-	LuaNameGen(LuaManager *manager): m_luaManager(manager) {}
+	LuaNameGen(LuaManager *manager) :
+		m_luaManager(manager) {}
 
 	std::string FullName(bool isFemale, RefCountedPtr<Random> &rng);
 	std::string Surname(RefCountedPtr<Random> &rng);

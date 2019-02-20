@@ -1,18 +1,24 @@
-// Copyright © 2008-2018 Pioneer Developers. See AUTHORS.txt for details
+// Copyright © 2008-2019 Pioneer Developers. See AUTHORS.txt for details
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "LuaRef.h"
-#include "Lua.h"
-#include "Pi.h"
 #include "GameSaveError.h"
+#include "Json.h"
+#include "Lua.h"
+#include "LuaSerializer.h"
 #include <cassert>
 
-LuaRef::LuaRef(const LuaRef & ref): m_lua(ref.m_lua), m_id(ref.m_id), m_copycount(ref.m_copycount) {
+LuaRef::LuaRef(const LuaRef &ref) :
+	m_lua(ref.m_lua),
+	m_id(ref.m_id),
+	m_copycount(ref.m_copycount)
+{
 	if (m_lua && m_id != LUA_NOREF)
 		++(*m_copycount);
 }
 
-const LuaRef & LuaRef::operator=(const LuaRef & ref) {
+const LuaRef &LuaRef::operator=(const LuaRef &ref)
+{
 	if (&ref == this)
 		return ref;
 	if (m_id != LUA_NOREF && m_lua) {
@@ -22,16 +28,18 @@ const LuaRef & LuaRef::operator=(const LuaRef & ref) {
 	m_lua = ref.m_lua;
 	m_id = ref.m_id;
 	m_copycount = ref.m_copycount;
-	if(m_lua && m_id)
+	if (m_lua && m_id)
 		++(*m_copycount);
 	return *this;
 }
 
-LuaRef::~LuaRef() {
-  Unref();
+LuaRef::~LuaRef()
+{
+	Unref();
 }
 
-void LuaRef::Unref() {
+void LuaRef::Unref()
+{
 	if (m_id != LUA_NOREF && m_lua) {
 		--(*m_copycount);
 		m_id = LUA_NOREF;
@@ -39,7 +47,8 @@ void LuaRef::Unref() {
 	}
 }
 
-bool LuaRef::operator==(const LuaRef & ref) const {
+bool LuaRef::operator==(const LuaRef &ref) const
+{
 	if (ref.m_lua != m_lua)
 		return false;
 	if (ref.m_id == m_id)
@@ -52,7 +61,8 @@ bool LuaRef::operator==(const LuaRef & ref) const {
 	return return_value;
 }
 
-void LuaRef::CheckCopyCount() {
+void LuaRef::CheckCopyCount()
+{
 	if (*m_copycount <= 0) {
 		delete m_copycount;
 		if (!m_lua)
@@ -63,7 +73,10 @@ void LuaRef::CheckCopyCount() {
 	}
 }
 
-LuaRef::LuaRef(lua_State * l, int index): m_lua(l), m_id(0) {
+LuaRef::LuaRef(lua_State *l, int index) :
+	m_lua(l),
+	m_id(0)
+{
 	assert(m_lua && index);
 	if (index == LUA_NOREF) {
 		m_copycount = new int(0);
@@ -80,8 +93,8 @@ LuaRef::LuaRef(lua_State * l, int index): m_lua(l), m_id(0) {
 	m_copycount = new int(1);
 }
 
-
-void LuaRef::PushCopyToStack() const {
+void LuaRef::PushCopyToStack() const
+{
 	assert(m_lua && m_id != LUA_NOREF);
 	PushGlobalToStack();
 	lua_rawgeti(m_lua, -1, m_id);
@@ -95,7 +108,7 @@ void LuaRef::SaveToJson(Json &jsonObj)
 	LUA_DEBUG_START(m_lua);
 
 	lua_getfield(m_lua, LUA_REGISTRYINDEX, "PiSerializer");
-	LuaSerializer *serializer = static_cast<LuaSerializer*>(lua_touserdata(m_lua, -1));
+	LuaSerializer *serializer = static_cast<LuaSerializer *>(lua_touserdata(m_lua, -1));
 	lua_pop(m_lua, 1);
 
 	if (!serializer) {
@@ -114,12 +127,14 @@ void LuaRef::SaveToJson(Json &jsonObj)
 
 void LuaRef::LoadFromJson(const Json &jsonObj)
 {
-	if (!m_lua) { m_lua = Lua::manager->GetLuaState(); }
+	if (!m_lua) {
+		m_lua = Lua::manager->GetLuaState();
+	}
 
 	LUA_DEBUG_START(m_lua);
 
 	lua_getfield(m_lua, LUA_REGISTRYINDEX, "PiSerializer");
-	LuaSerializer *serializer = static_cast<LuaSerializer*>(lua_touserdata(m_lua, -1));
+	LuaSerializer *serializer = static_cast<LuaSerializer *>(lua_touserdata(m_lua, -1));
 	lua_pop(m_lua, 1);
 
 	if (!serializer) {
@@ -139,7 +154,7 @@ void LuaRef::LoadFromJson(const Json &jsonObj)
 	// Lua stack: loaded
 	lua_getfield(m_lua, LUA_REGISTRYINDEX, "PiLuaRefLoadTable"); // loaded, reftable
 	lua_pushvalue(m_lua, -2); // loaded, reftable, copy
-	lua_gettable(m_lua, -2);  // loaded, reftable, luaref
+	lua_gettable(m_lua, -2); // loaded, reftable, luaref
 	// Check whether this table has been referenced before
 	if (lua_isnil(m_lua, -1)) {
 		// If not, mark it as referenced
@@ -147,8 +162,7 @@ void LuaRef::LoadFromJson(const Json &jsonObj)
 		lua_pushvalue(m_lua, -3);
 		lua_pushlightuserdata(m_lua, this);
 		lua_settable(m_lua, -4);
-	}
-	else {
+	} else {
 		LuaRef *origin = static_cast<LuaRef *>(lua_touserdata(m_lua, -1));
 		*this = *origin;
 	}

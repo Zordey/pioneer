@@ -1,18 +1,14 @@
-// Copyright © 2008-2018 Pioneer Developers. See AUTHORS.txt for details
+// Copyright © 2008-2019 Pioneer Developers. See AUTHORS.txt for details
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #ifndef _WORLDVIEW_H
 #define _WORLDVIEW_H
 
-#include "Background.h"
-#include "Camera.h"
 #include "CameraController.h"
 #include "KeyBindings.h"
 #include "SpeedLines.h"
 #include "UIView.h"
-#include "gui/Gui.h"
 #include "gui/GuiWidget.h"
-#include "libs.h"
 
 class Body;
 class Frame;
@@ -20,6 +16,7 @@ class LabelSet;
 class Ship;
 class NavTunnelWidget;
 class Game;
+class SpeedLines;
 
 enum VelIconType {
 	V_PROGRADE,
@@ -154,9 +151,8 @@ private:
 	bool m_labelsOn;
 	enum CamType m_camType;
 
-#if WITH_DEVKEYS
+	/* Only use #if WITH_DEVKEYS */
 	Gui::Label *m_debugInfo;
-#endif
 
 	// useful docking locations for new-ui widgets in the HUD
 	RefCountedPtr<UI::Widget> m_hudRoot;

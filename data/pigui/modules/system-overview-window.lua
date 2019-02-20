@@ -1,4 +1,4 @@
--- Copyright © 2008-2018 Pioneer Developers. See AUTHORS.txt for details
+-- Copyright © 2008-2019 Pioneer Developers. See AUTHORS.txt for details
 -- Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 local Engine = import('Engine')
@@ -175,7 +175,7 @@ local filterText = ""
 local ignore
 local showWindow = false
 local function showInfoWindow()
-	if Game.player:IsDocked() then
+	if Game.player:IsDocked() or not Game.system.explored then
 		showWindow = false
 	end
 	local width_fraction = 5

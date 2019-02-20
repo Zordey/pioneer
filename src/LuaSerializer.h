@@ -1,13 +1,13 @@
-// Copyright © 2008-2018 Pioneer Developers. See AUTHORS.txt for details
+// Copyright © 2008-2019 Pioneer Developers. See AUTHORS.txt for details
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #ifndef _LUASERIALIZER_H
 #define _LUASERIALIZER_H
 
+#include "DeleteEmitter.h"
 #include "LuaManager.h"
 #include "LuaObject.h"
 #include "LuaRef.h"
-#include "DeleteEmitter.h"
 
 class LuaSerializer : public DeleteEmitter {
 	friend class LuaObject<LuaSerializer>;

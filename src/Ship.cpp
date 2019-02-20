@@ -1,273 +1,49 @@
-// Copyright © 2008-2018 Pioneer Developers. See AUTHORS.txt for details
+// Copyright © 2008-2019 Pioneer Developers. See AUTHORS.txt for details
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "Ship.h"
+
+#include "CargoBody.h"
 #include "CityOnPlanet.h"
-#include "Lang.h"
 #include "EnumStrings.h"
+#include "Frame.h"
+#include "Game.h"
+#include "GameLog.h"
+#include "GameSaveError.h"
+#include "HyperspaceCloud.h"
+#include "Lang.h"
 #include "LuaEvent.h"
+#include "LuaObject.h"
 #include "LuaUtils.h"
 #include "Missile.h"
-#include "Player.h"
-#include "Projectile.h"
-#include "Beam.h"
+#include "Planet.h"
+#include "Player.h" // <-- Here only for 1 occurence of "Pi::player" in Ship::Explode
+#include "Sfx.h"
+#include "Shields.h"
 #include "ShipAICmd.h"
 #include "ShipController.h"
-#include "Sfx.h"
-#include "galaxy/Galaxy.h"
-#include "galaxy/Sector.h"
-#include "galaxy/GalaxyCache.h"
-#include "Frame.h"
-#include "WorldView.h"
-#include "HyperspaceCloud.h"
-#include "graphics/Drawables.h"
-#include "graphics/Graphics.h"
-#include "graphics/Material.h"
-#include "graphics/Renderer.h"
-#include "graphics/TextureBuilder.h"
-#include "collider/collider.h"
+#include "Space.h"
+#include "SpaceStation.h"
 #include "StringF.h"
-
-#include <algorithm>
+#include "WorldView.h"
+#include "graphics/TextureBuilder.h"
 
 static const float TONS_HULL_PER_SHIELD = 10.f;
 HeatGradientParameters_t Ship::s_heatGradientParams;
 const float Ship::DEFAULT_SHIELD_COOLDOWN_TIME = 1.0f;
 
-void Ship::SaveToJson(Json &jsonObj, Space *space)
-{
-	DynamicBody::SaveToJson(jsonObj, space);
-
-	Json shipObj({}); // Create JSON object to contain ship data.
-
-	GetPropulsion()->SaveToJson(shipObj, space);
-
-	m_skin.SaveToJson(shipObj);
-	shipObj["wheel_transition"] = m_wheelTransition;
-	shipObj["wheel_state"] = m_wheelState;
-	shipObj["launch_lock_timeout"] = m_launchLockTimeout;
-	shipObj["test_landed"] = m_testLanded;
-	shipObj["flight_state"] = int(m_flightState);
-	shipObj["alert_state"] = int(m_alertState);
-	shipObj["last_firing_alert"] = m_lastFiringAlert;
-
-	// XXX make sure all hyperspace attrs and the cloud get saved
-	Json hyperspaceDestObj({}); // Create JSON object to contain hyperspace destination data.
-	m_hyperspace.dest.ToJson(hyperspaceDestObj);
-	shipObj["hyperspace_destination"] = hyperspaceDestObj; // Add hyperspace destination object to ship object.
-	shipObj["hyperspace_countdown"] = m_hyperspace.countdown;
-	shipObj["hyperspace_warmup_sound"] = m_hyperspace.sounds.warmup_sound;
-	shipObj["hyperspace_abort_sound"] = m_hyperspace.sounds.abort_sound;
-	shipObj["hyperspace_jump_sound"] = m_hyperspace.sounds.jump_sound;
-
-	GetFixedGuns()->SaveToJson( shipObj, space );
-
-	shipObj["ecm_recharge"] = m_ecmRecharge;
-	shipObj["ship_type_id"] = m_type->id;
-	shipObj["docked_with_port"] = m_dockedWithPort;
-	shipObj["index_for_body_docked_with"] = space->GetIndexForBody(m_dockedWith);
-	shipObj["hull_mass_left"] = m_stats.hull_mass_left;
-	shipObj["shield_mass_left"] = m_stats.shield_mass_left;
-	shipObj["shield_cooldown"] = m_shieldCooldown;
-	if (m_curAICmd) m_curAICmd->SaveToJson(shipObj);
-	shipObj["ai_message"] = int(m_aiMessage);
-
-	shipObj["controller_type"] = static_cast<int>(m_controller->GetType());
-	m_controller->SaveToJson(shipObj, space);
-
-	m_navLights->SaveToJson(shipObj);
-
-	shipObj["name"] = m_shipName;
-
-	jsonObj["ship"] = shipObj; // Add ship object to supplied object.
-}
-
-void Ship::LoadFromJson(const Json &jsonObj, Space *space)
-{
-	AddFeature( Feature::PROPULSION ); // add component propulsion
-
-	DynamicBody::LoadFromJson(jsonObj, space);
-	AddFeature( Feature::PROPULSION ); // add component propulsion
-	AddFeature( Feature::FIXED_GUNS ); // add component fixed guns
-
-	try {
-		Json shipObj = jsonObj["ship"];
-
-		GetPropulsion()->LoadFromJson(shipObj, space);
-
-		SetShipId(shipObj["ship_type_id"]); // XXX handle missing thirdparty ship
-		GetPropulsion()->SetFuelTankMass( GetShipType()->fuelTankMass );
-		m_stats.fuel_tank_mass_left = GetPropulsion()->FuelTankMassLeft();
-
-		m_skin.LoadFromJson(shipObj);
-		m_skin.Apply(GetModel());
-		// needs fixups
-		m_wheelTransition = shipObj["wheel_transition"];
-		m_wheelState = shipObj["wheel_state"];
-		m_launchLockTimeout = shipObj["launch_lock_timeout"];
-		m_testLanded = shipObj["test_landed"];
-		m_flightState = shipObj["flight_state"];
-
-		m_lastAlertUpdate = 0.0;	// alertstate check cache timer
-		m_shipNear = false;			// alertstate check cache value
-		m_shipFiring = false;		// alertstate check cache value
-
-		m_alertState = shipObj["alert_state"];
-		Properties().Set("flightState", EnumStrings::GetString("ShipFlightState", m_flightState));
-		Properties().Set("alertStatus", EnumStrings::GetString("ShipAlertStatus", m_alertState));
-		m_lastFiringAlert = shipObj["last_firing_alert"];
-
-		Json hyperspaceDestObj = shipObj["hyperspace_destination"];
-		m_hyperspace.dest = SystemPath::FromJson(hyperspaceDestObj);
-		m_hyperspace.countdown = shipObj["hyperspace_countdown"];
-		m_hyperspace.duration = 0;
-		m_hyperspace.sounds.warmup_sound = shipObj.value("hyperspace_warmup_sound", "");
-		m_hyperspace.sounds.abort_sound = shipObj.value("hyperspace_abort_sound", "");
-		m_hyperspace.sounds.jump_sound = shipObj.value("hyperspace_jump_sound", "");
-
-		GetFixedGuns()->LoadFromJson( shipObj, space );
-
-		m_ecmRecharge = shipObj["ecm_recharge"];
-		SetShipId(shipObj["ship_type_id"]); // XXX handle missing thirdparty ship
-		m_dockedWithPort = shipObj["docked_with_port"];
-		m_dockedWithIndex = shipObj["index_for_body_docked_with"];
-		Init();
-		m_stats.hull_mass_left = shipObj["hull_mass_left"]; // must be after Init()...
-		m_stats.shield_mass_left = shipObj["shield_mass_left"];
-		m_shieldCooldown = shipObj["shield_cooldown"];
-		m_curAICmd = 0;
-		m_curAICmd = AICommand::LoadFromJson(shipObj);
-		m_aiMessage = AIError(shipObj["ai_message"]);
-
-		PropertyMap &p = Properties();
-
-		p.Set("hullMassLeft", m_stats.hull_mass_left);
-		p.Set("hullPercent", 100.0f * (m_stats.hull_mass_left / float(m_type->hullMass)));
-		p.Set("shieldMassLeft", m_stats.shield_mass_left);
-		p.Set("fuelMassLeft", m_stats.fuel_tank_mass_left);
-		p.PushLuaTable();
-		lua_State *l = Lua::manager->GetLuaState();
-		lua_getfield(l, -1, "equipSet");
-		m_equipSet = LuaRef(l, -1);
-		lua_pop(l, 2);
-
-		UpdateLuaStats();
-
-		m_controller = 0;
-		const ShipController::Type ctype = shipObj["controller_type"];
-		if (ctype == ShipController::PLAYER)
-			SetController(new PlayerShipController());
-		else
-			SetController(new ShipController());
-		m_controller->LoadFromJson(shipObj);
-
-		m_navLights->LoadFromJson(shipObj);
-
-		m_shipName = shipObj["name"];
-		Properties().Set("shipName", m_shipName);
-	} catch (Json::type_error &) {
-		throw SavedGameCorruptException();
-	}
-}
-
-void Ship::InitEquipSet() {
-	lua_State * l = Lua::manager->GetLuaState();
-	PropertyMap & p = Properties();
-	LUA_DEBUG_START(l);
-	pi_lua_import(l, "EquipSet");
-	LuaTable es_class(l, -1);
-	LuaTable slots = LuaTable(l).LoadMap(GetShipType()->slots.begin(), GetShipType()->slots.end());
-	m_equipSet =  es_class.Call<LuaRef>("New", slots);
-	p.Set("equipSet", ScopedTable(m_equipSet));
-	UpdateEquipStats();
-	{
-		ScopedTable es(m_equipSet);
-		int usedCargo = es.CallMethod<int>("OccupiedSpace", "cargo");
-		int totalCargo = std::min(m_stats.free_capacity + usedCargo, es.CallMethod<int>("SlotSize", "cargo"));
-		p.Set("usedCargo", usedCargo);
-		p.Set("totalCargo", totalCargo);
-	}
-	lua_pop(l, 2);
-	LUA_DEBUG_END(l, 0);
-}
-
-void Ship::InitMaterials()
-{
-	SceneGraph::Model *pModel = GetModel();
-	assert(pModel);
-	const Uint32 numMats = pModel->GetNumMaterials();
-	for( Uint32 m=0; m<numMats; m++ ) {
-		RefCountedPtr<Graphics::Material> mat = pModel->GetMaterialByIndex(m);
-		mat->heatGradient = Graphics::TextureBuilder::Decal("textures/heat_gradient.dds").GetOrCreateTexture(Pi::renderer, "model");
-		mat->specialParameter0 = &s_heatGradientParams;
-	}
-	s_heatGradientParams.heatingAmount = 0.0f;
-	s_heatGradientParams.heatingNormal = vector3f(0.0f, -1.0f, 0.0f);
-}
-
-void Ship::Init()
-{
-	m_invulnerable = false;
-
-	m_sensors.reset(new Sensors(this));
-
-	m_navLights.reset(new NavLights(GetModel()));
-	m_navLights->SetEnabled(true);
-
-	SetMassDistributionFromModel();
-	UpdateEquipStats();
-	m_stats.hull_mass_left = float(m_type->hullMass);
-	m_stats.shield_mass_left = 0;
-
-	PropertyMap &p = Properties();
-	p.Set("hullMassLeft", m_stats.hull_mass_left);
-	p.Set("hullPercent", 100.0f * (m_stats.hull_mass_left / float(m_type->hullMass)));
-	p.Set("shieldMassLeft", m_stats.shield_mass_left);
-	p.Set("fuelMassLeft", m_stats.fuel_tank_mass_left);
-
-	// Init of Propulsion:
-	GetPropulsion()->Init( this, GetModel(), m_type->fuelTankMass, m_type->effectiveExhaustVelocity, m_type->linThrust, m_type->angThrust, m_type->linAccelerationCap );
-
-	p.Set("shipName", m_shipName);
-
-	m_hyperspace.now = false;			// TODO: move this on next savegame change, maybe
-	m_hyperspaceCloud = 0;
-
-	m_landingGearAnimation = GetModel()->FindAnimation("gear_down");
-
-	GetFixedGuns()->InitGuns( GetModel());
-
-	// If we've got the tag_landing set then use it for an offset
-	// otherwise use zero so that it will dock but look clearly incorrect
-	const SceneGraph::MatrixTransform *mt = GetModel()->FindTagByName("tag_landing");
-	if( mt ) {
-		m_landingMinOffset = mt->GetTransform().GetTranslate().y;
-	} else {
-		m_landingMinOffset = 0.0;		// GetAabb().min.y;
-	}
-
-	InitMaterials();
-}
-
-void Ship::PostLoadFixup(Space *space)
-{
-	DynamicBody::PostLoadFixup(space);
-	m_dockedWith = static_cast<SpaceStation*>(space->GetBodyByIndex(m_dockedWithIndex));
-	if (m_curAICmd) m_curAICmd->PostLoadFixup(space);
-	m_controller->PostLoadFixup(space);
-}
-
-Ship::Ship(const ShipType::Id &shipId): DynamicBody(),
+Ship::Ship(const ShipType::Id &shipId) :
+	DynamicBody(),
 	m_controller(0),
-    m_flightState(FLYING),
-    m_alertState(ALERT_NONE),
+	m_flightState(FLYING),
+	m_alertState(ALERT_NONE),
 	m_landingGearAnimation(nullptr)
 {
 	/*
 		THIS CODE DOES NOT RUN WHEN LOADING SAVEGAMES!!
 	*/
-	AddFeature( Feature::PROPULSION ); // add component propulsion
-	AddFeature( Feature::FIXED_GUNS ); // add component fixed guns
+	AddFeature(Feature::PROPULSION); // add component propulsion
+	AddFeature(Feature::FIXED_GUNS); // add component fixed guns
 	Properties().Set("flightState", EnumStrings::GetString("ShipFlightState", m_flightState));
 	Properties().Set("alertStatus", EnumStrings::GetString("ShipAlertStatus", m_alertState));
 
@@ -302,16 +78,16 @@ Ship::Ship(const ShipType::Id &shipId): DynamicBody(),
 	SetModel(m_type->modelName.c_str());
 	// Setting thrusters colors
 	if (m_type->isGlobalColorDefined) GetModel()->SetThrusterColor(m_type->globalThrusterColor);
-	for (int i=0; i<THRUSTER_MAX; i++) {
+	for (int i = 0; i < THRUSTER_MAX; i++) {
 		if (!m_type->isDirectionColorDefined[i]) continue;
 		vector3f dir;
 		switch (i) {
-			case THRUSTER_FORWARD: dir = vector3f(0.0, 0.0, 1.0); break;
-			case THRUSTER_REVERSE: dir = vector3f(0.0, 0.0, -1.0); break;
-			case THRUSTER_LEFT: dir = vector3f(1.0, 0.0, 0.0); break;
-			case THRUSTER_RIGHT: dir = vector3f(-1.0, 0.0, 0.0); break;
-			case THRUSTER_UP: dir = vector3f(1.0, 0.0, 0.0); break;
-			case THRUSTER_DOWN: dir = vector3f(-1.0, 0.0, 0.0); break;
+		case THRUSTER_FORWARD: dir = vector3f(0.0, 0.0, 1.0); break;
+		case THRUSTER_REVERSE: dir = vector3f(0.0, 0.0, -1.0); break;
+		case THRUSTER_LEFT: dir = vector3f(1.0, 0.0, 0.0); break;
+		case THRUSTER_RIGHT: dir = vector3f(-1.0, 0.0, 0.0); break;
+		case THRUSTER_UP: dir = vector3f(1.0, 0.0, 0.0); break;
+		case THRUSTER_DOWN: dir = vector3f(-1.0, 0.0, 0.0); break;
 		}
 		GetModel()->SetThrusterColor(dir, m_type->directionThrusterColor[i]);
 	}
@@ -319,17 +95,237 @@ Ship::Ship(const ShipType::Id &shipId): DynamicBody(),
 	m_skin.SetRandomColors(Pi::rng);
 	m_skin.SetDecal(m_type->manufacturer);
 	m_skin.Apply(GetModel());
-	if(GetModel()->SupportsPatterns())
-		GetModel()->SetPattern(Pi::rng.Int32(0, GetModel()->GetNumPatterns()-1));
+	if (GetModel()->SupportsPatterns())
+		GetModel()->SetPattern(Pi::rng.Int32(0, GetModel()->GetNumPatterns() - 1));
 
 	Init();
 	SetController(new ShipController());
+}
+
+Ship::Ship(const Json &jsonObj, Space *space) :
+	DynamicBody(jsonObj, space)
+{
+	AddFeature(Feature::PROPULSION); // add component propulsion
+	AddFeature(Feature::FIXED_GUNS); // add component fixed guns
+
+	try {
+		Json shipObj = jsonObj["ship"];
+
+		GetPropulsion()->LoadFromJson(shipObj, space);
+
+		SetShipId(shipObj["ship_type_id"]); // XXX handle missing thirdparty ship
+		GetPropulsion()->SetFuelTankMass(GetShipType()->fuelTankMass);
+		m_stats.fuel_tank_mass_left = GetPropulsion()->FuelTankMassLeft();
+
+		m_skin.LoadFromJson(shipObj);
+		m_skin.Apply(GetModel());
+		// needs fixups
+		m_wheelTransition = shipObj["wheel_transition"];
+		m_wheelState = shipObj["wheel_state"];
+		m_launchLockTimeout = shipObj["launch_lock_timeout"];
+		m_testLanded = shipObj["test_landed"];
+		m_flightState = shipObj["flight_state"];
+
+		m_lastAlertUpdate = 0.0; // alertstate check cache timer
+		m_shipNear = false; // alertstate check cache value
+		m_shipFiring = false; // alertstate check cache value
+
+		m_alertState = shipObj["alert_state"];
+		Properties().Set("flightState", EnumStrings::GetString("ShipFlightState", m_flightState));
+		Properties().Set("alertStatus", EnumStrings::GetString("ShipAlertStatus", m_alertState));
+		m_lastFiringAlert = shipObj["last_firing_alert"];
+
+		Json hyperspaceDestObj = shipObj["hyperspace_destination"];
+		m_hyperspace.dest = SystemPath::FromJson(hyperspaceDestObj);
+		m_hyperspace.countdown = shipObj["hyperspace_countdown"];
+		m_hyperspace.duration = 0;
+		m_hyperspace.sounds.warmup_sound = shipObj.value("hyperspace_warmup_sound", "");
+		m_hyperspace.sounds.abort_sound = shipObj.value("hyperspace_abort_sound", "");
+		m_hyperspace.sounds.jump_sound = shipObj.value("hyperspace_jump_sound", "");
+
+		GetFixedGuns()->LoadFromJson(shipObj, space);
+
+		m_ecmRecharge = shipObj["ecm_recharge"];
+		SetShipId(shipObj["ship_type_id"]); // XXX handle missing thirdparty ship
+		m_dockedWithPort = shipObj["docked_with_port"];
+		m_dockedWithIndex = shipObj["index_for_body_docked_with"];
+		Init();
+		m_stats.hull_mass_left = shipObj["hull_mass_left"]; // must be after Init()...
+		m_stats.shield_mass_left = shipObj["shield_mass_left"];
+		m_shieldCooldown = shipObj["shield_cooldown"];
+		m_curAICmd = 0;
+		m_curAICmd = AICommand::LoadFromJson(shipObj);
+		m_aiMessage = AIError(shipObj["ai_message"]);
+
+		PropertyMap &p = Properties();
+
+		p.Set("hullMassLeft", m_stats.hull_mass_left);
+		p.Set("hullPercent", 100.0f * (m_stats.hull_mass_left / float(m_type->hullMass)));
+		p.Set("shieldMassLeft", m_stats.shield_mass_left);
+		p.Set("fuelMassLeft", m_stats.fuel_tank_mass_left);
+		p.PushLuaTable();
+		lua_State *l = Lua::manager->GetLuaState();
+		lua_getfield(l, -1, "equipSet");
+		m_equipSet = LuaRef(l, -1);
+		lua_pop(l, 2);
+
+		m_controller = 0;
+		const ShipController::Type ctype = shipObj["controller_type"];
+		if (ctype == ShipController::PLAYER)
+			SetController(new PlayerShipController());
+		else
+			SetController(new ShipController());
+		m_controller->LoadFromJson(shipObj);
+
+		m_navLights->LoadFromJson(shipObj);
+
+		m_shipName = shipObj["name"];
+		Properties().Set("shipName", m_shipName);
+	} catch (Json::type_error &) {
+		throw SavedGameCorruptException();
+	}
 }
 
 Ship::~Ship()
 {
 	if (m_curAICmd) delete m_curAICmd;
 	delete m_controller;
+}
+
+void Ship::Init()
+{
+	m_invulnerable = false;
+
+	m_sensors.reset(new Sensors(this));
+
+	m_navLights.reset(new NavLights(GetModel()));
+	m_navLights->SetEnabled(true);
+
+	SetMassDistributionFromModel();
+	UpdateEquipStats();
+	m_stats.hull_mass_left = float(m_type->hullMass);
+	m_stats.shield_mass_left = 0;
+
+	PropertyMap &p = Properties();
+	p.Set("hullMassLeft", m_stats.hull_mass_left);
+	p.Set("hullPercent", 100.0f * (m_stats.hull_mass_left / float(m_type->hullMass)));
+	p.Set("shieldMassLeft", m_stats.shield_mass_left);
+	p.Set("fuelMassLeft", m_stats.fuel_tank_mass_left);
+
+	// Init of Propulsion:
+	GetPropulsion()->Init(this, GetModel(), m_type->fuelTankMass, m_type->effectiveExhaustVelocity, m_type->linThrust, m_type->angThrust, m_type->linAccelerationCap);
+
+	p.Set("shipName", m_shipName);
+
+	m_hyperspace.now = false; // TODO: move this on next savegame change, maybe
+	m_hyperspaceCloud = 0;
+
+	m_landingGearAnimation = GetModel()->FindAnimation("gear_down");
+
+	GetFixedGuns()->InitGuns(GetModel());
+
+	// If we've got the tag_landing set then use it for an offset
+	// otherwise use zero so that it will dock but look clearly incorrect
+	const SceneGraph::MatrixTransform *mt = GetModel()->FindTagByName("tag_landing");
+	if (mt) {
+		m_landingMinOffset = mt->GetTransform().GetTranslate().y;
+	} else {
+		m_landingMinOffset = 0.0; // GetAabb().min.y;
+	}
+
+	InitMaterials();
+}
+
+void Ship::PostLoadFixup(Space *space)
+{
+	DynamicBody::PostLoadFixup(space);
+	m_dockedWith = static_cast<SpaceStation *>(space->GetBodyByIndex(m_dockedWithIndex));
+	if (m_curAICmd) m_curAICmd->PostLoadFixup(space);
+	m_controller->PostLoadFixup(space);
+}
+
+void Ship::SaveToJson(Json &jsonObj, Space *space)
+{
+	DynamicBody::SaveToJson(jsonObj, space);
+
+	Json shipObj({}); // Create JSON object to contain ship data.
+
+	GetPropulsion()->SaveToJson(shipObj, space);
+
+	m_skin.SaveToJson(shipObj);
+	shipObj["wheel_transition"] = m_wheelTransition;
+	shipObj["wheel_state"] = m_wheelState;
+	shipObj["launch_lock_timeout"] = m_launchLockTimeout;
+	shipObj["test_landed"] = m_testLanded;
+	shipObj["flight_state"] = int(m_flightState);
+	shipObj["alert_state"] = int(m_alertState);
+	shipObj["last_firing_alert"] = m_lastFiringAlert;
+
+	// XXX make sure all hyperspace attrs and the cloud get saved
+	Json hyperspaceDestObj({}); // Create JSON object to contain hyperspace destination data.
+	m_hyperspace.dest.ToJson(hyperspaceDestObj);
+	shipObj["hyperspace_destination"] = hyperspaceDestObj; // Add hyperspace destination object to ship object.
+	shipObj["hyperspace_countdown"] = m_hyperspace.countdown;
+	shipObj["hyperspace_warmup_sound"] = m_hyperspace.sounds.warmup_sound;
+	shipObj["hyperspace_abort_sound"] = m_hyperspace.sounds.abort_sound;
+	shipObj["hyperspace_jump_sound"] = m_hyperspace.sounds.jump_sound;
+
+	GetFixedGuns()->SaveToJson(shipObj, space);
+
+	shipObj["ecm_recharge"] = m_ecmRecharge;
+	shipObj["ship_type_id"] = m_type->id;
+	shipObj["docked_with_port"] = m_dockedWithPort;
+	shipObj["index_for_body_docked_with"] = space->GetIndexForBody(m_dockedWith);
+	shipObj["hull_mass_left"] = m_stats.hull_mass_left;
+	shipObj["shield_mass_left"] = m_stats.shield_mass_left;
+	shipObj["shield_cooldown"] = m_shieldCooldown;
+	if (m_curAICmd) m_curAICmd->SaveToJson(shipObj);
+	shipObj["ai_message"] = int(m_aiMessage);
+
+	shipObj["controller_type"] = static_cast<int>(m_controller->GetType());
+	m_controller->SaveToJson(shipObj, space);
+
+	m_navLights->SaveToJson(shipObj);
+
+	shipObj["name"] = m_shipName;
+
+	jsonObj["ship"] = shipObj; // Add ship object to supplied object.
+}
+
+void Ship::InitEquipSet()
+{
+	lua_State *l = Lua::manager->GetLuaState();
+	PropertyMap &p = Properties();
+	LUA_DEBUG_START(l);
+	pi_lua_import(l, "EquipSet");
+	LuaTable es_class(l, -1);
+	LuaTable slots = LuaTable(l).LoadMap(GetShipType()->slots.begin(), GetShipType()->slots.end());
+	m_equipSet = es_class.Call<LuaRef>("New", slots);
+	p.Set("equipSet", ScopedTable(m_equipSet));
+	UpdateEquipStats();
+	{
+		ScopedTable es(m_equipSet);
+		int usedCargo = es.CallMethod<int>("OccupiedSpace", "cargo");
+		int totalCargo = std::min(m_stats.free_capacity + usedCargo, es.CallMethod<int>("SlotSize", "cargo"));
+		p.Set("usedCargo", usedCargo);
+		p.Set("totalCargo", totalCargo);
+	}
+	lua_pop(l, 2);
+	LUA_DEBUG_END(l, 0);
+}
+
+void Ship::InitMaterials()
+{
+	SceneGraph::Model *pModel = GetModel();
+	assert(pModel);
+	const Uint32 numMats = pModel->GetNumMaterials();
+	for (Uint32 m = 0; m < numMats; m++) {
+		RefCountedPtr<Graphics::Material> mat = pModel->GetMaterialByIndex(m);
+		mat->heatGradient = Graphics::TextureBuilder::Decal("textures/heat_gradient.dds").GetOrCreateTexture(Pi::renderer, "model");
+		mat->specialParameter0 = &s_heatGradientParams;
+	}
+	s_heatGradientParams.heatingAmount = 0.0f;
+	s_heatGradientParams.heatingNormal = vector3f(0.0f, -1.0f, 0.0f);
 }
 
 void Ship::SetController(ShipController *c)
@@ -347,8 +343,10 @@ float Ship::GetPercentHull() const
 
 float Ship::GetPercentShields() const
 {
-	if (m_stats.shield_mass <= 0) return 100.0f;
-	else return 100.0f * (m_stats.shield_mass_left / m_stats.shield_mass);
+	if (m_stats.shield_mass <= 0)
+		return 100.0f;
+	else
+		return 100.0f * (m_stats.shield_mass_left / m_stats.shield_mass);
 }
 
 void Ship::SetPercentHull(float p)
@@ -360,10 +358,10 @@ void Ship::SetPercentHull(float p)
 
 void Ship::UpdateMass()
 {
-	SetMass((m_stats.static_mass + GetPropulsion()->FuelTankMassLeft() )*1000);
+	SetMass((m_stats.static_mass + GetPropulsion()->FuelTankMassLeft()) * 1000);
 }
 
-bool Ship::OnDamage(Object *attacker, float kgDamage, const CollisionContact& contactData)
+bool Ship::OnDamage(Object *attacker, float kgDamage, const CollisionContact &contactData)
 {
 	if (m_invulnerable) {
 		Sound::BodyMakeNoise(this, "Hull_hit_Small", 0.5f);
@@ -371,7 +369,7 @@ bool Ship::OnDamage(Object *attacker, float kgDamage, const CollisionContact& co
 	}
 
 	if (!IsDead()) {
-		float dam = kgDamage*0.001f;
+		float dam = kgDamage * 0.001f;
 		if (m_stats.shield_mass_left > 0.0f) {
 			if (m_stats.shield_mass_left > dam) {
 				m_stats.shield_mass_left -= dam;
@@ -386,7 +384,7 @@ bool Ship::OnDamage(Object *attacker, float kgDamage, const CollisionContact& co
 		m_shieldCooldown = DEFAULT_SHIELD_COOLDOWN_TIME;
 		// transform the collision location into the models local space (from world space) and add it as a hit.
 		matrix4x4d mtx = GetOrient();
-		mtx.SetTranslate( GetPosition() );
+		mtx.SetTranslate(GetPosition());
 		const matrix4x4d invmtx = mtx.Inverse();
 		const vector3d localPos = invmtx * contactData.pos;
 		GetShields()->AddHit(localPos);
@@ -397,9 +395,9 @@ bool Ship::OnDamage(Object *attacker, float kgDamage, const CollisionContact& co
 		if (m_stats.hull_mass_left < 0) {
 			if (attacker) {
 				if (attacker->IsType(Object::BODY))
-					LuaEvent::Queue("onShipDestroyed", this, dynamic_cast<Body*>(attacker));
+					LuaEvent::Queue("onShipDestroyed", this, dynamic_cast<Body *>(attacker));
 				else if (attacker->IsType(Object::CITYONPLANET))
-					LuaEvent::Queue("onShipDestroyed", this, dynamic_cast<CityOnPlanet*>(attacker)->GetPlanet());
+					LuaEvent::Queue("onShipDestroyed", this, dynamic_cast<CityOnPlanet *>(attacker)->GetPlanet());
 			}
 
 			Explode();
@@ -422,7 +420,9 @@ bool Ship::OnCollision(Object *b, Uint32 flags, double relVel)
 {
 	// Collision with SpaceStation docking surface is
 	// completely handled by SpaceStations, you only
-	// need to return a "true" value for Space.cpp bounce
+	// need to return a "true" value in order to trigger
+	// a bounce in Space::OnCollision
+	// NOTE: 0x10 is a special flag set on docking surfaces
 	if (b->IsType(Object::SPACESTATION) && (flags & 0x10)) {
 		return true;
 	}
@@ -430,10 +430,10 @@ bool Ship::OnCollision(Object *b, Uint32 flags, double relVel)
 	// hitting cargo scoop surface shouldn't do damage
 	int cargoscoop_cap = 0;
 	Properties().Get("cargo_scoop_cap", cargoscoop_cap);
-	if (cargoscoop_cap > 0 && b->IsType(Object::CARGOBODY) && !dynamic_cast<Body*>(b)->IsDead()) {
-		LuaRef item = dynamic_cast<CargoBody*>(b)->GetCargoType();
+	if (cargoscoop_cap > 0 && b->IsType(Object::CARGOBODY) && !dynamic_cast<Body *>(b)->IsDead()) {
+		LuaRef item = dynamic_cast<CargoBody *>(b)->GetCargoType();
 		if (LuaObject<Ship>::CallMethod<int>(this, "AddEquip", item) > 0) { // try to add it to the ship cargo.
-			Pi::game->GetSpace()->KillBody(dynamic_cast<Body*>(b));
+			Pi::game->GetSpace()->KillBody(dynamic_cast<Body *>(b));
 			if (this->IsType(Object::PLAYER))
 				Pi::game->log->Add(stringf(Lang::CARGO_SCOOP_ACTIVE_1_TONNE_X_COLLECTED, formatarg("item", ScopedTable(item).CallMethod<std::string>("GetName"))));
 			// XXX SfxManager::Add(this, TYPE_SCOOP);
@@ -446,7 +446,8 @@ bool Ship::OnCollision(Object *b, Uint32 flags, double relVel)
 
 	if (b->IsType(Object::PLANET)) {
 		// geoms still enabled when landed
-		if (m_flightState != FLYING) return false;
+		if (m_flightState != FLYING)
+			return false;
 		else {
 			if (GetVelocity().Length() < MAX_LANDING_SPEED) {
 				m_testLanded = true;
@@ -461,10 +462,9 @@ bool Ship::OnCollision(Object *b, Uint32 flags, double relVel)
 		b->IsType(Object::SPACESTATION) ||
 		b->IsType(Object::PLANET) ||
 		b->IsType(Object::STAR) ||
-		b->IsType(Object::CARGOBODY))
-	{
+		b->IsType(Object::CARGOBODY)) {
 		LuaEvent::Queue("onShipCollided", this,
-			b->IsType(Object::CITYONPLANET) ? dynamic_cast<CityOnPlanet*>(b)->GetPlanet() : dynamic_cast<Body*>(b));
+			b->IsType(Object::CITYONPLANET) ? dynamic_cast<CityOnPlanet *>(b)->GetPlanet() : dynamic_cast<Body *>(b));
 	}
 
 	return DynamicBody::OnCollision(b, flags, relVel);
@@ -490,7 +490,7 @@ bool Ship::DoCrushDamage(float kgDamage)
 	}
 
 	if (!IsDead()) {
-		float dam = kgDamage*0.01f;
+		float dam = kgDamage * 0.01f;
 		if (m_stats.shield_mass_left > 0.0f) {
 			if (m_stats.shield_mass_left > dam) {
 				m_stats.shield_mass_left -= dam;
@@ -504,7 +504,8 @@ bool Ship::DoCrushDamage(float kgDamage)
 
 		m_shieldCooldown = DEFAULT_SHIELD_COOLDOWN_TIME;
 		// create a collision location in the models local space and add it as a hit.
-		Random rnd; rnd.seed(time(0));
+		Random rnd;
+		rnd.seed(time(0));
 		const vector3d randPos(
 			rnd.Double() * 2.0 - 1.0,
 			rnd.Double() * 2.0 - 1.0,
@@ -561,36 +562,39 @@ void Ship::UpdateEquipStats()
 	p.Set("maxHyperspaceRange", m_stats.hyperspace_range_max);
 }
 
-void Ship::UpdateLuaStats() {
+void Ship::UpdateLuaStats()
+{
 	// This code cannot be in UpdateEquipStats itself because *Equip* needs to be
 	// called in Init(), which is itself called in the constructor, but we absolutely
 	// cannot use LuaObject<Ship>::* in a constructor, or else we'd fix the type of the
 	// object to Ship forever, even though it could very well be a Player.
+	// Updates at Gen 2019: Indeed, this function has been removed from
+	// loading because loading is now a ctor: see Body.cpp
 	UpdateEquipStats();
-	PropertyMap& p = Properties();
+	PropertyMap &p = Properties();
 	m_stats.hyperspace_range = m_stats.hyperspace_range_max = 0;
 	int hyperclass = 0;
 	p.Get<int>("hyperclass_cap", hyperclass);
 	if (hyperclass) {
-		auto ranges = LuaObject<Ship>::CallMethod<double, double>(this, "GetHyperspaceRange");
-		m_stats.hyperspace_range_max = std::get<1>(ranges);
-		m_stats.hyperspace_range = std::get<0>(ranges);
+		std::tie(m_stats.hyperspace_range_max, m_stats.hyperspace_range) =
+			LuaObject<Ship>::CallMethod<double, double>(this, "GetHyperspaceRange");
 	}
 
 	p.Set("hyperspaceRange", m_stats.hyperspace_range);
 	p.Set("maxHyperspaceRange", m_stats.hyperspace_range_max);
 }
 
-void Ship::UpdateGunsStats() {
+void Ship::UpdateGunsStats()
+{
 
 	float cooler = 1.0f;
 	Properties().Get("laser_cooler_cap", cooler);
-	GetFixedGuns()->SetCoolingBoost( cooler );
+	GetFixedGuns()->SetCoolingBoost(cooler);
 
-	for (int num=0; num < 2; num++) {
-		std::string prefix(num?"laser_rear_":"laser_front_");
+	for (int num = 0; num < 2; num++) {
+		std::string prefix(num ? "laser_rear_" : "laser_front_");
 		int damage = 0;
-		Properties().Get(prefix+"damage", damage);
+		Properties().Get(prefix + "damage", damage);
 		if (!damage) {
 			GetFixedGuns()->UnMountGun(num);
 		} else {
@@ -598,24 +602,26 @@ void Ship::UpdateGunsStats() {
 			LuaTable prop(Lua::manager->GetLuaState(), -1);
 
 			const Color c(
-				prop.Get<float>(prefix+"rgba_r"),
-				prop.Get<float>(prefix+"rgba_g"),
-				prop.Get<float>(prefix+"rgba_b"),
-				prop.Get<float>(prefix+"rgba_a"));
+				prop.Get<float>(prefix + "rgba_r"),
+				prop.Get<float>(prefix + "rgba_g"),
+				prop.Get<float>(prefix + "rgba_b"),
+				prop.Get<float>(prefix + "rgba_a"));
 			const float heatrate = prop.Get<float>(prefix + "heatrate", 0.01f);
 			const float coolrate = prop.Get<float>(prefix + "coolrate", 0.01f);
-			const float lifespan = prop.Get<float>(prefix+"lifespan");
-			const float width = prop.Get<float>(prefix+"width");
-			const float length = prop.Get<float>(prefix+"length");
-			const bool mining = prop.Get<int>(prefix+"mining");
-			const float speed = prop.Get<float>(prefix+"speed");
-			const float recharge = prop.Get<float>(prefix+"rechargeTime");
-			const bool beam = prop.Get<int>(prefix+"beam");
+			const float lifespan = prop.Get<float>(prefix + "lifespan");
+			const float width = prop.Get<float>(prefix + "width");
+			const float length = prop.Get<float>(prefix + "length");
+			const bool mining = prop.Get<int>(prefix + "mining");
+			const float speed = prop.Get<float>(prefix + "speed");
+			const float recharge = prop.Get<float>(prefix + "rechargeTime");
+			const bool beam = prop.Get<int>(prefix + "beam");
 
-			GetFixedGuns()->MountGun( num, recharge, lifespan, damage, length, width, mining, c, speed, beam, heatrate, coolrate);
+			GetFixedGuns()->MountGun(num, recharge, lifespan, damage, length, width, mining, c, speed, beam, heatrate, coolrate);
 
-			if (prop.Get<int>(prefix+"dual")) GetFixedGuns()->IsDual( num, true );
-			else GetFixedGuns()->IsDual( num, false );
+			if (prop.Get<int>(prefix + "dual"))
+				GetFixedGuns()->IsDual(num, true);
+			else
+				GetFixedGuns()->IsDual(num, false);
 			lua_pop(prop.GetLua(), 1);
 		}
 	}
@@ -629,7 +635,8 @@ void Ship::UpdateFuelStats()
 	UpdateMass();
 }
 
-Ship::HyperjumpStatus Ship::CheckHyperjumpCapability() const {
+Ship::HyperjumpStatus Ship::CheckHyperjumpCapability() const
+{
 	if (GetFlightState() == HYPERSPACE)
 		return HYPERJUMP_DRIVE_ACTIVE;
 
@@ -639,7 +646,8 @@ Ship::HyperjumpStatus Ship::CheckHyperjumpCapability() const {
 	return HYPERJUMP_OK;
 }
 
-Ship::HyperjumpStatus Ship::InitiateHyperjumpTo(const SystemPath &dest, int warmup_time, double duration, const HyperdriveSoundsTable &sounds, LuaRef checks) {
+Ship::HyperjumpStatus Ship::InitiateHyperjumpTo(const SystemPath &dest, int warmup_time, double duration, const HyperdriveSoundsTable &sounds, LuaRef checks)
+{
 	if (!dest.HasValidSystem() || GetFlightState() != FLYING || warmup_time < 1)
 		return HYPERJUMP_SAFETY_LOCKOUT;
 	StarSystem *s = Pi::game->GetSpace()->GetStarSystem().Get();
@@ -656,7 +664,8 @@ Ship::HyperjumpStatus Ship::InitiateHyperjumpTo(const SystemPath &dest, int warm
 	return Ship::HYPERJUMP_OK;
 }
 
-void Ship::AbortHyperjump() {
+void Ship::AbortHyperjump()
+{
 	m_hyperspace.countdown = 0;
 	m_hyperspace.now = false;
 	m_hyperspace.duration = 0;
@@ -693,16 +702,17 @@ Ship::ECMResult Ship::UseECM()
 			if (dist < ECM_RADIUS) {
 				// increasing chance of destroying it with proximity
 				if (Pi::rng.Double() > (dist / ECM_RADIUS)) {
-					static_cast<Missile*>(*i)->ECMAttack(ecm_power_cap);
+					static_cast<Missile *>(*i)->ECMAttack(ecm_power_cap);
 				}
 			}
 		}
 		return ECM_ACTIVATED;
-	}
-	else return ECM_NOT_INSTALLED;
+	} else
+		return ECM_NOT_INSTALLED;
 }
 
-Missile * Ship::SpawnMissile(ShipType::Id missile_type, int power) {
+Missile *Ship::SpawnMissile(ShipType::Id missile_type, int power)
+{
 	if (GetFlightState() != FLYING)
 		return 0;
 
@@ -711,8 +721,8 @@ Missile * Ship::SpawnMissile(ShipType::Id missile_type, int power) {
 	missile->SetFrame(GetFrame());
 	const vector3d pos = GetOrient() * vector3d(0, GetAabb().min.y - 10, GetAabb().min.z);
 	const vector3d vel = -40.0 * GetOrient().VectorZ();
-	missile->SetPosition(GetPosition()+pos);
-	missile->SetVelocity(GetVelocity()+vel);
+	missile->SetPosition(GetPosition() + pos);
+	missile->SetVelocity(GetVelocity() + vel);
 	Pi::game->GetSpace()->AddBody(missile);
 	return missile;
 }
@@ -745,16 +755,43 @@ void Ship::SetFlightState(Ship::FlightState newState)
 	m_flightState = newState;
 	Properties().Set("flightState", EnumStrings::GetString("ShipFlightState", m_flightState));
 
-	switch (m_flightState)
-	{
-		case FLYING:		SetMoving(true);	SetColliding(true);		SetStatic(false);	break;
-		case DOCKING:		SetMoving(false);	SetColliding(false);	SetStatic(false);	break;
-		case UNDOCKING:	SetMoving(false);	SetColliding(false);	SetStatic(false);	break;
-// TODO: set collision index? dynamic stations... use landed for open-air?
-		case DOCKED:		SetMoving(false);	SetColliding(false);	SetStatic(false);	break;
-		case LANDED:		SetMoving(false);	SetColliding(true);		SetStatic(true);	break;
-		case JUMPING:		SetMoving(true);	SetColliding(false);	SetStatic(false);	break;
-		case HYPERSPACE:	SetMoving(false);	SetColliding(false);	SetStatic(false);	break;
+	switch (m_flightState) {
+	case FLYING:
+		SetMoving(true);
+		SetColliding(true);
+		SetStatic(false);
+		break;
+	case DOCKING:
+		SetMoving(false);
+		SetColliding(false);
+		SetStatic(false);
+		break;
+	case UNDOCKING:
+		SetMoving(false);
+		SetColliding(false);
+		SetStatic(false);
+		break;
+		// TODO: set collision index? dynamic stations... use landed for open-air?
+	case DOCKED:
+		SetMoving(false);
+		SetColliding(false);
+		SetStatic(false);
+		break;
+	case LANDED:
+		SetMoving(false);
+		SetColliding(true);
+		SetStatic(true);
+		break;
+	case JUMPING:
+		SetMoving(true);
+		SetColliding(false);
+		SetStatic(false);
+		break;
+	case HYPERSPACE:
+		SetMoving(false);
+		SetColliding(false);
+		SetStatic(false);
+		break;
 	}
 }
 
@@ -764,13 +801,13 @@ void Ship::Blastoff()
 
 	vector3d up = GetPosition().Normalized();
 	assert(GetFrame()->GetBody()->IsType(Object::PLANET));
-	const double planetRadius = 2.0 + static_cast<Planet*>(GetFrame()->GetBody())->GetTerrainHeight(up);
+	const double planetRadius = 2.0 + static_cast<Planet *>(GetFrame()->GetBody())->GetTerrainHeight(up);
 	SetVelocity(vector3d(0, 0, 0));
 	SetAngVelocity(vector3d(0, 0, 0));
 	SetFlightState(FLYING);
 
-	SetPosition(up*planetRadius - GetAabb().min.y*up);
-	SetThrusterState(1, 1.0);		// thrust upwards
+	SetPosition(up * planetRadius - GetAabb().min.y * up);
+	SetThrusterState(1, 1.0); // thrust upwards
 
 	LuaEvent::Queue("onShipTakeOff", this, GetFrame()->GetBody());
 }
@@ -783,7 +820,7 @@ void Ship::TestLanded()
 	if (GetFrame()->GetBody()->IsType(Object::PLANET)) {
 		double speed = GetVelocity().Length();
 		vector3d up = GetPosition().Normalized();
-		const double planetRadius = static_cast<Planet*>(GetFrame()->GetBody())->GetTerrainHeight(up);
+		const double planetRadius = static_cast<Planet *>(GetFrame()->GetBody())->GetTerrainHeight(up);
 
 		if (speed < MAX_LANDING_SPEED) {
 			// check player is sortof sensibly oriented for landing
@@ -811,12 +848,12 @@ void Ship::SetLandedOn(Planet *p, float latitude, float longitude)
 {
 	m_wheelTransition = 0;
 	m_wheelState = 1.0f;
-	Frame* f = p->GetFrame()->GetRotFrame();
+	Frame *f = p->GetFrame()->GetRotFrame();
 	SetFrame(f);
-	vector3d up = vector3d(cos(latitude)*sin(longitude), sin(latitude), cos(latitude)*cos(longitude));
+	vector3d up = vector3d(cos(latitude) * sin(longitude), sin(latitude), cos(latitude) * cos(longitude));
 	const double planetRadius = p->GetTerrainHeight(up);
 	SetPosition(up * (planetRadius - GetAabb().min.y));
-	vector3d right = up.Cross(vector3d(0,0,1)).Normalized();
+	vector3d right = up.Cross(vector3d(0, 0, 1)).Normalized();
 	SetOrient(matrix3x3d::FromVectors(right, up));
 	SetVelocity(vector3d(0, 0, 0));
 	SetAngVelocity(vector3d(0, 0, 0));
@@ -837,9 +874,9 @@ void Ship::TimeStepUpdate(const float timeStep)
 	// If docked, station is responsible for updating position/orient of ship
 	// but we call this crap anyway and hope it doesn't do anything bad
 
-	const vector3d thrust=GetPropulsion()->GetActualLinThrust();
-	AddRelForce( thrust );
-	AddRelTorque( GetPropulsion()->GetActualAngThrust() );
+	const vector3d thrust = GetPropulsion()->GetActualLinThrust();
+	AddRelForce(thrust);
+	AddRelTorque(GetPropulsion()->GetActualAngThrust());
 
 	if (m_landingGearAnimation)
 		m_landingGearAnimation->SetProgress(m_wheelState);
@@ -847,7 +884,7 @@ void Ship::TimeStepUpdate(const float timeStep)
 	DynamicBody::TimeStepUpdate(timeStep);
 
 	// fuel use decreases mass, so do this as the last thing in the frame
-	UpdateFuel( timeStep );
+	UpdateFuel(timeStep);
 
 	m_navLights->SetEnabled(m_wheelState > 0.01f);
 	m_navLights->Update(timeStep);
@@ -864,13 +901,14 @@ void Ship::DoThrusterSounds() const
 	float v_env = (Pi::game->GetWorldView()->GetCameraController()->IsExternal() ? 1.0f : 0.5f) * Sound::GetSfxVolume();
 	static Sound::Event sndev;
 	float volBoth = 0.0f;
-	volBoth += 0.5f*fabs(GetPropulsion()->GetLinThrusterState().y);
-	volBoth += 0.5f*fabs(GetPropulsion()->GetLinThrusterState().z);
+	volBoth += 0.5f * fabs(GetPropulsion()->GetLinThrusterState().y);
+	volBoth += 0.5f * fabs(GetPropulsion()->GetLinThrusterState().z);
 
 	float targetVol[2] = { volBoth, volBoth };
 	if (GetPropulsion()->GetLinThrusterState().x > 0.0)
-		targetVol[0] += 0.5f*float(GetPropulsion()->GetLinThrusterState().x);
-	else targetVol[1] += -0.5f*float(GetPropulsion()->GetLinThrusterState().x);
+		targetVol[0] += 0.5f * float(GetPropulsion()->GetLinThrusterState().x);
+	else
+		targetVol[1] += -0.5f * float(GetPropulsion()->GetLinThrusterState().x);
 
 	targetVol[0] = v_env * Clamp(targetVol[0], 0.0f, 1.0f);
 	targetVol[1] = v_env * Clamp(targetVol[1], 0.0f, 1.0f);
@@ -946,15 +984,13 @@ void Ship::UpdateAlertState()
 
 	// sanity check: m_lastAlertUpdate should not be in the future.
 	// reset and re-check if it is.
-	if (m_lastAlertUpdate > Pi::game->GetTime())
-	{
+	if (m_lastAlertUpdate > Pi::game->GetTime()) {
 		m_lastAlertUpdate = 0;
 		m_shipNear = false;
 		m_shipFiring = false;
 	}
 
-	if (m_lastAlertUpdate + 1.0 <= Pi::game->GetTime())
-	{
+	if (m_lastAlertUpdate + 1.0 <= Pi::game->GetTime()) {
 		// time to update the list again, once per second should suffice
 		m_lastAlertUpdate = Pi::game->GetTime();
 
@@ -964,19 +1000,18 @@ void Ship::UpdateAlertState()
 		Pi::game->GetSpace()->GetBodiesMaybeNear(this, ALERT_DISTANCE, m_nearbyBodies);
 
 		// handle the results
-		for (auto i : m_nearbyBodies)
-		{
+		for (auto i : m_nearbyBodies) {
 			if ((i) == this) continue;
 			if (!(i)->IsType(Object::SHIP) || (i)->IsType(Object::MISSILE)) continue;
 
 			// TODO: Here there were a const on Ship*, now it cannot remain because of ship->firing and so, this open a breach...
 			// A solution is to put a member on ship: true if is firing, false if is not
-			Ship *ship = static_cast< Ship*>(i);
+			Ship *ship = static_cast<Ship *>(i);
 
 			if (ship->GetShipType()->tag == ShipType::TAG_STATIC_SHIP) continue;
 			if (ship->GetFlightState() == LANDED || ship->GetFlightState() == DOCKED) continue;
 
-			if (GetPositionRelTo(ship).LengthSqr() < ALERT_DISTANCE*ALERT_DISTANCE) {
+			if (GetPositionRelTo(ship).LengthSqr() < ALERT_DISTANCE * ALERT_DISTANCE) {
 				ship_is_near = true;
 
 				Uint32 gunstate = ship->GetFixedGuns()->IsFiring();
@@ -990,65 +1025,60 @@ void Ship::UpdateAlertState()
 		// store
 		m_shipNear = ship_is_near;
 		m_shipFiring = ship_is_firing;
-	}
-	else
-	{
+	} else {
 		ship_is_near = m_shipNear;
 		ship_is_firing = m_shipFiring;
 	}
 
 	bool changed = false;
 	switch (m_alertState) {
-		case ALERT_NONE:
-			if (ship_is_near) {
-				SetAlertState(ALERT_SHIP_NEARBY);
-				changed = true;
-			}
-			if (ship_is_firing) {
-				m_lastFiringAlert = Pi::game->GetTime();
-				SetAlertState(ALERT_SHIP_FIRING);
-				changed = true;
-			}
-			break;
+	case ALERT_NONE:
+		if (ship_is_near) {
+			SetAlertState(ALERT_SHIP_NEARBY);
+			changed = true;
+		}
+		if (ship_is_firing) {
+			m_lastFiringAlert = Pi::game->GetTime();
+			SetAlertState(ALERT_SHIP_FIRING);
+			changed = true;
+		}
+		break;
 
-		case ALERT_SHIP_NEARBY:
-			if (!ship_is_near) {
-				SetAlertState(ALERT_NONE);
-				changed = true;
-			}
-			else if (ship_is_firing) {
-				m_lastFiringAlert = Pi::game->GetTime();
-				SetAlertState(ALERT_SHIP_FIRING);
-				changed = true;
-			}
-			break;
+	case ALERT_SHIP_NEARBY:
+		if (!ship_is_near) {
+			SetAlertState(ALERT_NONE);
+			changed = true;
+		} else if (ship_is_firing) {
+			m_lastFiringAlert = Pi::game->GetTime();
+			SetAlertState(ALERT_SHIP_FIRING);
+			changed = true;
+		}
+		break;
 
-		case ALERT_SHIP_FIRING:
-			if (!ship_is_near) {
-				SetAlertState(ALERT_NONE);
-				changed = true;
-			}
-			else if (ship_is_firing) {
-				m_lastFiringAlert = Pi::game->GetTime();
-			}
-			else if (m_lastFiringAlert + 60.0 <= Pi::game->GetTime()) {
-				SetAlertState(ALERT_SHIP_NEARBY);
-				changed = true;
-			}
-			break;
+	case ALERT_SHIP_FIRING:
+		if (!ship_is_near) {
+			SetAlertState(ALERT_NONE);
+			changed = true;
+		} else if (ship_is_firing) {
+			m_lastFiringAlert = Pi::game->GetTime();
+		} else if (m_lastFiringAlert + 60.0 <= Pi::game->GetTime()) {
+			SetAlertState(ALERT_SHIP_NEARBY);
+			changed = true;
+		}
+		break;
 	}
 
 	if (changed)
 		LuaEvent::Queue("onShipAlertChanged", this, EnumStrings::GetString("ShipAlertStatus", GetAlertState()));
 }
 
-void Ship::UpdateFuel(const float timeStep )
+void Ship::UpdateFuel(const float timeStep)
 {
-	GetPropulsion()->UpdateFuel( timeStep );
+	GetPropulsion()->UpdateFuel(timeStep);
 	UpdateFuelStats();
-	Properties().Set("fuel", GetFuel()*100); // XXX to match SetFuelPercent
+	Properties().Set("fuel", GetFuel() * 100); // XXX to match SetFuelPercent
 
-	if ( GetPropulsion()->IsFuelStateChanged() )
+	if (GetPropulsion()->IsFuelStateChanged())
 		LuaEvent::Queue("onShipFuelChanged", this, EnumStrings::GetString("ShipFuelStatus", GetPropulsion()->GetFuelState()));
 }
 
@@ -1064,11 +1094,10 @@ void Ship::StaticUpdate(const float timeStep)
 	if (GetHullTemperature() > 1.0)
 		Explode();
 
-
 	if (m_flightState == FLYING) {
 		Body *astro = GetFrame()->GetBody();
 		if (astro && astro->IsType(Object::PLANET)) {
-			Planet *p = static_cast<Planet*>(astro);
+			Planet *p = static_cast<Planet *>(astro);
 			double dist = GetPosition().Length();
 			double pressure, density;
 			p->GetAtmosphericState(dist, &pressure, &density);
@@ -1091,7 +1120,7 @@ void Ship::StaticUpdate(const float timeStep)
 	if (m_flightState == FLYING && capacity > 0) {
 		Body *astro = GetFrame()->GetBody();
 		if (astro && astro->IsType(Object::PLANET)) {
-			Planet *p = static_cast<Planet*>(astro);
+			Planet *p = static_cast<Planet *>(astro);
 			if (p->GetSystemBody()->IsScoopable()) {
 				const double dist = GetPosition().Length();
 				double pressure, density;
@@ -1111,7 +1140,7 @@ void Ship::StaticUpdate(const float timeStep)
 						UpdateEquipStats();
 						if (this->IsType(Object::PLAYER)) {
 							Pi::game->log->Add(stringf(Lang::FUEL_SCOOP_ACTIVE_N_TONNES_H_COLLECTED,
-									formatarg("quantity", LuaObject<Ship>::CallMethod<int>(this, "CountEquip", hydrogen))));
+								formatarg("quantity", LuaObject<Ship>::CallMethod<int>(this, "CountEquip", hydrogen))));
 						}
 						lua_pop(l, 3);
 					}
@@ -1128,7 +1157,7 @@ void Ship::StaticUpdate(const float timeStep)
 		// temperature regulation and breathable atmosphere
 
 		// kill stuff roughly every 5 seconds
-		if ((!m_dockedWith) && (5.0*Pi::rng.Double() < timeStep)) {
+		if ((!m_dockedWith) && (5.0 * Pi::rng.Double() < timeStep)) {
 			std::string t(Pi::rng.Int32(2) ? "live_animals" : "slaves");
 
 			lua_State *l = Lua::manager->GetLuaState();
@@ -1140,8 +1169,7 @@ void Ship::StaticUpdate(const float timeStep)
 					Pi::game->log->Add(Lang::CARGO_BAY_LIFE_SUPPORT_LOST);
 				}
 				lua_pop(l, 4);
-			}
-			else
+			} else
 				lua_pop(l, 3);
 		}
 	}
@@ -1154,40 +1182,30 @@ void Ship::StaticUpdate(const float timeStep)
 
 	// lasers
 	FixedGuns *fg = GetFixedGuns();
-	fg->UpdateGuns( timeStep );
-	for (int i = 0; i < 2; i++)
-	{
-		if (fg->Fire(i, this))
-		{
-			if (fg->IsBeam(i))
-			{
+	fg->UpdateGuns(timeStep);
+	for (int i = 0; i < 2; i++) {
+		if (fg->Fire(i, this)) {
+			if (fg->IsBeam(i)) {
 				float vl, vr;
 				Sound::CalculateStereo(this, 1.0f, &vl, &vr);
 				m_beamLaser[i].Play("Beam_laser", vl, vr, Sound::OP_REPEAT);
-			}
-			else
-			{
+			} else {
 				Sound::BodyMakeNoise(this, "Pulse_Laser", 1.0f);
 			}
 			LuaEvent::Queue("onShipFiring", this);
 		}
 
-		if (fg->IsBeam(i))
-		{
-			if (fg->IsFiring(i))
-			{
+		if (fg->IsBeam(i)) {
+			if (fg->IsFiring(i)) {
 				float vl, vr;
 				Sound::CalculateStereo(this, 1.0f, &vl, &vr);
 				if (!m_beamLaser[i].IsPlaying()) {
 					m_beamLaser[i].Play("Beam_laser", vl, vr, Sound::OP_REPEAT);
-				}
-				else {
+				} else {
 					// update volume
 					m_beamLaser[i].SetVolume(vl, vr);
 				}
-			}
-			else if (!fg->IsFiring(i) && m_beamLaser[i].IsPlaying())
-			{
+			} else if (!fg->IsFiring(i) && m_beamLaser[i].IsPlaying()) {
 				m_beamLaser[i].Stop();
 			}
 		}
@@ -1212,7 +1230,7 @@ void Ship::StaticUpdate(const float timeStep)
 	}
 
 	if (m_wheelTransition) {
-		m_wheelState += m_wheelTransition*0.3f*timeStep;
+		m_wheelState += m_wheelTransition * 0.3f * timeStep;
 		m_wheelState = Clamp(m_wheelState, 0.0f, 1.0f);
 		if (is_equal_exact(m_wheelState, 0.0f) || is_equal_exact(m_wheelState, 1.0f))
 			m_wheelTransition = 0;
@@ -1223,7 +1241,7 @@ void Ship::StaticUpdate(const float timeStep)
 	capacity = 0;
 	Properties().Get("hull_autorepair_cap", capacity);
 	if (capacity) {
-		m_stats.hull_mass_left = std::min(m_stats.hull_mass_left + 0.1f*timeStep, float(m_type->hullMass));
+		m_stats.hull_mass_left = std::min(m_stats.hull_mass_left + 0.1f * timeStep, float(m_type->hullMass));
 		Properties().Set("hullMassLeft", m_stats.hull_mass_left);
 		Properties().Set("hullPercent", 100.0f * (m_stats.hull_mass_left / float(m_type->hullMass)));
 	}
@@ -1240,7 +1258,7 @@ void Ship::StaticUpdate(const float timeStep)
 	if (m_hyperspace.countdown > 0.0f) {
 		// Check the Lua function
 		bool abort = false;
-		lua_State * l = m_hyperspace.checks.GetLua();
+		lua_State *l = m_hyperspace.checks.GetLua();
 		if (l) {
 			m_hyperspace.checks.PushCopyToStack();
 			if (lua_isfunction(l, -1)) {
@@ -1268,10 +1286,9 @@ void Ship::StaticUpdate(const float timeStep)
 			}
 		}
 	}
-
 }
 
-void Ship::NotifyRemoved(const Body* const removedBody)
+void Ship::NotifyRemoved(const Body *const removedBody)
 {
 	if (m_curAICmd) m_curAICmd->OnDeleted(removedBody);
 }
@@ -1301,7 +1318,7 @@ void Ship::SetGunState(int idx, int state)
 	if (m_flightState != FLYING)
 		return;
 
-	GetFixedGuns()->SetGunFiringState( idx, state );
+	GetFixedGuns()->SetGunFiringState(idx, state);
 }
 
 bool Ship::SetWheelState(bool down)
@@ -1318,18 +1335,18 @@ void Ship::Render(Graphics::Renderer *renderer, const Camera *camera, const vect
 {
 	if (IsDead()) return;
 
-	GetPropulsion()->Render( renderer, camera, viewCoords, viewTransform );
+	GetPropulsion()->Render(renderer, camera, viewCoords, viewTransform);
 
 	matrix3x3f mt;
 	matrix3x3dtof(viewTransform.Inverse().GetOrient(), mt);
 	s_heatGradientParams.heatingMatrix = mt;
 	s_heatGradientParams.heatingNormal = vector3f(GetVelocity().Normalized());
-	s_heatGradientParams.heatingAmount = Clamp(GetHullTemperature(),0.0,1.0);
+	s_heatGradientParams.heatingAmount = Clamp(GetHullTemperature(), 0.0, 1.0);
 
 	// This has to be done per-model with a shield and just before it's rendered
 	const bool shieldsVisible = m_shieldCooldown > 0.01f && m_stats.shield_mass_left > (m_stats.shield_mass / 100.0f);
 	GetShields()->SetEnabled(shieldsVisible);
-	GetShields()->Update(m_shieldCooldown, 0.01f*GetPercentShields());
+	GetShields()->Update(m_shieldCooldown, 0.01f * GetPercentShields());
 
 	//strncpy(params.pText[0], GetLabel().c_str(), sizeof(params.pText));
 	RenderModel(renderer, camera, viewCoords, viewTransform);
@@ -1339,13 +1356,13 @@ void Ship::Render(Graphics::Renderer *renderer, const Camera *camera, const vect
 	if (m_ecmRecharge > 0.0f) {
 		// ECM effect: a cloud of particles for a sparkly effect
 		vector3f v[100];
-		for (int i=0; i<100; i++) {
-			const double r1 = Pi::rng.Double()-0.5;
-			const double r2 = Pi::rng.Double()-0.5;
-			const double r3 = Pi::rng.Double()-0.5;
-			v[i] = vector3f(GetPhysRadius()*vector3d(r1, r2, r3).NormalizedSafe());
+		for (int i = 0; i < 100; i++) {
+			const double r1 = Pi::rng.Double() - 0.5;
+			const double r2 = Pi::rng.Double() - 0.5;
+			const double r3 = Pi::rng.Double() - 0.5;
+			v[i] = vector3f(GetPhysRadius() * vector3d(r1, r2, r3).NormalizedSafe());
 		}
-		Color c(128,128,255,255);
+		Color c(128, 128, 255, 255);
 		float totalRechargeTime = GetECMRechargeTime();
 		if (totalRechargeTime >= 0.0f) {
 			c.a = (m_ecmRecharge / totalRechargeTime) * 255;
@@ -1354,7 +1371,8 @@ void Ship::Render(Graphics::Renderer *renderer, const Camera *camera, const vect
 		SfxManager::ecmParticle->diffuse = c;
 
 		matrix4x4f t;
-		for (int i=0; i<12; i++) t[i] = float(viewTransform[i]);
+		for (int i = 0; i < 12; i++)
+			t[i] = float(viewTransform[i]);
 		t[12] = viewCoords.x;
 		t[13] = viewCoords.y;
 		t[14] = viewCoords.z;
@@ -1365,18 +1383,19 @@ void Ship::Render(Graphics::Renderer *renderer, const Camera *camera, const vect
 	}
 }
 
-bool Ship::SpawnCargo(CargoBody * c_body) const
+bool Ship::SpawnCargo(CargoBody *c_body) const
 {
 	if (m_flightState != FLYING) return false;
 	vector3d pos = GetOrient() * vector3d(0, GetAabb().min.y - 5, 0);
 	c_body->SetFrame(GetFrame());
 	c_body->SetPosition(GetPosition() + pos);
-	c_body->SetVelocity(GetVelocity() + GetOrient()*vector3d(0, -10, 0));
+	c_body->SetVelocity(GetVelocity() + GetOrient() * vector3d(0, -10, 0));
 	Pi::game->GetSpace()->AddBody(c_body);
 	return true;
 }
 
-void Ship::EnterHyperspace() {
+void Ship::EnterHyperspace()
+{
 	assert(GetFlightState() != Ship::HYPERSPACE);
 
 	// Is it still a good idea, with the onLeaveSystem moved elsewhere?
@@ -1396,7 +1415,8 @@ void Ship::EnterHyperspace() {
 	OnEnterHyperspace();
 }
 
-void Ship::OnEnterHyperspace() {
+void Ship::OnEnterHyperspace()
+{
 	Sound::BodyMakeNoise(this, m_hyperspace.sounds.jump_sound.c_str(), 1.f);
 	m_hyperspaceCloud = new HyperspaceCloud(this, Pi::game->GetTime() + m_hyperspace.duration, false);
 	m_hyperspaceCloud->SetFrame(GetFrame());
@@ -1408,7 +1428,8 @@ void Ship::OnEnterHyperspace() {
 	space->AddBody(m_hyperspaceCloud);
 }
 
-void Ship::EnterSystem() {
+void Ship::EnterSystem()
+{
 	PROFILE_SCOPED()
 	assert(GetFlightState() == Ship::HYPERSPACE);
 
@@ -1420,7 +1441,8 @@ void Ship::EnterSystem() {
 	LuaEvent::Queue("onEnterSystem", this);
 }
 
-void Ship::OnEnterSystem() {
+void Ship::OnEnterSystem()
+{
 	m_hyperspaceCloud = 0;
 }
 
