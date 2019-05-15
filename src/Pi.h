@@ -14,6 +14,9 @@
 #include <string>
 #include <vector>
 
+class Frame;
+class Game;
+
 class GameConfig;
 class Intro;
 class LuaConsole;
@@ -55,17 +58,10 @@ class DetailLevel {
 public:
 	DetailLevel() :
 		planets(0),
-		textures(0),
-		fracmult(0),
 		cities(0) {}
 	int planets;
-	int textures;
-	int fracmult;
 	int cities;
 };
-
-class Frame;
-class Game;
 
 class Pi {
 public:
@@ -98,7 +94,6 @@ public:
 	// This is a default value only, centralized here to promote uniform user expericience.
 	static float GetMoveSpeedShiftModifier();
 
-	static void BoinkNoise();
 	static std::string GetSaveDir();
 	static SceneGraph::Model *FindModel(const std::string &, bool allowPlaceholder = true);
 

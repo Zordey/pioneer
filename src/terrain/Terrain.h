@@ -5,7 +5,9 @@
 #define _TERRAIN_H
 
 #include "galaxy/StarSystem.h"
-#include "libs.h"
+
+#include <memory>
+#include <string>
 
 #ifdef _MSC_VER
 #pragma warning(disable : 4250) // workaround for MSVC 2008 multiple inheritance bug
@@ -57,6 +59,8 @@ public:
 
 	Uint32 GetSurfaceEffects() const { return m_surfaceEffects; }
 
+	double BiCubicInterpolation(const vector3d &p) const;
+
 	void DebugDump() const;
 
 private:
@@ -67,10 +71,6 @@ private:
 
 protected:
 	Terrain(const SystemBody *body);
-
-	bool textures;
-	int m_fracnum;
-	double m_fracmult;
 
 	Uint32 m_seed;
 	Random m_rand;
@@ -94,6 +94,7 @@ protected:
 	double m_maxHeightInMeters;
 	double m_invMaxHeight;
 	double m_planetRadius;
+	double m_invPlanetRadius;
 	double m_planetEarthRadii;
 
 	double m_entropy[12];

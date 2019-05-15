@@ -369,7 +369,6 @@
     <ClCompile Include="..\..\contrib\imgui\imgui_draw.cpp" />
     <ClCompile Include="..\..\contrib\imgui\imgui_widgets.cpp" />
     <ClCompile Include="..\..\contrib\PicoDDS\PicoDDS.cpp" />
-    <ClCompile Include="..\..\src\AmbientSounds.cpp" />
     <ClCompile Include="..\..\src\Background.cpp" />
     <ClCompile Include="..\..\src\BaseSphere.cpp" />
     <ClCompile Include="..\..\src\Beam.cpp" />
@@ -387,7 +386,6 @@
     <ClCompile Include="..\..\src\EnumStrings.cpp" />
     <ClCompile Include="..\..\src\enum_table.cpp" />
     <ClCompile Include="..\..\src\FaceParts.cpp" />
-    <ClCompile Include="..\..\src\Factions.cpp" />
     <ClCompile Include="..\..\src\FileSourceZip.cpp" />
     <ClCompile Include="..\..\src\FileSystem.cpp" />
     <ClCompile Include="..\..\src\FixedGuns.cpp" />
@@ -432,7 +430,6 @@
     <ClCompile Include="..\..\src\LuaJson.cpp" />
     <ClCompile Include="..\..\src\LuaLang.cpp" />
     <ClCompile Include="..\..\src\LuaManager.cpp" />
-    <ClCompile Include="..\..\src\LuaMatrix.cpp" />
     <ClCompile Include="..\..\src\LuaMissile.cpp" />
     <ClCompile Include="..\..\src\LuaModelBody.cpp" />
     <ClCompile Include="..\..\src\LuaMusic.cpp" />
@@ -457,6 +454,7 @@
     <ClCompile Include="..\..\src\LuaTimer.cpp" />
     <ClCompile Include="..\..\src\LuaUtils.cpp" />
     <ClCompile Include="..\..\src\LuaVector.cpp" />
+    <ClCompile Include="..\..\src\LuaVector2.cpp" />
     <ClCompile Include="..\..\src\main.cpp" />
     <ClCompile Include="..\..\src\MathUtil.cpp" />
     <ClCompile Include="..\..\src\Missile.cpp" />
@@ -474,7 +472,6 @@
     <ClCompile Include="..\..\src\Planet.cpp" />
     <ClCompile Include="..\..\src\Player.cpp" />
     <ClCompile Include="..\..\src\PngWriter.cpp" />
-    <ClCompile Include="..\..\src\Polit.cpp" />
     <ClCompile Include="..\..\src\posix\FileSystemPosix.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
@@ -510,12 +507,15 @@
     <ClCompile Include="..\..\src\Ship.cpp" />
     <ClCompile Include="..\..\src\ShipAICmd.cpp" />
     <ClCompile Include="..\..\src\ShipCockpit.cpp" />
-    <ClCompile Include="..\..\src\ShipController.cpp" />
     <ClCompile Include="..\..\src\ShipCpanel.cpp" />
     <ClCompile Include="..\..\src\ShipCpanelMultiFuncDisplays.cpp" />
     <ClCompile Include="..\..\src\ShipType.cpp" />
-    <ClCompile Include="..\..\src\Sound.cpp" />
-    <ClCompile Include="..\..\src\SoundMusic.cpp" />
+    <ClCompile Include="..\..\src\ship\PlayerShipController.cpp" />
+    <ClCompile Include="..\..\src\ship\ShipController.cpp" />
+    <ClCompile Include="..\..\src\ship\ShipViewController.cpp" />
+    <ClCompile Include="..\..\src\sound\AmbientSounds.cpp" />
+    <ClCompile Include="..\..\src\sound\Sound.cpp" />
+    <ClCompile Include="..\..\src\sound\SoundMusic.cpp" />
     <ClCompile Include="..\..\src\Space.cpp" />
     <ClCompile Include="..\..\src\SpaceStation.cpp" />
     <ClCompile Include="..\..\src\SpaceStationType.cpp" />
@@ -553,7 +553,6 @@
     <ClInclude Include="..\..\contrib\nanosvg\nanosvgrast.h" />
     <ClInclude Include="..\..\contrib\PicoDDS\PicoDDS.h" />
     <ClInclude Include="..\..\src\Aabb.h" />
-    <ClInclude Include="..\..\src\AmbientSounds.h" />
     <ClInclude Include="..\..\src\AnimationCurves.h" />
     <ClInclude Include="..\..\src\Background.h" />
     <ClInclude Include="..\..\src\BaseSphere.h" />
@@ -575,7 +574,6 @@
     <ClInclude Include="..\..\src\EnumStrings.h" />
     <ClInclude Include="..\..\src\enum_table.h" />
     <ClInclude Include="..\..\src\FaceParts.h" />
-    <ClInclude Include="..\..\src\Factions.h" />
     <ClInclude Include="..\..\src\FileSourceZip.h" />
     <ClInclude Include="..\..\src\FileSystem.h" />
     <ClInclude Include="..\..\src\fixed.h" />
@@ -618,7 +616,6 @@
     <ClInclude Include="..\..\src\LuaJson.h" />
     <ClInclude Include="..\..\src\LuaLang.h" />
     <ClInclude Include="..\..\src\LuaManager.h" />
-    <ClInclude Include="..\..\src\LuaMatrix.h" />
     <ClInclude Include="..\..\src\LuaMissile.h" />
     <ClInclude Include="..\..\src\LuaMusic.h" />
     <ClInclude Include="..\..\src\LuaNameGen.h" />
@@ -634,6 +631,7 @@
     <ClInclude Include="..\..\src\LuaTimer.h" />
     <ClInclude Include="..\..\src\LuaUtils.h" />
     <ClInclude Include="..\..\src\LuaVector.h" />
+    <ClInclude Include="..\..\src\LuaVector2.h" />
     <ClInclude Include="..\..\src\LuaWrappable.h" />
     <ClInclude Include="..\..\src\MathUtil.h" />
     <ClInclude Include="..\..\src\matrix3x3.h" />
@@ -655,7 +653,6 @@
     <ClInclude Include="..\..\src\Planet.h" />
     <ClInclude Include="..\..\src\Player.h" />
     <ClInclude Include="..\..\src\PngWriter.h" />
-    <ClInclude Include="..\..\src\Polit.h" />
     <ClInclude Include="..\..\src\Projectile.h" />
     <ClInclude Include="..\..\src\PropertiedObject.h" />
     <ClInclude Include="..\..\src\PropertyMap.h" />
@@ -675,13 +672,17 @@
     <ClInclude Include="..\..\src\Ship.h" />
     <ClInclude Include="..\..\src\ShipAICmd.h" />
     <ClInclude Include="..\..\src\ShipCockpit.h" />
-    <ClInclude Include="..\..\src\ShipController.h" />
     <ClInclude Include="..\..\src\ShipCpanel.h" />
     <ClInclude Include="..\..\src\ShipCpanelMultiFuncDisplays.h" />
     <ClInclude Include="..\..\src\ShipType.h" />
+    <ClInclude Include="..\..\src\ship\InteractionController.h" />
+    <ClInclude Include="..\..\src\ship\PlayerShipController.h" />
+    <ClInclude Include="..\..\src\ship\ShipController.h" />
+    <ClInclude Include="..\..\src\ship\ShipViewController.h" />
     <ClInclude Include="..\..\src\SmartPtr.h" />
-    <ClInclude Include="..\..\src\Sound.h" />
-    <ClInclude Include="..\..\src\SoundMusic.h" />
+    <ClInclude Include="..\..\src\sound\AmbientSounds.h" />
+    <ClInclude Include="..\..\src\sound\Sound.h" />
+    <ClInclude Include="..\..\src\sound\SoundMusic.h" />
     <ClInclude Include="..\..\src\Space.h" />
     <ClInclude Include="..\..\src\SpaceStation.h" />
     <ClInclude Include="..\..\src\SpaceStationType.h" />

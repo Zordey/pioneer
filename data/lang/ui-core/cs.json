@@ -127,6 +127,10 @@
     "description": "Center on selected star system",
     "message": "Center on System"
   },
+  "CHANGE": {
+    "description": "Face feature option",
+    "message": "Změnit:"
+  },
   "CHANGE_BINDING": {
     "description": "Key binding option",
     "message": "Změnit kl."
@@ -426,6 +430,50 @@
   "FAILED": {
     "description": "When failed mission",
     "message": "Neúspěšný"
+  },
+  "FEATURE_ACCESSORIES": {
+    "description": "Face feature for FaceGenerator in the PersonalInfo view",
+    "message": "Příslušenství"
+  },
+  "FEATURE_ARMOUR": {
+    "description": "Face feature for FaceGenerator in the PersonalInfo view",
+    "message": "Brnění"
+  },
+  "FEATURE_CLOTHES": {
+    "description": "Face feature for FaceGenerator in the PersonalInfo view",
+    "message": "Oblečení"
+  },
+  "FEATURE_EYES": {
+    "description": "Face feature for FaceGenerator in the PersonalInfo view",
+    "message": "Oči"
+  },
+  "FEATURE_GENDER": {
+    "description": "Face feature for FaceGenerator in the PersonalInfo view",
+    "message": "Pohlaví"
+  },
+  "FEATURE_HAIRSTYLE": {
+    "description": "Face feature for FaceGenerator in the PersonalInfo view",
+    "message": "Účes"
+  },
+  "FEATURE_HEAD": {
+    "description": "Face feature for FaceGenerator in the PersonalInfo view",
+    "message": "Hlava"
+  },
+  "FEATURE_MOUTH": {
+    "description": "Face feature for FaceGenerator in the PersonalInfo view",
+    "message": "Ústa"
+  },
+  "FEATURE_NOSE": {
+    "description": "Face feature for FaceGenerator in the PersonalInfo view",
+    "message": "Nos"
+  },
+  "FEATURE_RACE": {
+    "description": "Face feature for FaceGenerator in the PersonalInfo view",
+    "message": "Rasa"
+  },
+  "FEATURE_SPECIES": {
+    "description": "Face feature for FaceGenerator in the PersonalInfo view",
+    "message": "Druhy"
   },
   "FEMALE": {
     "description": "",
@@ -1187,6 +1235,10 @@
     "description": "",
     "message": "Vyjenávat"
   },
+  "NEXT_FACE_FEATURE": {
+    "description": "Face feature switch button for FaceGenerator in the PersonalInfo view",
+    "message": "Další"
+  },
   "NEXT_PAID": {
     "description": "",
     "message": "Další platba"
@@ -1343,6 +1395,10 @@
     "description": "",
     "message": "Press a key or controller button or escape to clear"
   },
+  "PREVIOUS_FACE_FEATURE": {
+    "description": "Face feature switch button for FaceGenerator in the PersonalInfo view",
+    "message": "Předchozí"
+  },
   "PRICE": {
     "description": "",
     "message": "Cena"
@@ -1366,6 +1422,10 @@
   "QUIT_CONFIRMATION": {
     "description": "For the checkbox in settings window",
     "message": "Quit confirmation"
+  },
+  "RANDOM_FACE": {
+    "description": "Generate random face",
+    "message": "Náhodné"
   },
   "RANK": {
     "description": "",

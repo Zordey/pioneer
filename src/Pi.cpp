@@ -5,7 +5,6 @@
 
 #include "Pi.h"
 
-#include "AmbientSounds.h"
 #include "BaseSphere.h"
 #include "CargoBody.h"
 #include "CityOnPlanet.h"
@@ -18,7 +17,6 @@
 #include "GameConfig.h"
 #include "GameLog.h"
 #include "GameSaveError.h"
-#include "Input.h"
 #include "Intro.h"
 #include "KeyBindings.h"
 #include "Lang.h"
@@ -45,11 +43,14 @@
 #include "LuaShipDef.h"
 #include "LuaSpace.h"
 #include "LuaTimer.h"
+#include "LuaVector.h"
+#include "LuaVector2.h"
 #include "Missile.h"
 #include "ModManager.h"
 #include "ModelCache.h"
 #include "NavLights.h"
 #include "OS.h"
+#include "sound/AmbientSounds.h"
 #if WITH_OBJECTVIEWER
 #include "ObjectViewerView.h"
 #endif
@@ -63,11 +64,8 @@
 #include "ServerAgent.h"
 #include "Sfx.h"
 #include "Shields.h"
-#include "ShipController.h"
 #include "ShipCpanel.h"
 #include "ShipType.h"
-#include "Sound.h"
-#include "SoundMusic.h"
 #include "Space.h"
 #include "SpaceStation.h"
 #include "Star.h"
@@ -81,6 +79,10 @@
 #include "galaxy/StarSystem.h"
 #include "gameui/Lua.h"
 #include "libs.h"
+#include "ship/PlayerShipController.h"
+#include "ship/ShipViewController.h"
+#include "sound/Sound.h"
+#include "sound/SoundMusic.h"
 
 #include "graphics/Renderer.h"
 
@@ -311,6 +313,8 @@ static void LuaInit()
 	LuaMusic::Register();
 	LuaDev::Register();
 	LuaConsole::Register();
+	LuaVector::Register(Lua::manager->GetLuaState());
+	LuaVector2::Register(Lua::manager->GetLuaState());
 
 	// XXX sigh
 	UI::Lua::Init();
@@ -328,6 +332,7 @@ static void LuaInit()
 	pi_lua_import(l, "pigui/init.lua", true);
 	pi_lua_import(l, "pigui/mainmenu.lua", true);
 	pi_lua_import_recursive(l, "pigui/modules");
+	pi_lua_import_recursive(l, "pigui/views");
 	pi_lua_import_recursive(l, "modules");
 
 	Pi::luaNameGen = new LuaNameGen(Lua::manager);
@@ -421,6 +426,8 @@ void RegisterInputBindings()
 {
 	PlayerShipController::RegisterInputBindings();
 
+	ShipViewController::InputBindings.RegisterBindings();
+
 	WorldView::RegisterInputBindings();
 }
 
@@ -466,8 +473,6 @@ void Pi::Init(const std::map<std::string, std::string> &options, bool no_gui)
 
 	Pi::SetAmountBackgroundStars(config->Float("AmountOfBackgroundStars"));
 	Pi::detail.planets = config->Int("DetailPlanets");
-	Pi::detail.textures = config->Int("Textures");
-	Pi::detail.fracmult = config->Int("FractalMultiple");
 	Pi::detail.cities = config->Int("DetailCities");
 
 	// Initialize SDL
@@ -812,11 +817,6 @@ void Pi::Quit()
 	asyncJobQueue.reset();
 	syncJobQueue.reset();
 	exit(0);
-}
-
-void Pi::BoinkNoise()
-{
-	Sound::PlaySfx("Click", 0.3f, 0.3f, false);
 }
 
 void Pi::SetView(View *v)
@@ -1618,15 +1618,10 @@ void Pi::SetMouseGrab(bool on)
 
 void Pi::DrawPiGui(double delta, std::string handler)
 {
-//  #define PROFILE_LUA_TIME 1
-#ifdef PROFILE_LUA_TIME
-	auto before = clock();
-#endif
+	PROFILE_SCOPED()
+
 	if (!IsConsoleActive())
 		Pi::pigui->Render(delta, handler);
-#ifdef PROFILE_LUA_TIME
-	auto after = clock();
-	Output("Lua PiGUI took %f\n", double(after - before) / CLOCKS_PER_SEC);
-#endif
+
 	PiGui::RenderImGui();
 }

@@ -2,6 +2,7 @@
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "GeoSphere.h"
+
 #include "GameConfig.h"
 #include "GeoPatch.h"
 #include "GeoPatchContext.h"
@@ -15,7 +16,6 @@
 #include "graphics/Texture.h"
 #include "graphics/TextureBuilder.h"
 #include "graphics/VertexArray.h"
-#include "libs.h"
 #include "perlin.h"
 #include "vcacheopt/vcacheopt.h"
 #include <algorithm>
@@ -25,22 +25,15 @@ RefCountedPtr<GeoPatchContext> GeoSphere::s_patchContext;
 
 // must be odd numbers
 static const int detail_edgeLen[5] = {
-	7, 15, 25, 35, 55
+	//7, 15, 25, 35, 55 -- old non power-of-2+1 values
+	// some detail settings duplicated intentionally
+	// in real terms provides only 3 settings
+	// however this value is still used for gas giants
+	// with 5 distinct settings elsewhere
+	9, 17, 17, 33, 33
 };
 
 static const double gs_targetPatchTriLength(100.0);
-
-#define PRINT_VECTOR(_v) Output("%f,%f,%f\n", (_v).x, (_v).y, (_v).z);
-
-// static const int geo_sphere_edge_friends[NUM_PATCHES][4] = {
-// 	{ 3, 4, 1, 2 },
-// 	{ 0, 4, 5, 2 },
-// 	{ 0, 1, 5, 3 },
-// 	{ 0, 2, 5, 4 },
-// 	{ 0, 3, 5, 1 },
-// 	{ 1, 4, 3, 2 }
-// };
-
 static std::vector<GeoSphere *> s_allGeospheres;
 
 void GeoSphere::Init()
@@ -512,10 +505,6 @@ void GeoSphere::SetUpMaterials()
 	}
 
 	surfDesc.quality |= Graphics::HAS_ECLIPSES;
-	const bool bEnableDetailMaps = (Pi::config->Int("DisableDetailMaps") == 0);
-	if (bEnableDetailMaps) {
-		surfDesc.quality |= Graphics::HAS_DETAIL_MAPS;
-	}
 	m_surfaceMaterial.Reset(Pi::renderer->CreateMaterial(surfDesc));
 
 	m_texHi.Reset(Graphics::TextureBuilder::Model("textures/high.dds").GetOrCreateTexture(Pi::renderer, "model"));

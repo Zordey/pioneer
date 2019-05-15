@@ -8,16 +8,13 @@
 
 #include "GeoPatchID.h"
 #include "Random.h"
-#include "galaxy/StarSystem.h"
-#include "graphics/Material.h"
 #include "graphics/VertexBuffer.h"
-#include "terrain/Terrain.h"
 #include "vector3.h"
 
 #include <deque>
 
 // maximumpatch depth
-#define GEOPATCH_MAX_DEPTH 15 + (2 * Pi::detail.fracmult) //15
+#define GEOPATCH_MAX_DEPTH 15
 
 namespace Graphics {
 	class Renderer;

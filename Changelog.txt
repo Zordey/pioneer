@@ -1,3 +1,44 @@
+May 2019
+   * New Features
+     * Start move of InfovIew to PiGui (#4573)
+
+   * Internal Changes
+     * Speedup pilua (#4548)
+     * Gracefully handle destroyed target ships in SAR missions (#4569)
+     * Consider hyperdrive fuel type in the hyperjump-planer (#4582)
+     * Remove unused and decouple (#4585)
+
+   * Fixes
+     * Fix crash on main menu (#4578)
+     * Replace leftover lua Vectors with Vector2 (#4581)
+     * Initialize variables to be integers (#4579)
+     * Fix flight UI direction and vector indicators (#4583)
+
+April 2019
+   * New Features
+     * Input/settings system now available in translation system (#4568)
+     * Manual player face generator (#4571)
+     * Atmospheric flight (#4556)
+
+   * Fixes
+     * Autofit main menu (#4572)
+
+March 2019
+   * Internal Changes
+     * PiGui profiling changes (#4549)
+     * Terrain Cleanup (#4550)
+     * Avoid reallocation of vector using a list of nearby bodies (#4546)
+     * Modified asserts to be correct now (#4553)
+     * Add instructions on building pioneer with CMake and MSYS2 (#4535)
+     * Refactor sound code to it's own folder (#4557)
+     * Fix build under OSX (#4563)
+
+   * Fixes
+     * Fix game load crash with unattached hyperspace clouds (#4555)
+     * Fix middle mouse not working in paused mode (#3032)
+     * Fix game load crash typo (#4561)
+     * Fix an error preventing keybinding when joysticks are disabled (#4566)
+
 February 2019
    * New Features
      * New setting option for less UI in screenshots (#4528)
@@ -9,6 +50,8 @@ February 2019
      * Close default ctors and use a Ctor for load (#4527)
      * Make modelcompiler handle custom data dir (#4523)
      * Another decouple (#4538)
+     * Improve clang format tools (#4539)
+     * Improve OSX Travis build script (#4540)
 
 January 2019
    * New Features

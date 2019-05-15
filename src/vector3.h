@@ -13,17 +13,6 @@
 #pragma pack(4)
 
 template <typename T>
-struct other_floating_type {};
-template <>
-struct other_floating_type<float> {
-	typedef double type;
-};
-template <>
-struct other_floating_type<double> {
-	typedef float type;
-};
-
-template <typename T>
 class vector3 {
 public:
 	T x, y, z;
@@ -126,6 +115,10 @@ public:
 	T Dot(const vector3 &b) const { return x * b.x + y * b.y + z * b.z; }
 	T Length() const { return sqrt(x * x + y * y + z * z); }
 	T LengthSqr() const { return x * x + y * y + z * z; }
+	vector3 Lerp(const vector3 &b, const double percent) const
+	{
+		return *this + percent * (b - *this);
+	}
 	vector3 Normalized() const
 	{
 		const T l = 1.0f / sqrt(x * x + y * y + z * z);

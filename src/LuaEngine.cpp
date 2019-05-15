@@ -15,18 +15,20 @@
 #include "LuaObject.h"
 #include "LuaPiGui.h"
 #include "LuaUtils.h"
+#include "LuaVector.h"
+#include "LuaVector2.h"
 #include "OS.h"
 #include "Pi.h"
 #include "PiGui.h"
 #include "Player.h"
 #include "Random.h"
 #include "SectorView.h"
-#include "Sound.h"
-#include "SoundMusic.h"
 #include "WorldView.h"
 #include "buildopts.h"
 #include "graphics/Graphics.h"
 #include "scenegraph/Model.h"
+#include "sound/Sound.h"
+#include "sound/SoundMusic.h"
 #include "ui/Context.h"
 #include "utils.h"
 /*
@@ -431,44 +433,6 @@ static int l_engine_set_city_detail_level(lua_State *l)
 	return 0;
 }
 
-static int l_engine_get_fractal_detail_level(lua_State *l)
-{
-	lua_pushstring(l, EnumStrings::GetString("DetailLevel", Pi::detail.fracmult));
-	return 1;
-}
-
-static int l_engine_set_fractal_detail_level(lua_State *l)
-{
-	const int level = LuaConstants::GetConstantFromArg(l, "DetailLevel", 1);
-	if (level != Pi::detail.fracmult) {
-		Pi::detail.fracmult = level;
-		Pi::config->SetInt("FractalMultiple", level);
-		Pi::config->Save();
-		Pi::OnChangeDetailLevel();
-	}
-	return 0;
-}
-
-static int l_engine_get_planet_fractal_colour_enabled(lua_State *l)
-{
-	lua_pushboolean(l, Pi::detail.textures);
-	return 1;
-}
-
-static int l_engine_set_planet_fractal_colour_enabled(lua_State *l)
-{
-	if (lua_isnone(l, 1))
-		return luaL_error(l, "SetPlanetFractalColourEnabled takes one boolean argument");
-	const int level = (lua_toboolean(l, 1) ? 1 : 0);
-	if (level != Pi::detail.textures) {
-		Pi::detail.textures = level;
-		Pi::config->SetInt("Textures", level);
-		Pi::config->Save();
-		Pi::OnChangeDetailLevel();
-	}
-	return 0;
-}
-
 static int l_engine_get_display_nav_tunnels(lua_State *l)
 {
 	lua_pushboolean(l, Pi::config->Int("DisplayNavTunnel") != 0);
@@ -765,7 +729,7 @@ static int l_engine_ship_space_to_screen_space(lua_State *l)
 {
 	vector3d pos = LuaPull<vector3d>(l, 1);
 	vector3d cam = Pi::game->GetWorldView()->ShipSpaceToScreenSpace(pos);
-	LuaPush(l, cam);
+	LuaPush<vector3d>(l, cam);
 	return 1;
 }
 
@@ -821,11 +785,11 @@ static int l_engine_world_space_to_screen_space(lua_State *l)
 {
 	vector3d pos = LuaPull<vector3d>(l, 1);
 
-	std::tuple<bool, vector3d, vector3d> res = lua_world_space_to_screen_space(pos); // defined in LuaPiGui.cpp
+	TScreenSpace res = lua_world_space_to_screen_space(pos); // defined in LuaPiGui.cpp
 
-	LuaPush<bool>(l, std::get<0>(res));
-	LuaPush<vector3d>(l, std::get<1>(res));
-	LuaPush<vector3d>(l, std::get<2>(res));
+	LuaPush<bool>(l, res._onScreen);
+	LuaPush<vector2d>(l, res._screenPosition);
+	LuaPush<vector3d>(l, res._direction);
 	return 3;
 }
 
@@ -894,7 +858,7 @@ static int l_engine_get_sector_map_center_distance(lua_State *l)
 static int l_engine_get_sector_map_center_sector(lua_State *l)
 {
 	SectorView *sv = Pi::game->GetSectorView();
-	LuaPush(l, sv->GetCenterSector());
+	LuaPush<vector3d>(l, vector3d(sv->GetCenterSector()));
 	return 1;
 }
 
@@ -1161,10 +1125,6 @@ void LuaEngine::Register()
 		{ "SetPlanetDetailLevel", l_engine_set_planet_detail_level },
 		{ "GetCityDetailLevel", l_engine_get_city_detail_level },
 		{ "SetCityDetailLevel", l_engine_set_city_detail_level },
-		{ "GetFractalDetailLevel", l_engine_get_fractal_detail_level },
-		{ "SetFractalDetailLevel", l_engine_set_fractal_detail_level },
-		{ "GetPlanetFractalColourEnabled", l_engine_get_planet_fractal_colour_enabled },
-		{ "SetPlanetFractalColourEnabled", l_engine_set_planet_fractal_colour_enabled },
 
 		{ "GetDisplayNavTunnels", l_engine_get_display_nav_tunnels },
 		{ "SetDisplayNavTunnels", l_engine_set_display_nav_tunnels },

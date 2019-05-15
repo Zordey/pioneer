@@ -7,9 +7,23 @@
 #include "LuaPushPull.h"
 #include <tuple>
 
-void pi_lua_generic_push(lua_State *l, const vector3d &v);
-void pi_lua_generic_push(lua_State *l, const vector3f &v);
-void pi_lua_generic_pull(lua_State *l, int index, vector3d &vector);
+#include "vector2.h"
+
+class Body;
+
+bool first_body_is_more_important_than(Body* body, Body* other);
+
+struct TScreenSpace
+{
+	TScreenSpace(const bool onScreen, const vector2d &screenPos, const vector3d &direction) : _onScreen(onScreen), _screenPosition(screenPos), _direction(direction) {}
+	bool _onScreen;
+	vector2d _screenPosition;
+	vector3d _direction;
+	Body *_body;
+};
+
+typedef std::vector<TScreenSpace> TSS_vector;
+
 int pushOnScreenPositionDirection(lua_State *l, vector3d position);
-std::tuple<bool, vector3d, vector3d> lua_world_space_to_screen_space(vector3d pos);
+TScreenSpace lua_world_space_to_screen_space(const vector3d &pos);
 #endif

@@ -16,6 +16,17 @@ static int l_vector_new(lua_State *L)
 	return 1;
 }
 
+static int l_vector_call(lua_State *L)
+{
+	LUA_DEBUG_START(L);
+	double x = luaL_checknumber(L, 2);
+	double y = luaL_checknumber(L, 3);
+	double z = luaL_checknumber(L, 4);
+	LuaVector::PushToLua(L, vector3d(x, y, z));
+	LUA_DEBUG_END(L, 1);
+	return 1;
+}
+
 static int l_vector_unit(lua_State *L)
 {
 	LUA_DEBUG_START(L);
@@ -99,6 +110,28 @@ static int l_vector_unm(lua_State *L)
 	return 1;
 }
 
+static int l_vector_new_index(lua_State *L)
+{
+	vector3d *v = LuaVector::CheckFromLua(L, 1);
+	if (lua_type(L, 2) == LUA_TSTRING) {
+		const char *attr = luaL_checkstring(L, 2);
+		if (!strcmp(attr, "x")) {
+			v->x = luaL_checknumber(L, 3);
+		} else if (!strcmp(attr, "y")) {
+			v->y = luaL_checknumber(L, 3);
+		} else if (!strcmp(attr, "z")) {
+			v->z = luaL_checknumber(L, 3);
+		} else {
+			luaL_error(L, "Index '%s' is not available: use 'x', 'y' or 'z'", attr);
+		}
+
+	} else {
+		luaL_error(L, "Expected vector, but type is '%s'", lua_typename(L, lua_type(L, 2)));
+	}
+	LuaVector::PushToLua(L, *v);
+	return 1;
+}
+
 static int l_vector_index(lua_State *L)
 {
 	const vector3d *v = LuaVector::CheckFromLua(L, 1);
@@ -126,6 +159,13 @@ static int l_vector_normalised(lua_State *L)
 {
 	const vector3d *v = LuaVector::CheckFromLua(L, 1);
 	LuaVector::PushToLua(L, v->NormalizedSafe());
+	return 1;
+}
+
+static int l_vector_length_sqr(lua_State *L)
+{
+	const vector3d *v = LuaVector::CheckFromLua(L, 1);
+	lua_pushnumber(L, v->LengthSqr());
 	return 1;
 }
 
@@ -169,23 +209,31 @@ static luaL_Reg l_vector_meta[] = {
 	{ "__div", &l_vector_div },
 	{ "__unm", &l_vector_unm },
 	{ "__index", &l_vector_index },
+	{ "__newindex", &l_vector_new_index },
 	{ "normalised", &l_vector_normalised },
 	{ "normalized", &l_vector_normalised },
 	{ "unit", &l_vector_unit },
+	{ "lengthSqr", &l_vector_length_sqr },
 	{ "length", &l_vector_length },
 	{ "cross", &l_vector_cross },
 	{ "dot", &l_vector_dot },
 	{ 0, 0 }
 };
 
-const char LuaVector::LibName[] = "vector";
-const char LuaVector::TypeName[] = "vector";
+const char LuaVector::LibName[] = "Vector3";
+const char LuaVector::TypeName[] = "Vector3";
 
 void LuaVector::Register(lua_State *L)
 {
 	LUA_DEBUG_START(L);
 
 	luaL_newlib(L, l_vector_lib);
+
+	lua_newtable(L);
+	lua_pushcfunction(L, &l_vector_call);
+	lua_setfield(L, -2, "__call");
+	lua_setmetatable(L, -2);
+
 	lua_setglobal(L, LuaVector::LibName);
 
 	luaL_newmetatable(L, LuaVector::TypeName);
@@ -210,7 +258,7 @@ const vector3d *LuaVector::GetFromLua(lua_State *L, int idx)
 	return static_cast<vector3d *>(luaL_testudata(L, idx, LuaVector::TypeName));
 }
 
-const vector3d *LuaVector::CheckFromLua(lua_State *L, int idx)
+vector3d *LuaVector::CheckFromLua(lua_State *L, int idx)
 {
 	return static_cast<vector3d *>(luaL_checkudata(L, idx, LuaVector::TypeName));
 }

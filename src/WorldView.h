@@ -9,6 +9,7 @@
 #include "SpeedLines.h"
 #include "UIView.h"
 #include "gui/GuiWidget.h"
+#include "ship/ShipViewController.h"
 
 class Body;
 class Frame;
@@ -54,33 +55,25 @@ public:
 	static const double PICK_OBJECT_RECT_SIZE;
 	virtual void SaveToJson(Json &jsonObj);
 	virtual void HandleSDLEvent(SDL_Event &event);
-	enum CamType {
-		CAM_INTERNAL,
-		CAM_EXTERNAL,
-		CAM_SIDEREAL,
-		CAM_FLYBY
-	};
-	void SetCamType(enum CamType);
-	enum CamType GetCamType() const { return m_camType; }
-	CameraController *GetCameraController() const { return m_activeCameraController; }
+
+	RefCountedPtr<CameraContext> GetCameraContext() const { return m_cameraContext; }
+
+	ShipViewController shipView;
 
 	/* start deprecated */
 	void ChangeFlightState();
 	/* end deprecated */
 
 	int GetActiveWeapon() const;
-	void OnClickBlastoff();
-
-	sigc::signal<void> onChangeCamType;
 
 	std::tuple<double, double, double> CalculateHeadingPitchRoll(enum PlaneType);
 
-	vector3d WorldSpaceToScreenSpace(Body *body) const;
-	vector3d WorldSpaceToScreenSpace(vector3d position) const;
-	vector3d ShipSpaceToScreenSpace(vector3d position) const;
-	vector3d GetTargetIndicatorScreenPosition(Body *body) const;
+	vector3d WorldSpaceToScreenSpace(const Body *body) const;
+	vector3d WorldSpaceToScreenSpace(const vector3d &position) const;
+	vector3d ShipSpaceToScreenSpace(const vector3d &position) const;
+	vector3d GetTargetIndicatorScreenPosition(const Body *body) const;
 	vector3d GetMouseDirection() const;
-	vector3d CameraSpaceToScreenSpace(vector3d pos) const;
+	vector3d CameraSpaceToScreenSpace(const vector3d &pos) const;
 
 	void BeginCameraFrame() { m_cameraContext->BeginFrame(); };
 	void EndCameraFrame() { m_cameraContext->EndFrame(); };
@@ -96,9 +89,6 @@ private:
 	void InitObject();
 
 	void RefreshButtonStateAndVisibility();
-
-	void ChangeInternalCameraMode(InternalCameraController::Mode m);
-	void UpdateCameraName();
 
 	enum IndicatorSide {
 		INDICATOR_HIDDEN,
@@ -129,18 +119,14 @@ private:
 	void OnToggleLabels();
 
 	void DrawCombatTargetIndicator(const Indicator &target, const Indicator &lead, const Color &c);
-	void DrawImageIndicator(const Indicator &marker, Gui::TexturedQuad *quad, const Color &c);
 	void DrawEdgeMarker(const Indicator &marker, const Color &c);
 
-	void OnPlayerDockOrUndock();
 	void OnPlayerChangeTarget();
-	void OnPlayerChangeFlightControlState();
 	/// Handler for "requestTimeAccelerationInc" event
 	void OnRequestTimeAccelInc();
 	/// Handler for "requestTimeAccelerationDec" event
 	void OnRequestTimeAccelDec();
 	void SelectBody(Body *, bool reselectIsDeselect);
-	void MouseWheel(bool up);
 
 	Game *m_game;
 
@@ -149,7 +135,6 @@ private:
 
 	Gui::Label *m_pauseText;
 	bool m_labelsOn;
-	enum CamType m_camType;
 
 	/* Only use #if WITH_DEVKEYS */
 	Gui::Label *m_debugInfo;
@@ -163,18 +148,12 @@ private:
 	sigc::connection m_onHyperspaceTargetChangedCon;
 	sigc::connection m_onPlayerChangeTargetCon;
 	sigc::connection m_onChangeFlightControlStateCon;
-	sigc::connection m_onMouseWheelCon;
 	sigc::connection m_onToggleHudModeCon;
 	sigc::connection m_onIncTimeAccelCon;
 	sigc::connection m_onDecTimeAccelCon;
 
 	RefCountedPtr<CameraContext> m_cameraContext;
 	std::unique_ptr<Camera> m_camera;
-	std::unique_ptr<InternalCameraController> m_internalCameraController;
-	std::unique_ptr<ExternalCameraController> m_externalCameraController;
-	std::unique_ptr<SiderealCameraController> m_siderealCameraController;
-	std::unique_ptr<FlyByCameraController> m_flybyCameraController;
-	CameraController *m_activeCameraController; //one of the above
 
 	Indicator m_combatTargetIndicator;
 	Indicator m_targetLeadIndicator;
@@ -191,20 +170,6 @@ private:
 		ActionBinding *toggleHudMode;
 		ActionBinding *increaseTimeAcceleration;
 		ActionBinding *decreaseTimeAcceleration;
-
-		AxisBinding *viewZoom;
-
-		ActionBinding *frontCamera;
-		ActionBinding *rearCamera;
-		ActionBinding *leftCamera;
-		ActionBinding *rightCamera;
-		ActionBinding *topCamera;
-		ActionBinding *bottomCamera;
-
-		AxisBinding *cameraRoll;
-		AxisBinding *cameraPitch;
-		AxisBinding *cameraYaw;
-		ActionBinding *resetCamera;
 	} InputBindings;
 };
 

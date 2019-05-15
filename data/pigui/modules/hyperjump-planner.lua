@@ -1,7 +1,6 @@
 local Engine = import('Engine')
 local Game = import('Game')
 local ui = import('pigui/pigui.lua')
-local Vector = import('Vector')
 local Event = import('Event')
 local Lang = import("Lang")
 local lc = Lang.GetResource("core")
@@ -12,7 +11,7 @@ local player = nil
 local colors = ui.theme.colors
 local icons = ui.theme.icons
 
-local mainButtonSize = Vector(24,24) * (ui.screenHeight / 1200)
+local mainButtonSize = Vector2(24,24) * (ui.screenHeight / 1200)
 local mainButtonFramePadding = 3
 
 -- hyperjump route stuff
@@ -207,8 +206,8 @@ end -- showJumpPlan
 
 
 local function showHyperJumpPlannerWindow()
-	ui.setNextWindowSize(Vector(ui.screenWidth / 5, (ui.screenHeight / 5) * 2), "Always")
-	ui.setNextWindowPos(Vector(ui.screenWidth - ui.screenWidth / 5 - 10, ui.screenHeight - ((ui.screenHeight / 5) * 2) - 10), "Always")
+	ui.setNextWindowSize(Vector2(ui.screenWidth / 5, (ui.screenHeight / 5) * 2), "Always")
+	ui.setNextWindowPos(Vector2(ui.screenWidth - ui.screenWidth / 5 - 10, ui.screenHeight - ((ui.screenHeight / 5) * 2) - 10), "Always")
 	ui.withStyleColors({["WindowBg"] = colors.lightBlackBackground}, function()
 		ui.window("MapSectorViewHyperJumpPlanner", {"NoTitleBar", "NoResize", "NoFocusOnAppearing", "NoBringToFrontOnFocus"},
 			function()
@@ -229,9 +228,11 @@ local function displayHyperJumpPlanner()
 	local current_view = Game.CurrentView()
 
 	if current_view == "sector" and not Game.InHyperspace() then
+		local drive = table.unpack(player:GetEquip("engine")) or nil
+		local fuel_type = drive and drive.fuel or Equipment.cargo.hydrogen
 		current_system = Game.system
 		current_path = current_system.path
-		current_fuel = player:CountEquip(Equipment.cargo.hydrogen,"cargo")
+		current_fuel = player:CountEquip(fuel_type,"cargo")
 		map_selected_path = Engine.GetSectorMapSelectedSystemPath()
 		hyperjump_route = Engine.SectorMapGetRoute()
 		route_jumps = Engine.SectorMapGetRouteSize()

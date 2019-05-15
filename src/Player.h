@@ -4,12 +4,9 @@
 #ifndef _PLAYER_H
 #define _PLAYER_H
 
-#include "HyperspaceCloud.h"
 #include "Ship.h"
 #include "ShipCockpit.h"
-#include "ShipController.h"
-#include "galaxy/StarSystem.h"
-#include "libs.h"
+#include "ship/PlayerShipController.h"
 #include <list>
 
 namespace Graphics {

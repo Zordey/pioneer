@@ -1,6 +1,7 @@
 [![Build Status](https://travis-ci.org/pioneerspacesim/pioneer.svg?branch=master)](https://travis-ci.org/pioneerspacesim/pioneer)
 [![Build status](https://ci.appveyor.com/api/projects/status/b2n2fe1vv3wr6n56/branch/master?svg=true)](https://ci.appveyor.com/project/pioneerspacesim/pioneer/branch/master)
 [![License GPLv3](https://img.shields.io/badge/license-GPL_v3-green.svg)](http://www.gnu.org/licenses/gpl-3.0.html)
+[![#pioneer on Freenode](https://img.shields.io/badge/Freenode-%23pioneer-brightgreen.svg)](https://kiwiirc.com/client/irc.freenode.net/pioneer)
 
 # Pioneer Space Simulator
 
@@ -28,9 +29,6 @@ Bugs? Please log an issue:
 Follow Pioneer on Twitter:
   https://twitter.com/pioneerspacesim/
 
-Follow Pioneer on Google+:
-  http://pioneerspacesim.net/+
-
 Pioneer wiki
   http://pioneerwiki.com/wiki/Pioneer_Wiki
 
@@ -45,6 +43,9 @@ Join the development forum:
 
 Manual can be found at:
   http://pioneerwiki.com/wiki/Manual
+
+Basic flight:
+  https://pioneerwiki.com/wiki/Basic_flight
 
 Keyboard and mouse control is found at:
   http://pioneerwiki.com/wiki/Keyboard_and_mouse_controls

@@ -11,10 +11,10 @@
 #include "NavLights.h"
 #include "Sensors.h"
 #include "ShipType.h"
-#include "Sound.h"
 #include "Space.h"
 #include "galaxy/SystemPath.h"
 #include "scenegraph/ModelSkin.h"
+#include "sound/Sound.h"
 
 #include "FixedGuns.h"
 #include "Propulsion.h"
@@ -124,6 +124,10 @@ public:
 		HYPERSPACE, // in hyperspace
 	};
 
+	vector3d CalcAtmosphericForce() const override;
+	// vector3d CalcAtmoPassiveControl() const;
+	vector3d CalcAtmoTorque() const;
+
 	FlightState GetFlightState() const { return m_flightState; }
 	void SetFlightState(FlightState s);
 	float GetWheelState() const { return m_wheelState; }
@@ -190,7 +194,7 @@ public:
 	void AIOrbit(Body *target, double alt); // Note: defined in Ship-AI.cpp
 	void AIHoldPosition(); // Note: defined in Ship-AI.cpp
 
-	void AIBodyDeleted(const Body *const body){}; // Note: defined in Ship-AI.cpp // todo: signals
+	void AIBodyDeleted(const Body *const body) {}; // Note: defined in Ship-AI.cpp // todo: signals
 
 	const AICommand *GetAICommand() const { return m_curAICmd; }
 
@@ -276,6 +280,8 @@ private:
 
 	bool m_invulnerable;
 
+	static const double DEFAULT_LIFT_TO_DRAG_RATIO;
+
 	static const float DEFAULT_SHIELD_COOLDOWN_TIME;
 	float m_shieldCooldown;
 	shipstats_t m_stats;
@@ -295,7 +301,6 @@ private:
 	double m_lastFiringAlert;
 	bool m_shipNear;
 	bool m_shipFiring;
-	Space::BodyNearList m_nearbyBodies;
 
 	HyperspaceCloud *m_hyperspaceCloud;
 
